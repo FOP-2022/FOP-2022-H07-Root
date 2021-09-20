@@ -15,6 +15,11 @@ allprojects {
     implementation("org.junit.jupiter:junit-jupiter:5.7.1")
   }
   tasks {
+    withType<JavaCompile> {
+      options.encoding = "UTF-8"
+      sourceCompatibility = "11"
+      targetCompatibility = "11"
+    }
     jar {
       archiveFileName.set("${rootProject.name}-${project.name}.jar")
     }
