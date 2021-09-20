@@ -450,4 +450,45 @@ public class TutorTest_H2 {
       fail("Der Konstruktor von MyFunctionWithFilterMapAndFold1 konnte nicht mit einem Traits Objekt aufgerufen werden");
     }
   }
+
+  @Test
+  public void distanceCorrect() {
+    var classUT = TestUtils.getPersonClass("PersonFunctionCreator");
+    var fctClass = TestUtils.getPersonClass("MyFunctionWithAdjacent");
+    var traits = TestUtils.getPersonClass("Traits");
+    var personFilterClass = TestUtils.getPersonClass("PersonFilter");
+    var personToIntFunctionClass = TestUtils.getPersonClass("PersonToIntFunction");
+    var personClass = TestUtils.getPersonClass("Person");
+    try {
+      var createCombinedFct = classUT.getDeclaredMethod("distance");
+      var fct = createCombinedFct.invoke(null);
+      assertEquals(fctClass, fct.getClass());
+      var field = fct.getClass().getSuperclass().getDeclaredField("traits");
+      field.setAccessible(true);
+      var traitsObj = field.get(fct);
+      assertEquals(0, TestUtils.get(traits, traitsObj, "init"), "distance: Init sollte 357 sein");
+      var personFilter = TestUtils.get(traits, traitsObj, "pred");
+      var intOperator = (IntBinaryOperator) TestUtils.get(traits, traitsObj, "op");
+      var combine = (IntBinaryOperator) TestUtils.get(traits, traitsObj, "combine");
+      var personToIntFunction = TestUtils.get(traits, traitsObj, "fct");
+      assertEquals(4, intOperator.applyAsInt(1, 3), "Op sollte  a + b  entsprechen");
+      assertEquals(-4, intOperator.applyAsInt(3, -7), "Op sollte  a + b  entsprechen");
+      var person1 = TestUtils.makePerson("cake", "vincent", "baker street", 2, 234);
+      var person2 = TestUtils.makePerson("muffin", "alex", "baker street", 56, 64289);
+      assertTrue((Boolean) personFilterClass.getDeclaredMethod("test", personClass).invoke(personFilter, person1),
+        "Pred sollte  p -> p.postalCode != 64289  entsprechen");
+      assertFalse((Boolean) personFilterClass.getDeclaredMethod("test", personClass).invoke(personFilter, person2),
+        "Pred sollte  p -> p.postalCode != 64289  entsprechen");
+      assertEquals(234, personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person1),
+        "Fct sollte  p -> p.postalCode  entsprechen");
+      assertEquals(64289, personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person2),
+        "Fct sollte  p -> p.postalCode  entsprechen");
+      assertEquals(20, combine.applyAsInt(20, 40),
+        "Combine sollte  (a, b) -> Math.abs(a - b)  entsprechen");
+      assertEquals(45, combine.applyAsInt(34, -11),
+        "Combine sollte  (a, b) -> Math.abs(a - b)  entsprechen");
+    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
+      fail("Beim Testen von combinedFct konnte eine notwendige Operation nicht durchgeführt werden", e);
+    }
+  }
 }

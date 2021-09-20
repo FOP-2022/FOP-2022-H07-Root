@@ -254,7 +254,7 @@ public class H07_RubricProvider implements RubricProvider {
             .shortDescription("Die distance-Methode von PersonFunctionCreator ist korrekt")
             .grader(Grader.testAwareBuilder()
                     .requirePass(JUnitTestRef.ofMethod(() ->
-                            TutorTest_H2.class.getMethod("distanceCorrekt")))
+                            TutorTest_H2.class.getMethod("distanceCorrect")))
                     .pointsPassedMax()
                     .pointsFailedMin()
                     .build()
