@@ -1,7 +1,7 @@
 package H07;
 
 import H07.person.Person;
-import org.jagrkt.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.*;

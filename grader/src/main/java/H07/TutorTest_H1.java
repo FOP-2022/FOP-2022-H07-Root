@@ -1,16 +1,26 @@
 package H07;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.lang.reflect.*;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.DoublePredicate;
+import java.util.function.Predicate;
 
-import org.jagrkt.api.rubric.TestForSubmission;
+import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestForSubmission("H07")
 public class TutorTest_H1 {
+
   @Test
   public void epsilonEnvironmentPredExists() {
     Class<?> epsilonEnvironmentPred = null;
@@ -22,7 +32,7 @@ public class TutorTest_H1 {
     }
 
     assertTrue(
-      Modifier.isPublic(epsilonEnvironmentPred.getModifiers()),"EpsilonEnvironmentPred soll öffentlich sein");
+      Modifier.isPublic(epsilonEnvironmentPred.getModifiers()), "EpsilonEnvironmentPred soll öffentlich sein");
     assertFalse(epsilonEnvironmentPred.isInterface(), "EpsilonEnvironmentPred soll eine Klasse sein");
     assertTrue(DoublePredicate.class.isAssignableFrom(epsilonEnvironmentPred));
   }
@@ -32,7 +42,7 @@ public class TutorTest_H1 {
     Class<?> epsilonEnvironmentPred = null;
     try {
       epsilonEnvironmentPred = Class
-              .forName("H07.predicate.EpsilonEnvironmentPred");
+        .forName("H07.predicate.EpsilonEnvironmentPred");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse EpsilonEnvironmentPred existiert nicht");
     }
@@ -131,13 +141,13 @@ public class TutorTest_H1 {
 
     try {
       DoublePredicate[][] predicates = new DoublePredicate[][]{
-              new DoublePredicate[]{ d -> true }
+        new DoublePredicate[]{d -> true}
       };
       var pred = create.invoke(null, (Object) predicates);
       assertTrue(((DoublePredicate) pred).test(2.0));
       assertTrue(((DoublePredicate) pred).test(-2.3));
       predicates = new DoublePredicate[][]{
-              new DoublePredicate[]{ d -> d < 3 }
+        new DoublePredicate[]{d -> d < 3}
       };
       pred = create.invoke(null, (Object) predicates);
       assertTrue(((DoublePredicate) pred).test(2.0));
@@ -166,9 +176,9 @@ public class TutorTest_H1 {
 
     try {
       DoublePredicate[][] predicates = new DoublePredicate[][]{
-              new DoublePredicate[]{ d -> true },
-              new DoublePredicate[]{ d -> false, d -> true, d -> false },
-              new DoublePredicate[]{ d -> d > 0, d ->  d < -3 }
+        new DoublePredicate[]{d -> true},
+        new DoublePredicate[]{d -> false, d -> true, d -> false},
+        new DoublePredicate[]{d -> d > 0, d -> d < -3}
       };
       var pred = create.invoke(null, (Object) predicates);
       assertTrue(((DoublePredicate) pred).test(2.0));
@@ -187,10 +197,10 @@ public class TutorTest_H1 {
         return false;
       };
       DoublePredicate[][] timeout = new DoublePredicate[][]{
-              new DoublePredicate[]{ d -> true, waiting },
-              new DoublePredicate[]{ waiting, d -> true },
-              new DoublePredicate[]{ d -> true, waiting },
-              new DoublePredicate[]{ waiting, d -> true },
+        new DoublePredicate[]{d -> true, waiting},
+        new DoublePredicate[]{waiting, d -> true},
+        new DoublePredicate[]{d -> true, waiting},
+        new DoublePredicate[]{waiting, d -> true},
       };
       pred = create.invoke(null, (Object) timeout);
       Object finalPred = pred;
@@ -246,6 +256,25 @@ public class TutorTest_H1 {
     } catch (IllegalAccessException | InvocationTargetException e) {
       fail("Die Methode von complexDoublePredicate schlug fehl.", e);
     }
+  }
+
+  @Test
+  @ExtendWith(TestCycleResolver.class)
+  public void lambdaInCorrectForm(TestCycle testCycle) {
+    var cdpc = testCycle.getSubmission().getSourceFile("H07/predicate/ComplexDoublePredicateCreator.java");
+    assert cdpc != null;
+    var content = cdpc.getContent();
+    var statements = Arrays.asList(content.split(";"));
+    assertTrue(content.contains("getDefaultComplexPredicate"), "Methode getDefaultComplexPredicate konnte nicht im Quelltext gefunden werden.");
+    assertTrue(content.contains("new DoublePredicate[3][]"), "Array, der in getDefaultComplexPredicate erstellt " +
+      "und als Argument an makeComplexPredicate weitergeben wird, konnte nicht gefunden werden.");
+    assertTrue(statements.stream().anyMatch(st -> st.contains("new EpsilonEnvironmentPred") && st.contains("=")
+      && !st.contains("(double")), "Keine Zuweisung mit new EpsilonEnvironmentPred für ersten Teilarray in getDefaultComplexPredicate");
+    assertTrue(statements.stream().anyMatch(st -> st.contains("->") && st.contains("=")
+      && !st.contains("(double") && !st.contains("return")), "Keine Zuweisung in Lambda-Kurzform für zweiten Teilarray in getDefaultComplexPredicate");
+    assertTrue(statements.stream().anyMatch(st -> st.contains("->") && st.contains("=")
+      && st.contains("(double") && st.contains("{") && st.contains("}")), "Keine Zuweisung mit Lambda-Standardform " +
+      "für dritten Teilarray in getDefaultComplexPredicate");
   }
 
   @Test
