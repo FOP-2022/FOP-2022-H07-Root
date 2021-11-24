@@ -7,6 +7,13 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
     super(traits);
   }
 
+  /**
+   * Filters people according to a filter
+   *
+   * @param people an array of {@link Person}
+   * @param filter a {@link PersonFilter} to filter matching
+   * @return all {@link Person} p of people, where filter.test(p)
+   */
   public static Person[] filter(Person[] people, PersonFilter filter) {
     Person[] filtered = new Person[people.length];
     int n = 0;
@@ -16,10 +23,17 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
       }
     }
     Person[] result = new Person[n];
-    if (n >= 0) System.arraycopy(filtered, 0, result, 0, n);
+    System.arraycopy(filtered, 0, result, 0, n);
     return result;
   }
 
+  /**
+   * Maps all people to a corresponding int
+   *
+   * @param people an array of {@link Person}
+   * @param map    a {@link PersonToIntFunction} that realises the mapping to int
+   * @return for each {@link Person} p the result contains map.apply(p) in the same order
+   */
   public static int[] map(Person[] people, PersonToIntFunction map) {
     int[] toInts = new int[people.length];
     for (int i = 0; i < people.length; i++) {
@@ -28,6 +42,14 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
     return toInts;
   }
 
+  /**
+   * Folds many int values into one, from left to right
+   *
+   * @param ints     the int values
+   * @param init     the start value
+   * @param operator how ints are combined
+   * @return returns the result of the foldl for [int1, ..., intN] as operator(... operator(init, int1) ..., intN)
+   */
   public static int foldl(int[] ints, int init, IntBinaryOperator operator) {
     int acc = init;
     for (var val : ints) {
@@ -36,6 +58,9 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
     return acc;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int apply(Person[] people) {
     var filtered = filter(people, traits.getPred());

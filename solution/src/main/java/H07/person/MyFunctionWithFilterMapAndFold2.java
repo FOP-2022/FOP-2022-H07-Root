@@ -5,6 +5,9 @@ public class MyFunctionWithFilterMapAndFold2 extends FunctionWithFilterMapAndFol
     super(traits);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int apply(Person[] people) {
     int acc = traits.getInit();

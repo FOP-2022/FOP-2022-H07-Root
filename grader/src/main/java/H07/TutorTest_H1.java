@@ -1,20 +1,18 @@
 package H07;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.lang.reflect.*;
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.DoublePredicate;
-import java.util.function.Predicate;
-
-import org.sourcegrade.jagr.api.testing.TestCycle;
-import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
-import org.junit.jupiter.api.Test;
+import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.function.DoublePredicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -107,7 +105,7 @@ public class TutorTest_H1 {
   }
 
   @Test
-  public void makeComplexPredicateExists() {
+  public void buildComplexPredicateExists() {
     Class<?> creator = null;
     try {
       creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
@@ -115,11 +113,10 @@ public class TutorTest_H1 {
       fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
     }
 
-    Method apply = null;
     try {
-      apply = creator.getDeclaredMethod("makeComplexPredicate", DoublePredicate[][].class);
+      creator.getDeclaredMethod("buildComplexPredicate", DoublePredicate[][].class);
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode makeComplexPredicate(DoublePredicate[][])");
+      fail("ComplexDoublePredicateCreator hat keine Methode buildComplexPredicate(DoublePredicate[][])");
     }
   }
 
@@ -134,9 +131,9 @@ public class TutorTest_H1 {
 
     Method create = null;
     try {
-      create = creator.getDeclaredMethod("makeComplexPredicate", DoublePredicate[][].class);
+      create = creator.getDeclaredMethod("buildComplexPredicate", DoublePredicate[][].class);
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode makeComplexPredicate(DoublePredicate[][])");
+      fail("ComplexDoublePredicateCreator hat keine Methode buildComplexPredicate(DoublePredicate[][])");
     }
 
     try {
@@ -169,9 +166,9 @@ public class TutorTest_H1 {
 
     Method create = null;
     try {
-      create = creator.getDeclaredMethod("makeComplexPredicate", DoublePredicate[][].class);
+      create = creator.getDeclaredMethod("buildComplexPredicate", DoublePredicate[][].class);
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode makeComplexPredicate(DoublePredicate[][])");
+      fail("ComplexDoublePredicateCreator hat keine Methode buildComplexPredicate(DoublePredicate[][])");
     }
 
     try {
@@ -209,7 +206,7 @@ public class TutorTest_H1 {
       }, "Die Verknüpfungsreihenfolge entspricht nicht den Anforderungen. Erkennbar an zu langer Ausführungszeit.");
       assertTrue(((DoublePredicate) pred).test(2.0));
     } catch (IllegalAccessException | InvocationTargetException e) {
-      fail("Die Methode von complexDoublePredicate schlug fehl.", e);
+      fail("Die Methode create von ComplexDoublePredicateCreator schlug fehl.", e);
     }
   }
 
@@ -222,9 +219,8 @@ public class TutorTest_H1 {
       fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
     }
 
-    Method create = null;
     try {
-      create = creator.getDeclaredMethod("getDefaultComplexPredicate");
+      creator.getDeclaredMethod("getDefaultComplexPredicate");
     } catch (NoSuchMethodException e) {
       fail("ComplexDoublePredicateCreator hat keine Methode getDefaultComplexPredicate()");
     }
@@ -267,7 +263,7 @@ public class TutorTest_H1 {
     var statements = Arrays.asList(content.split(";"));
     assertTrue(content.contains("getDefaultComplexPredicate"), "Methode getDefaultComplexPredicate konnte nicht im Quelltext gefunden werden.");
     assertTrue(content.contains("new DoublePredicate[3][]"), "Array, der in getDefaultComplexPredicate erstellt " +
-      "und als Argument an makeComplexPredicate weitergeben wird, konnte nicht gefunden werden.");
+      "und als Argument an buildComplexPredicate weitergeben wird, konnte nicht gefunden werden.");
     assertTrue(statements.stream().anyMatch(st -> st.contains("new EpsilonEnvironmentPred") && st.contains("=")
       && !st.contains("(double")), "Keine Zuweisung mit new EpsilonEnvironmentPred für ersten Teilarray in getDefaultComplexPredicate");
     assertTrue(statements.stream().anyMatch(st -> st.contains("->") && st.contains("=")
@@ -303,6 +299,20 @@ public class TutorTest_H1 {
       assertFalse(pred.test(1.5 + 1.01 / 50000));
       assertFalse(pred.test(0.4999999999));
       assertFalse(pred.test(93.5));
+      assertTrue(pred.test(92.5)); // Only log^3 > x
+      assertFalse(pred.test(125.5)); // Only sin > cos
+      assertTrue(pred.test(126.5)); // Only sin > cos
+      assertTrue(pred.test(127.5)); // Only sin > cos
+      assertTrue(pred.test(128.5)); // Only sin > cos
+      assertTrue(pred.test(129.5)); // Only sin > cos
+      assertFalse(pred.test(130.5)); // Only sin > cos
+      assertTrue(pred.test(994.5)); // Only sin > cos
+      assertTrue(pred.test(995.5)); // Only sin > cos
+      assertTrue(pred.test(996.5)); // Only sin > cos
+      assertTrue(pred.test(996.5 - 3.99 / 50000)); // Close in 2 row
+      assertFalse(pred.test(996.5 - 4.01 / 50000)); // Close in 2 row
+      assertTrue(pred.test(996.5 + 3.99 / 50000)); // Close in 2 row
+      assertFalse(pred.test(996.5 + 4.01 / 50000)); // Close in 2 row
       assertFalse(pred.test(-93.5));
     } catch (IllegalAccessException | InvocationTargetException e) {
       fail("Die Methode von complexDoublePredicate schlug fehl.", e);

@@ -6,6 +6,9 @@ public class MyFunctionWithBucketing extends FunctionWithBucketing {
     super(eq);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Person[][] apply(Person[] people) {
     var collect = new Person[people.length][];
@@ -18,7 +21,7 @@ public class MyFunctionWithBucketing extends FunctionWithBucketing {
       collect[collectIdx++] = matched;
     }
     var result = new Person[collectIdx][];
-    if (collectIdx >= 0) System.arraycopy(collect, 0, result, 0, collectIdx);
+    System.arraycopy(collect, 0, result, 0, collectIdx);
     return result;
   }
 }

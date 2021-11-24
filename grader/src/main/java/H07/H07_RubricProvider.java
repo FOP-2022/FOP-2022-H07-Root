@@ -3,13 +3,11 @@ package H07;
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 
-import javax.security.auth.login.CredentialException;
-
 @RubricForSubmission("H07")
 public class H07_RubricProvider implements RubricProvider {
   /*---------------------------------- H1 ----------------------------------*/
   public static final Criterion epsEnvPredExists = Criterion.builder()
-    .shortDescription("Das Interface EpsilonEnvironmentPred existiert und implementiert DoublePredicate")
+    .shortDescription("Die Klasse EpsilonEnvironmentPred existiert und implementiert DoublePredicate")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("epsilonEnvironmentPredExists")))
@@ -19,7 +17,7 @@ public class H07_RubricProvider implements RubricProvider {
     ).build();
 
   public static final Criterion epsEnvPredIsCorrect = Criterion.builder()
-    .shortDescription("Das Interface EpsilonEnvironmentPred ist korrekt")
+    .shortDescription("Das Klasse EpsilonEnvironmentPred ist korrekt")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("epsilonEnvironmentPredIsCorrect")))
@@ -29,7 +27,7 @@ public class H07_RubricProvider implements RubricProvider {
     ).build();
 
   public static final Criterion complexDoublePredicateCreatorExist = Criterion.builder()
-    .shortDescription("Die Klasse ComplexDoublePredicateCreatorExist existiert")
+    .shortDescription("Die Klasse ComplexDoublePredicateCreator existiert")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("complexDoublePredicateCreatorExist")))
@@ -38,18 +36,18 @@ public class H07_RubricProvider implements RubricProvider {
       .build()
     ).build();
 
-  public static final Criterion makeComplexPredicateExists = Criterion.builder()
-    .shortDescription("Die Klasse ComplexDoublePredicateExist hat die Methode makeComplexPredicate")
+  public static final Criterion buildComplexPredicateExists = Criterion.builder()
+    .shortDescription("Die Klasse ComplexDoublePredicateCreator hat die Methode buildComplexPredicate")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
-        TutorTest_H1.class.getMethod("makeComplexPredicateExists")))
+        TutorTest_H1.class.getMethod("buildComplexPredicateExists")))
       .pointsPassedMax()
       .pointsFailedMin()
       .build()
     ).build();
 
-  public static final Criterion makeComplexPredicateWorksSimple = Criterion.builder()
-    .shortDescription("Die Methode makeComplexPredicate funktioniert für ein ein-elementiges [[Predicate]]-Array")
+  public static final Criterion buildComplexPredicateWorksSimple = Criterion.builder()
+    .shortDescription("Die Methode buildComplexPredicate funktioniert für ein ein-elementiges [[Predicate]]-Array")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("complexDoublePredicateWorksSimple")))
@@ -58,8 +56,8 @@ public class H07_RubricProvider implements RubricProvider {
       .build()
     ).build();
 
-  public static final Criterion makeComplexPredicateWorksAll = Criterion.builder()
-    .shortDescription("Die Methode makeComplexPredicate ist korrekt")
+  public static final Criterion buildComplexPredicateWorksAll = Criterion.builder()
+    .shortDescription("Die Methode buildComplexPredicate ist korrekt")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("complexDoublePredicateWorksAll")))
@@ -83,8 +81,6 @@ public class H07_RubricProvider implements RubricProvider {
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("getDefaultComplexPredicateWorksMostOfTheTime")))
-      .requirePass(JUnitTestRef.ofMethod(() ->
-        TutorTest_H1.class.getMethod("lambdaInCorrectForm", TestCycle.class)))
       .pointsPassedMax()
       .pointsFailedMin()
       .build()
@@ -102,7 +98,7 @@ public class H07_RubricProvider implements RubricProvider {
       .build()
     ).build();
 
-  /*---------------------------------- H2 ----------------------------------*/
+  /*---------------------------------- H2 -----------------------------------*/
   public static final Criterion personExist = Criterion.builder()
     .shortDescription("Die Klasse Person existiert")
     .grader(Grader.testAwareBuilder()
@@ -265,9 +261,9 @@ public class H07_RubricProvider implements RubricProvider {
     .shortDescription("H1.2 - ComplexDoublePredicateCreator")
     .addChildCriteria(
       complexDoublePredicateCreatorExist,
-      makeComplexPredicateExists,
-      makeComplexPredicateWorksSimple,
-      makeComplexPredicateWorksAll)
+      buildComplexPredicateExists,
+      buildComplexPredicateWorksSimple,
+      buildComplexPredicateWorksAll)
     .build();
 
   public static final Criterion H1_3 = Criterion.builder()
@@ -325,10 +321,15 @@ public class H07_RubricProvider implements RubricProvider {
     )
     .build();
 
+  public static final Criterion JAVADOC = Criterion.builder()
+    .shortDescription("Alle selbstgeschriebenen Methoden wurden korrekt mit JavaDoc dokumentiert")
+    .maxPoints(0)
+    .minPoints(-4)
+    .build();
 
   public static final Rubric RUBRIC = Rubric.builder()
     .title("H07")
-    .addChildCriteria(H1, H2)
+    .addChildCriteria(H1, H2, JAVADOC)
     .build();
 
   @Override
