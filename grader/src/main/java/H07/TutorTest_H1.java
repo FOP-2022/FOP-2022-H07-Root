@@ -244,11 +244,12 @@ public class TutorTest_H1 {
 
     try {
       var pred = (DoublePredicate) create.invoke(null);
-      assertFalse(pred.test(Math.PI));
-      assertTrue(pred.test(2.5));
-      assertTrue(pred.test(1.5));
-      assertFalse(pred.test(0.0));
-      assertFalse(pred.test(93.5));
+      assertFalse(pred.test(Math.PI), "Math.PI sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug an 3.5]");
+      assertTrue(pred.test(2.5), "2.5 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 2.5]");
+      assertTrue(pred.test(1.5), "1.5 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 1.5]");
+      assertFalse(pred.test(0.0), "0.0 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug an 0.5]");
+      assertTrue(pred.test(0.5), "0.5 sollte getDefaultComplexPredicate erfüllen [sin > cos && < 10*e, ~= 0.5]");
+      assertFalse(pred.test(93.5), "93.5 sollte getDefaultComplexPredicate nicht erfüllen da keines der Predicates von Predicate-Teil 3 zutrifft");
     } catch (IllegalAccessException | InvocationTargetException e) {
       fail("Die Methode von complexDoublePredicate schlug fehl.", e);
     }
@@ -258,7 +259,7 @@ public class TutorTest_H1 {
   @ExtendWith(TestCycleResolver.class)
   public void lambdaInCorrectForm(TestCycle testCycle) {
     var cdpc = testCycle.getSubmission().getSourceFile("H07/predicate/ComplexDoublePredicateCreator.java");
-    assert cdpc != null;
+    assertNotNull(cdpc, "Der Sourcecode von H07/predicate/ComplexDoublePredicateCreator.java konnte nicht geladen werden. Falls dies unerwartet ist, bitte beim Ansprechpartner melden.");
     var content = cdpc.getContent();
     var statements = Arrays.asList(content.split(";"));
     assertTrue(content.contains("getDefaultComplexPredicate"), "Methode getDefaultComplexPredicate konnte nicht im Quelltext gefunden werden.");
@@ -291,29 +292,28 @@ public class TutorTest_H1 {
 
     try {
       var pred = (DoublePredicate) create.invoke(null);
-      assertFalse(pred.test(Math.PI));
-      assertTrue(pred.test(2.49999));
-      assertTrue(pred.test(1.5 - 0.99 / 50000));
-      assertTrue(pred.test(1.5 + 0.99 / 50000));
-      assertFalse(pred.test(1.5 - 1.01 / 50000));
-      assertFalse(pred.test(1.5 + 1.01 / 50000));
-      assertFalse(pred.test(0.4999999999));
-      assertFalse(pred.test(93.5));
-      assertTrue(pred.test(92.5)); // Only log^3 > x
-      assertFalse(pred.test(125.5)); // Only sin > cos
-      assertTrue(pred.test(126.5)); // Only sin > cos
-      assertTrue(pred.test(127.5)); // Only sin > cos
-      assertTrue(pred.test(128.5)); // Only sin > cos
-      assertTrue(pred.test(129.5)); // Only sin > cos
-      assertFalse(pred.test(130.5)); // Only sin > cos
-      assertTrue(pred.test(994.5)); // Only sin > cos
-      assertTrue(pred.test(995.5)); // Only sin > cos
-      assertTrue(pred.test(996.5)); // Only sin > cos
-      assertTrue(pred.test(996.5 - 3.99 / 50000)); // Close in 2 row
-      assertFalse(pred.test(996.5 - 4.01 / 50000)); // Close in 2 row
-      assertTrue(pred.test(996.5 + 3.99 / 50000)); // Close in 2 row
-      assertFalse(pred.test(996.5 + 4.01 / 50000)); // Close in 2 row
-      assertFalse(pred.test(-93.5));
+      assertFalse(pred.test(Math.PI), "Math.PI sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug an 3.5]");
+      assertTrue(pred.test(2.49999), "2.49999 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 2.5]");
+      assertTrue(pred.test(1.5 - 0.99 / 50000), "1.5 - 0.99 / 50000 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 1.5]");
+      assertTrue(pred.test(1.5 + 0.99 / 50000), "1.5 - 0.99 / 50000 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 1.5]");
+      assertFalse(pred.test(1.5 - 1.01 / 50000), "1.5 - 1.01 / 50000 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug 1.5 für Predicate-Teil 1]");
+      assertFalse(pred.test(1.5 + 1.01 / 50000), "1.5 + 1.01 / 50000 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug 1.5 für Predicate-Teil 1]");
+      assertFalse(pred.test(0.4999999999), "0.4999999999 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug an 0.5 für Predicate-Teil 1]");
+      assertTrue(pred.test(0.5), "0.5 sollte getDefaultComplexPredicate erfüllen [sin > cos && < 10*e, ~= 0.5]");
+      assertFalse(pred.test(93.5), "93.5 sollte getDefaultComplexPredicate nicht erfüllen da keines der Predicates von Predicate-Teil 3 zutrifft");
+      assertTrue(pred.test(92.5), "92.5 / 50000 sollte getDefaultComplexPredicate erfüllen [x < log(x)^3, ~= 92.5]");
+      assertFalse(pred.test(125.5), "125.5 sollte getDefaultComplexPredicate nicht erfüllen da keines der Predicates von Predicate-Teil 3 zutrifft");
+      assertTrue(pred.test(126.5), "126.5 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 126.5]");
+      assertTrue(pred.test(127.5), "127.5 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 127.5]");
+      assertTrue(pred.test(128.5), "128.5 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 128.5]");
+      assertTrue(pred.test(129.5), "129.5 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 129.5]");
+      assertFalse(pred.test(130.5), "130.5 sollte getDefaultComplexPredicate nicht erfüllen da keines der Predicates von Predicate-Teil 3 zutrifft");
+      assertTrue(pred.test(994.5), "994.5 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 994.5]");
+      assertTrue(pred.test(996.5 - 3.99 / 50000), "996.5 - 3.99 / 50000 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 996.5]");
+      assertFalse(pred.test(996.5 - 4.01 / 50000), "996.5 - 4.01 / 50000 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug 996.5 für Predicate-Teil 2]");
+      assertTrue(pred.test(996.5 + 3.99 / 50000), "996.5 + 3.99 / 50000 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 996.5]");
+      assertFalse(pred.test(996.5 + 4.01 / 50000), "996.5 + 4.01 / 50000 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug 996.5 für Predicate-Teil 2]");
+      assertFalse(pred.test(-93.5), "-93.5 sollte getDefaultComplexPredicate nicht erfüllen da u.A. keines der Predicates von Predicate-Teil 3 zutrifft");
     } catch (IllegalAccessException | InvocationTargetException e) {
       fail("Die Methode von complexDoublePredicate schlug fehl.", e);
     }
