@@ -59,27 +59,27 @@ public class TutorTest_H1 {
     }
     try {
       var uut = epsConstructor.newInstance(5, 0.1);
-      assertEquals(true, test.invoke(uut, 5.1));
-      assertEquals(true, test.invoke(uut, 5.04));
-      assertEquals(false, test.invoke(uut, 5.100000001));
-      assertEquals(false, test.invoke(uut, 4.89999));
-      assertEquals(true, test.invoke(uut, 4.9));
-      assertEquals(true, test.invoke(uut, 5));
+      assertEquals(true, test.invoke(uut, 5.1), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=5, epsilon=0.1).test(5.1)");
+      assertEquals(true, test.invoke(uut, 5.04), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=5, epsilon=0.1).test(5.04)");
+      assertEquals(false, test.invoke(uut, 5.100000001), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=5, epsilon=0.1).test(5.100000001)");
+      assertEquals(false, test.invoke(uut, 4.89999), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=5, epsilon=0.1).test(4.89999)");
+      assertEquals(true, test.invoke(uut, 4.9), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=5, epsilon=0.1).test(4.9)");
+      assertEquals(true, test.invoke(uut, 5), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=5, epsilon=0.1).test(5)");
 
       uut = epsConstructor.newInstance(-2.5, 1.5);
-      assertEquals(true, test.invoke(uut, -1.00000001));
-      assertEquals(true, test.invoke(uut, -3));
-      assertEquals(false, test.invoke(uut, -0.9));
-      assertEquals(false, test.invoke(uut, 5));
-      assertEquals(true, test.invoke(uut, -3.999));
-      assertEquals(true, test.invoke(uut, -2.4));
+      assertEquals(true, test.invoke(uut, -1.00000001), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=-2.5, epsilon=1.5).test(-1.00000001)");
+      assertEquals(true, test.invoke(uut, -3), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=-2.5, epsilon=1.5).test(-3)");
+      assertEquals(false, test.invoke(uut, -0.9), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=-2.5, epsilon=1.5).test(-0.9)");
+      assertEquals(false, test.invoke(uut, 5), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=-2.5, epsilon=1.5).test(5)");
+      assertEquals(true, test.invoke(uut, -3.999), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=-2.5, epsilon=1.5).test(-3.999)");
+      assertEquals(true, test.invoke(uut, -2.4), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=-2.5, epsilon=1.5).test(-2.4)");
 
       uut = epsConstructor.newInstance(0.0, -1);
-      assertEquals(true, test.invoke(uut, 0.0));
-      assertEquals(false, test.invoke(uut, -3));
-      assertEquals(false, test.invoke(uut, -0.9));
-      assertEquals(false, test.invoke(uut, 5));
-      assertEquals(false, test.invoke(uut, 0.01));
+      assertEquals(true, test.invoke(uut, 0.0), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=0.0, epsilon=-1).test(0.0) (Negatives Epsilon führt zu epsilon=0.0)");
+      assertEquals(false, test.invoke(uut, -0.01), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=0.0, epsilon=-1).test(-0.01) (Negatives Epsilon führt zu epsilon=0.0)");
+      assertEquals(false, test.invoke(uut, 1.1), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=0.0, epsilon=-1).test(1.1) (Negatives Epsilon führt zu epsilon=0.0)");
+      assertEquals(false, test.invoke(uut, -2), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=0.0, epsilon=-1).test(-2) (Negatives Epsilon führt zu epsilon=0.0)");
+      assertEquals(false, test.invoke(uut, 0.01), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=0.0, epsilon=-1).test(0.01) (Negatives Epsilon führt zu epsilon=0.0)");
     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
       fail("Der Konstruktor von EpsilonEnvironmentPred schlug fehl.");
     }
