@@ -1,8 +1,8 @@
 package H07;
 
 import H07.person.Person;
-import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.junit.jupiter.api.Test;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -25,9 +25,11 @@ public class TutorTest_H2 {
     assertFalse(Modifier.isInterface(person.getModifiers()),
             "Die Klasse Person soll kein Interface sein");
 
-    Constructor<?> constructor = null;
     Person p = null;
     for (Constructor<?> cons : person.getDeclaredConstructors()) {
+      if (cons.getParameterCount() != 5) {
+        continue;
+      }
       assertEquals(5, cons.getParameterCount());
       try {
         p = (Person) cons.newInstance("l", "f", "s", 1, 2);
@@ -35,6 +37,7 @@ public class TutorTest_H2 {
         fail("Der Konstruktor konnte nicht mit den Parametern [\"l\", \"f\", \"s\", 1, 2] aufgerufen werden");
       }
     }
+    assertNotNull(p, "Der Konstruktor konnte nicht mit den Parametern [\"l\", \"f\", \"s\", 1, 2] aufgerufen werden");
     assertEquals("l", TestUtils.personGet(person, p, "lastName"));
     assertEquals("f", TestUtils.personGet(person, p, "firstName"));
     assertEquals("s", TestUtils.personGet(person, p, "street"));
@@ -111,7 +114,7 @@ public class TutorTest_H2 {
             "sollten alle in Traits vorhanden sein.");
     TestUtils.forEach(expectedFields, expectedFieldClasses, (f, c) -> fieldAndGetterCorrect(traits, f, c));
 
-    var consOpt = Arrays.stream(traits.getConstructors()).filter(c -> c.getParameterCount() >= 4).findAny();
+    var consOpt = Arrays.stream(traits.getConstructors()).filter(c -> c.getParameterCount() >= 5).findAny();
     if (consOpt.isEmpty()) {
       fail("Traits hat keinen geeigneten Konstruktor");
     }
@@ -138,12 +141,12 @@ public class TutorTest_H2 {
   // Only for non-boolean getters
   private void fieldAndGetterCorrect(Class<?> clazz, String field, Class<?> expectedFieldClass) {
     var f = TestUtils.getField(clazz, field);
-    assertTrue(Modifier.isFinal(f.getModifiers()));
-    assertTrue(Modifier.isPrivate(f.getModifiers()));
-    assertEquals(expectedFieldClass, f.getType());
+    assertTrue(Modifier.isFinal(f.getModifiers()), "Field " + field + " sollte final sein.");
+    assertTrue(Modifier.isPrivate(f.getModifiers()), "Field " + field + " sollte private sein.");
+    assertEquals(expectedFieldClass, f.getType(), "Field " + field + " sollte den Typ " + expectedFieldClass.getSimpleName() + " haben.");
     var getter = TestUtils.getMethod(clazz, "get" + field.substring(0, 1).toUpperCase() + field.substring(1));
-    assertTrue(Modifier.isPublic(getter.getModifiers()));
-    assertEquals(expectedFieldClass, getter.getReturnType());
+    assertTrue(Modifier.isPublic(getter.getModifiers()), "Getter von " + field + " sollte public sein.");
+    assertEquals(expectedFieldClass, getter.getReturnType(), "Getter von " + field + " Objekt von Typ " + expectedFieldClass.getSimpleName() + " zurückgeben.");
   }
 
   @Test
@@ -200,7 +203,7 @@ public class TutorTest_H2 {
     var erroneous = determineWrongFilterMapFold();
 
     assertTrue(erroneous.size() <= 1, "Bei MyFunctionWithFilterMapAndFold1" +
-            " schlugen folgende Funktionen fehl: " + erroneous.toString());
+      " schlugen folgende Funktionen fehl: " + erroneous);
   }
 
   private List<String> determineWrongFilterMapFold() {
@@ -337,13 +340,13 @@ public class TutorTest_H2 {
       assertEquals(fct.getClass(), TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold1"));
       var field = fct.getClass().getSuperclass().getDeclaredField("traits");
       field.setAccessible(true);
-      assertSame(traitsObj, field.get(fct));
+      assertSame(traitsObj, field.get(fct), "Traits vom MyFunctionWithFilterMapAndFold1-Objekt ist nicht das Gleiche wie das im Konstruktor übergebene.");
       setter.invoke(null, false);
       var fct2 = create.invoke(null, traitsObj);
       assertEquals(fct2.getClass(), TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold2"));
       var field2 = fct2.getClass().getSuperclass().getDeclaredField("traits");
       field2.setAccessible(true);
-      assertSame(traitsObj, field2.get(fct2));
+      assertSame(traitsObj, field2.get(fct2), "Traits vom MyFunctionWithFilterMapAndFold2-Objekt ist nicht das Gleiche wie das im Konstruktor übergebene.");
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
       fail("Beim Erstellen einer Funktion mit createFunctionWithFilterMapAndFoldCreator konnte nicht erfolgreich verwendet werden.", e);
     }
