@@ -51,13 +51,4 @@ public class PersonFunctionCreator {
     Traits traits = new Traits(Integer::sum, 0, p -> p.postalCode, p -> p.postalCode != 64289, (a, b) -> Math.abs(a - b));
     return new MyFunctionWithAdjacent(traits);
   }
-
-  /**
-   * Returns the function that can bucket by address
-   *
-   * @return the function as a {@link MyFunctionWithBucketing}
-   */
-  public static FunctionWithBucketing bucketingByAddress() {
-    return new MyFunctionWithBucketing(((p1, p2) -> p1.postalCode == p2.postalCode && p1.houseNumber == p2.houseNumber && p1.street.equals(p2.street)));
-  }
 }
