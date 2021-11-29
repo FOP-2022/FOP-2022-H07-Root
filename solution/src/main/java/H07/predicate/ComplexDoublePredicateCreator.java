@@ -69,16 +69,23 @@ public class ComplexDoublePredicateCreator {
       predicates[1][LARGE_ARRAY_SIZE - backwardsI] = d -> Math.abs(1000 - backwardsI + 0.5 - d) < backwardsI / 50000.0;
     }
     predicates[2] = new DoublePredicate[]{
-      (double d) -> {
-        return d >= -20 * Math.PI && d <= 10 * Math.E;
-      },
-      (double d) -> {
-        return Math.sin(d) > Math.cos(d);
-      },
-      (double d) -> {
-        return d < Math.pow(Math.log(d), 3);
-      },
+      d -> d >= -20 * Math.PI && d <= 10 * Math.E,
+      d -> Math.sin(d) > Math.cos(d),
+      d -> d < Math.pow(Math.log(d), 3)
     };
     return buildComplexPredicate(predicates);
   }
+
+  public static DoublePredicate getChecksumPredicate(int decimalPlaces, int divisor) {
+    return (double value) -> {
+      var asString = "" + value;
+      var checksum = 0;
+      var chars = asString.split("\\.")[1].toCharArray();
+      for (var i = 0; i < decimalPlaces; i++) {
+        checksum += chars[i] - 48;
+      }
+      return checksum % divisor == 0;
+    };
+  }
+
 }

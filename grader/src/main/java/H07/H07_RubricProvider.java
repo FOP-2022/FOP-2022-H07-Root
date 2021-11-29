@@ -16,6 +16,17 @@ public class H07_RubricProvider implements RubricProvider {
       .build()
     ).build();
 
+  public static final Criterion epsEnvPredMostlyCorrect = Criterion.builder()
+    .shortDescription("test(double) von Klasse EpsilonEnvironmentPred ist meist korrekt")
+    .grader(Grader.testAwareBuilder()
+      .requirePass(JUnitTestRef.ofMethod(() ->
+        TutorTest_H1.class.getMethod("epsilonEnvironmentPredMostlyCorrect")))
+      .pointsPassedMax()
+      .pointsFailedMin()
+      .build()
+    ).build();
+
+
   public static final Criterion epsEnvPredIsCorrect = Criterion.builder()
     .shortDescription("Das Klasse EpsilonEnvironmentPred ist korrekt")
     .grader(Grader.testAwareBuilder()
@@ -58,6 +69,7 @@ public class H07_RubricProvider implements RubricProvider {
 
   public static final Criterion buildComplexPredicateWorksAll = Criterion.builder()
     .shortDescription("Die Methode buildComplexPredicate ist korrekt")
+    .maxPoints(2)
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("complexDoublePredicateWorksAll")))
@@ -88,9 +100,44 @@ public class H07_RubricProvider implements RubricProvider {
 
   public static final Criterion getDefaultComplexPredicateWorks = Criterion.builder()
     .shortDescription("Die Methode getDefaultComplexPredicate ist korrekt")
+    .maxPoints(2)
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("getDefaultComplexPredicateWorks")))
+      .requirePass(JUnitTestRef.ofMethod(() ->
+        TutorTest_H1.class.getMethod("lambdaInCorrectForm", TestCycle.class)))
+      .pointsPassedMax()
+      .pointsFailedMin()
+      .build()
+    ).build();
+
+
+  public static final Criterion getChecksumPredicateExists = Criterion.builder()
+    .shortDescription("Die Methode getChecksumPredicate existiert")
+    .grader(Grader.testAwareBuilder()
+      .requirePass(JUnitTestRef.ofMethod(() ->
+        TutorTest_H1.class.getMethod("checksumPredExists")))
+      .pointsPassedMax()
+      .pointsFailedMin()
+      .build()
+    ).build();
+
+  public static final Criterion getChecksumPredicateWorksMostOfTheTime = Criterion.builder()
+    .shortDescription("Die Methode getChecksumPredicate funktioniert mit vielen Eingaben")
+    .grader(Grader.testAwareBuilder()
+      .requirePass(JUnitTestRef.ofMethod(() ->
+        TutorTest_H1.class.getMethod("checksumPredWorksMostly")))
+      .pointsPassedMax()
+      .pointsFailedMin()
+      .build()
+    ).build();
+
+  public static final Criterion getChecksumPredicateWorks = Criterion.builder()
+    .shortDescription("Die Methode getChecksumPredicate ist korrekt")
+    .maxPoints(1)
+    .grader(Grader.testAwareBuilder()
+      .requirePass(JUnitTestRef.ofMethod(() ->
+        TutorTest_H1.class.getMethod("checksumPredIsFullyCorrect")))
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("lambdaInCorrectForm", TestCycle.class)))
       .pointsPassedMax()
@@ -171,6 +218,7 @@ public class H07_RubricProvider implements RubricProvider {
 
   public static final Criterion myFunctionWithFilterMapAndFold1All = Criterion.builder()
     .shortDescription("Die Klasse myFunctionWithFilterMapAndFold1 ist korrekt")
+    .maxPoints(2)
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H2.class.getMethod("myFunctionWithFilterMapAndFold1All")))
@@ -181,6 +229,7 @@ public class H07_RubricProvider implements RubricProvider {
 
   public static final Criterion myFunctionWithFilterMapAndFoldCorrect2 = Criterion.builder()
     .shortDescription("Die Klasse FunctionWithFilterMapAndFold2Correct ist korrekt")
+    .maxPoints(2)
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H2.class.getMethod("myFunctionWithFilterMapAndFoldCorrect2")))
@@ -231,6 +280,7 @@ public class H07_RubricProvider implements RubricProvider {
 
   public static final Criterion myFunctionWithAdjacentCorrect = Criterion.builder()
     .shortDescription("Die Klasse MyFunctionWithAdjacent ist korrekt")
+    .maxPoints(2)
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H2.class.getMethod("myFunctionWithAdjacentCorrect")))
@@ -241,6 +291,7 @@ public class H07_RubricProvider implements RubricProvider {
 
   public static final Criterion distanceFctCorrect = Criterion.builder()
     .shortDescription("Die distance-Methode von PersonFunctionCreator ist korrekt")
+    .maxPoints(2)
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H2.class.getMethod("distanceCorrect")))
@@ -254,6 +305,7 @@ public class H07_RubricProvider implements RubricProvider {
     .shortDescription("H1.1 - EpsilonEnvironmentPred")
     .addChildCriteria(
       epsEnvPredExists,
+      epsEnvPredMostlyCorrect,
       epsEnvPredIsCorrect)
     .build();
 
@@ -274,12 +326,22 @@ public class H07_RubricProvider implements RubricProvider {
       getDefaultComplexPredicateWorks)
     .build();
 
+  public static final Criterion H1_4 = Criterion.builder()
+    .shortDescription("H1.4 - getChecksumPredicate")
+    .addChildCriteria(
+      getChecksumPredicateExists,
+      getChecksumPredicateWorksMostOfTheTime,
+      getChecksumPredicateWorks)
+    .build();
+
   public static final Criterion H1 = Criterion.builder()
     .shortDescription("H1 - Predicates")
     .addChildCriteria(
       H1_1,
       H1_2,
-      H1_3)
+      H1_3,
+      H1_4
+    )
     .build();
 
   public static final Criterion H2_1 = Criterion.builder()

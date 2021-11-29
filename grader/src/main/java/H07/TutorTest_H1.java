@@ -36,6 +36,44 @@ public class TutorTest_H1 {
   }
 
   @Test
+  public void epsilonEnvironmentPredMostlyCorrect() {
+    Class<?> epsilonEnvironmentPred = null;
+    try {
+      epsilonEnvironmentPred = Class
+        .forName("H07.predicate.EpsilonEnvironmentPred");
+    } catch (ClassNotFoundException e) {
+      fail("Die Klasse EpsilonEnvironmentPred existiert nicht");
+    }
+    Constructor<?> epsConstructor = null;
+    try {
+      epsConstructor = epsilonEnvironmentPred.getDeclaredConstructor(double.class, double.class);
+    } catch (NoSuchMethodException e) {
+      fail("Die Klasse EpsilonEnvironmentPred hat nicht den geforderten Konstruktor");
+    }
+
+    Method test = null;
+    try {
+      test = epsilonEnvironmentPred.getMethod("test", double.class);
+    } catch (NoSuchMethodException e) {
+      fail("Die Methode test von EpsilonEnvironmentPred konnte nicht gefunden werden");
+    }
+    try {
+      var uut = epsConstructor.newInstance(5, 0.1);
+      assertEquals(true, test.invoke(uut, 5.04), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=5, epsilon=0.1).test(5.04)");
+      assertEquals(false, test.invoke(uut, 4.89999), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=5, epsilon=0.1).test(4.89999)");
+      assertEquals(true, test.invoke(uut, 5), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=5, epsilon=0.1).test(5)");
+
+      uut = epsConstructor.newInstance(-2.5, 1.5);
+      assertEquals(true, test.invoke(uut, -3), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=-2.5, epsilon=1.5).test(-3)");
+      assertEquals(false, test.invoke(uut, -0.9), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=-2.5, epsilon=1.5).test(-0.9)");
+      assertEquals(false, test.invoke(uut, 5), "Unerwartetes Ergebnis für new EpsilonEnvironmentPredicate(x=-2.5, epsilon=1.5).test(5)");
+
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+      fail("Der Konstruktor von EpsilonEnvironmentPred schlug fehl.");
+    }
+  }
+
+  @Test
   public void epsilonEnvironmentPredIsCorrect() {
     Class<?> epsilonEnvironmentPred = null;
     try {
@@ -316,6 +354,93 @@ public class TutorTest_H1 {
       assertFalse(pred.test(-93.5), "-93.5 sollte getDefaultComplexPredicate nicht erfüllen da u.A. keines der Predicates von Predicate-Teil 3 zutrifft");
     } catch (IllegalAccessException | InvocationTargetException e) {
       fail("Die Methode von complexDoublePredicate schlug fehl.", e);
+    }
+  }
+
+  @Test
+  public void checksumPredExists() {
+    Class<?> creator = null;
+    try {
+      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+    } catch (ClassNotFoundException e) {
+      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+    }
+
+    Method checksum = null;
+    try {
+      checksum = creator.getDeclaredMethod("getChecksumPredicate", int.class, int.class);
+    } catch (NoSuchMethodException e) {
+      fail("ComplexDoublePredicateCreator hat keine Methode getChecksumPredicate(int, int)");
+    }
+  }
+
+  @Test
+  public void checksumPredWorksMostly() {
+    Class<?> creator = null;
+    try {
+      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+    } catch (ClassNotFoundException e) {
+      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+    }
+
+    Method checksum = null;
+    try {
+      checksum = creator.getDeclaredMethod("getChecksumPredicate", int.class, int.class);
+    } catch (NoSuchMethodException e) {
+      fail("ComplexDoublePredicateCreator hat keine Methode getChecksumPredicate(int, int)");
+    }
+
+    try {
+      var pred = (DoublePredicate) checksum.invoke(null, 3, 2);
+      assertTrue(pred.test(1 / 8.0), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1 / 8.0)");
+      assertTrue(pred.test(2 / 9.0), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(2 / 9.0)");
+      assertFalse(pred.test(5.111), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(5.111)");
+      assertTrue(pred.test(1.233), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.233)");
+      assertFalse(pred.test(1.234567), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.234567)");
+
+      pred = (DoublePredicate) checksum.invoke(null, 5, 7);
+      assertFalse(pred.test(0.14331412), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.14331412)");
+      assertFalse(pred.test(123123.14331414), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(123123.14331412)");
+      assertTrue(pred.test(923157.96785), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(923157.96785)");
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      fail("ComplexDoublePredicateCreator.getChecksumPredicate bzw. die test-Methode vom Ergebnis schlug fehl. ", e);
+    }
+  }
+
+  @Test
+  public void checksumPredIsFullyCorrect() {
+    Class<?> creator = null;
+    try {
+      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+    } catch (ClassNotFoundException e) {
+      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+    }
+
+    Method checksum = null;
+    try {
+      checksum = creator.getDeclaredMethod("getChecksumPredicate", int.class, int.class);
+    } catch (NoSuchMethodException e) {
+      fail("ComplexDoublePredicateCreator hat keine Methode getChecksumPredicate(int, int)");
+    }
+
+    try {
+      var pred = (DoublePredicate) checksum.invoke(null, 3, 2);
+      assertFalse(pred.test(4.9), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(4.9)");
+      assertTrue(pred.test(0.24), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(0.24)");
+      assertTrue(pred.test(1 / 8.0), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1 / 8.0)");
+      assertTrue(pred.test(2 / 9.0), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(2 / 9.0)");
+      assertFalse(pred.test(5.111), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(5.111)");
+      assertTrue(pred.test(1.233), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.233)");
+      assertFalse(pred.test(1.234567), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.234567)");
+
+      pred = (DoublePredicate) checksum.invoke(null, 5, 7);
+      assertTrue(pred.test(0.7), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.7)");
+      assertTrue(pred.test(2), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.7)");
+      assertFalse(pred.test(0.14331412), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.14331412)");
+      assertFalse(pred.test(123123.14331414), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(123123.14331412)");
+      assertTrue(pred.test(923157.96785), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(923157.96785)");
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      fail("ComplexDoublePredicateCreator.getChecksumPredicate bzw. die test-Methode vom Ergebnis schlug fehl. ", e);
     }
   }
 }
