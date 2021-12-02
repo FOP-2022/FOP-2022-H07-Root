@@ -300,14 +300,14 @@ public class TutorTest_H2 {
 
   @Test
   public void functionCreatorExistsWithActive() {
-    var classUT = TestUtils.getPersonClass("PersonFunctionCreator");
+    var classUT = TestUtils.getPersonClass("PersonFunctionFactory");
     try {
       var field = classUT.getDeclaredField("firstImplementationActive");
       assertTrue(Modifier.isPrivate(field.getModifiers()), "firstImplementationActive sollte private sein");
       assertTrue(Modifier.isStatic(field.getModifiers()), "firstImplementationActive sollte static sein");
       assertFalse(Modifier.isFinal(field.getModifiers()), "firstImplementationActive sollte nicht final sein");
     } catch (NoSuchFieldException e) {
-      fail("Attribut firstImplementationActive von PersonFunctionCreator konnte nicht gefunden werden.");
+      fail("Attribut firstImplementationActive von PersonFunctionFactory konnte nicht gefunden werden.");
     }
     try {
       var getter = classUT.getDeclaredMethod("isFirstImplementationActive");
@@ -329,7 +329,7 @@ public class TutorTest_H2 {
 
   @Test
   public void createFunctionWithFilterMapAndFoldCreatorCorrect() {
-    var classUT = TestUtils.getPersonClass("PersonFunctionCreator");
+    var classUT = TestUtils.getPersonClass("PersonFunctionFactory");
     var traits = TestUtils.getPersonClass("Traits");
     try {
       var setter = classUT.getDeclaredMethod("setFirstImplementationActive", boolean.class);
@@ -354,19 +354,19 @@ public class TutorTest_H2 {
 
 
   @Test
-  public void combinedFctCorrect() {
-    var classUT = TestUtils.getPersonClass("PersonFunctionCreator");
+  public void createStrangeFunctionCorrect() {
+    var classUT = TestUtils.getPersonClass("PersonFunctionFactory");
     var traits = TestUtils.getPersonClass("Traits");
     var personFilterClass = TestUtils.getPersonClass("PersonFilter");
     var personToIntFunctionClass = TestUtils.getPersonClass("PersonToIntFunction");
     var personClass = TestUtils.getPersonClass("Person");
     try {
-      var createCombinedFct = classUT.getDeclaredMethod("combinedFct", String.class);
-      var fct = createCombinedFct.invoke(null, "cake");
+      var createCreateStrangeFunction = classUT.getDeclaredMethod("createStrangeFunction", String.class);
+      var fct = createCreateStrangeFunction.invoke(null, "cake");
       var field = fct.getClass().getSuperclass().getDeclaredField("traits");
       field.setAccessible(true);
       var traitsObj = field.get(fct);
-      assertEquals(357, TestUtils.get(traits, traitsObj, "init"), "combinedFcts Init sollte 357 sein");
+      assertEquals(357, TestUtils.get(traits, traitsObj, "init"), "createStrangeFunctions Init sollte 357 sein");
       var personFilter = TestUtils.get(traits, traitsObj, "pred");
       var intOperator = (IntBinaryOperator) TestUtils.get(traits, traitsObj, "op");
       var personToIntFunction = TestUtils.get(traits, traitsObj, "fct");
@@ -383,7 +383,7 @@ public class TutorTest_H2 {
       assertEquals(120, personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person2),
               "Fct sollte  p -> p.postalCode  entsprechen");
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
-      fail("Beim Testen von combinedFct konnte eine notwendige Operation nicht durchgeführt werden", e);
+      fail("Beim Testen von createStrangeFunction konnte eine notwendige Operation nicht durchgeführt werden", e);
     }
   }
 
@@ -456,15 +456,15 @@ public class TutorTest_H2 {
 
   @Test
   public void distanceCorrect() {
-    var classUT = TestUtils.getPersonClass("PersonFunctionCreator");
+    var classUT = TestUtils.getPersonClass("PersonFunctionFactory");
     var fctClass = TestUtils.getPersonClass("MyFunctionWithAdjacent");
     var traits = TestUtils.getPersonClass("Traits");
     var personFilterClass = TestUtils.getPersonClass("PersonFilter");
     var personToIntFunctionClass = TestUtils.getPersonClass("PersonToIntFunction");
     var personClass = TestUtils.getPersonClass("Person");
     try {
-      var createCombinedFct = classUT.getDeclaredMethod("distance");
-      var fct = createCombinedFct.invoke(null);
+      var createCreateStrangeFunction = classUT.getDeclaredMethod("distance");
+      var fct = createCreateStrangeFunction.invoke(null);
       assertEquals(fctClass, fct.getClass());
       var field = fct.getClass().getSuperclass().getDeclaredField("traits");
       field.setAccessible(true);
@@ -491,7 +491,7 @@ public class TutorTest_H2 {
       assertEquals(45, combine.applyAsInt(34, -11),
         "Combine sollte  (a, b) -> Math.abs(a - b)  entsprechen");
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
-      fail("Beim Testen von combinedFct konnte eine notwendige Operation nicht durchgeführt werden", e);
+      fail("Beim Testen von createStrangeFunction konnte eine notwendige Operation nicht durchgeführt werden", e);
     }
   }
 }

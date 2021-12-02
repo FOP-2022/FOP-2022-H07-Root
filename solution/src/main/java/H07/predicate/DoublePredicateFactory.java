@@ -2,7 +2,7 @@ package H07.predicate;
 
 import java.util.function.DoublePredicate;
 
-public class ComplexDoublePredicateCreator {
+public class DoublePredicateFactory {
 
   /**
    * Combines the predicates by OR over each subarray and by AND over the resulting one.
@@ -11,17 +11,21 @@ public class ComplexDoublePredicateCreator {
    * @return a predicate containing the aforementioned Conjunction over Disjunctions
    */
   public static DoublePredicate buildComplexPredicate(DoublePredicate[][] predicates) {
-    return buildComplexPredicate(buildDisjunction(predicates[0], true), predicates, 1);
+    DoublePredicate[] disjunctions = new DoublePredicate[predicates.length];
+    for (int i = 0; i < predicates.length; i++) {
+      disjunctions[i] = buildDisjunction(predicates[i], i % 2 == 0);
+    }
+    return buildConjunction(disjunctions);
   }
 
   /**
-   * Combines the predicates with OR
+   * Combines the predicates with a logical OR
    *
-   * @param predicates the predicate
+   * @param predicates the predicates to combine
    * @param forward    if false combines them in opposite iteration direction
    * @return the Disjunction over predicates
    */
-  private static DoublePredicate buildDisjunction(DoublePredicate[] predicates, boolean forward) {
+  public static DoublePredicate buildDisjunction(DoublePredicate[] predicates, boolean forward) {
     DoublePredicate result;
     if (forward) {
       result = predicates[0];
@@ -37,17 +41,28 @@ public class ComplexDoublePredicateCreator {
     return result;
   }
 
+
   /**
-   * @param acc        collect the already build disjunctions with AND, i.e. into a conjunction
-   * @param predicates the predicates
+   * Combines the predicates with a logical AND
+   *
+   * @param predicates the predicates to combine
+   * @return the Conjunction over predicates
+   */
+  public static DoublePredicate buildConjunction(DoublePredicate[] predicates) {
+    return buildConjunction(predicates[0], predicates, 1);
+  }
+
+  /**
+   * @param acc        collects the already build conjunction
+   * @param predicates the predicates to combine
    * @param i          recursive counter
    * @return one predicate after the last index was processed
    */
-  private static DoublePredicate buildComplexPredicate(DoublePredicate acc, DoublePredicate[][] predicates, int i) {
+  public static DoublePredicate buildConjunction(DoublePredicate acc, DoublePredicate[] predicates, int i) {
     if (i >= predicates.length) {
       return acc;
     }
-    return buildComplexPredicate(acc.and(buildDisjunction(predicates[i], i % 2 == 0)), predicates, i + 1);
+    return buildConjunction(acc.and(predicates[i]), predicates, i + 1);
   }
 
   /**
@@ -61,7 +76,7 @@ public class ComplexDoublePredicateCreator {
   public static DoublePredicate getDefaultComplexPredicate() {
     DoublePredicate[][] predicates = new DoublePredicate[3][];
     final var LARGE_ARRAY_SIZE = 1000;
-    predicates[0] = new DoublePredicate[LARGE_ARRAY_SIZE];
+    predicates[0] = new EpsilonEnvironmentPred[LARGE_ARRAY_SIZE];
     predicates[1] = new DoublePredicate[LARGE_ARRAY_SIZE];
     for (int i = 0; i < LARGE_ARRAY_SIZE; i++) {
       predicates[0][i] = new EpsilonEnvironmentPred(i + 0.5, i / 50000.0);
@@ -71,7 +86,7 @@ public class ComplexDoublePredicateCreator {
     predicates[2] = new DoublePredicate[]{
       d -> d >= -20 * Math.PI && d <= 10 * Math.E,
       d -> Math.sin(d) > Math.cos(d),
-      d -> d < Math.pow(Math.log(d), 3)
+      d -> d < Math.pow(Math.log(d), 3),
     };
     return buildComplexPredicate(predicates);
   }
@@ -81,7 +96,7 @@ public class ComplexDoublePredicateCreator {
       var asString = "" + value;
       var checksum = 0;
       var chars = asString.split("\\.")[1].toCharArray();
-      for (var i = 0; i < decimalPlaces; i++) {
+      for (var i = 0; i < decimalPlaces && i < chars.length; i++) {
         checksum += chars[i] - 48;
       }
       return checksum % divisor == 0;

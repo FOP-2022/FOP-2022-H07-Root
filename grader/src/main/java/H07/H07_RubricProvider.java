@@ -37,18 +37,18 @@ public class H07_RubricProvider implements RubricProvider {
       .build()
     ).build();
 
-  public static final Criterion complexDoublePredicateCreatorExist = Criterion.builder()
-    .shortDescription("Die Klasse ComplexDoublePredicateCreator existiert")
+  public static final Criterion doublePredicateFactoryExist = Criterion.builder()
+    .shortDescription("Die Klasse DoublePredicateFactory existiert")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
-        TutorTest_H1.class.getMethod("complexDoublePredicateCreatorExist")))
+        TutorTest_H1.class.getMethod("doublePredicateFactoryExist")))
       .pointsPassedMax()
       .pointsFailedMin()
       .build()
     ).build();
 
   public static final Criterion buildComplexPredicateExists = Criterion.builder()
-    .shortDescription("Die Klasse ComplexDoublePredicateCreator hat die Methode buildComplexPredicate")
+    .shortDescription("Die Klasse DoublePredicateFactory hat die Methode buildComplexPredicate")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("buildComplexPredicateExists")))
@@ -239,7 +239,7 @@ public class H07_RubricProvider implements RubricProvider {
     ).build();
 
   public static final Criterion functionCreatorExistsWithActive = Criterion.builder()
-    .shortDescription("Die Klasse PersonFunctionCreator existiert und firstImplementationActive ist dort vorhanden")
+    .shortDescription("Die Klasse PersonFunctionFactory existiert und firstImplementationActive ist dort vorhanden")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H2.class.getMethod("functionCreatorExistsWithActive")))
@@ -258,11 +258,11 @@ public class H07_RubricProvider implements RubricProvider {
       .build()
     ).build();
 
-  public static final Criterion combinedFctCorrect = Criterion.builder()
-    .shortDescription("Die Funktion combinedFct ist korrekt implementiert.")
+  public static final Criterion createStrangeFunctionCorrect = Criterion.builder()
+    .shortDescription("Die Funktion createStrangeFunction ist korrekt implementiert.")
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
-        TutorTest_H2.class.getMethod("combinedFctCorrect")))
+        TutorTest_H2.class.getMethod("createStrangeFunctionCorrect")))
       .pointsPassedMax()
       .pointsFailedMin()
       .build()
@@ -290,7 +290,7 @@ public class H07_RubricProvider implements RubricProvider {
     ).build();
 
   public static final Criterion distanceFctCorrect = Criterion.builder()
-    .shortDescription("Die distance-Methode von PersonFunctionCreator ist korrekt")
+    .shortDescription("Die distance-Methode von PersonFunctionFactory ist korrekt")
     .maxPoints(2)
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
@@ -310,9 +310,9 @@ public class H07_RubricProvider implements RubricProvider {
     .build();
 
   public static final Criterion H1_2 = Criterion.builder()
-    .shortDescription("H1.2 - ComplexDoublePredicateCreator")
+    .shortDescription("H1.2 - DoublePredicateFactory")
     .addChildCriteria(
-      complexDoublePredicateCreatorExist,
+      doublePredicateFactoryExist,
       buildComplexPredicateExists,
       buildComplexPredicateWorksSimple,
       buildComplexPredicateWorksAll)
@@ -359,11 +359,11 @@ public class H07_RubricProvider implements RubricProvider {
     .build();
 
   public static final Criterion H2_2 = Criterion.builder()
-    .shortDescription("H2.4-H2.5 - PersonFunctionCreator")
+    .shortDescription("H2.4-H2.5 - PersonFunctionFactory")
     .addChildCriteria(
       functionCreatorExistsWithActive,
       createFunctionWithFilterMapAndFoldCorrect,
-      combinedFctCorrect)
+      createStrangeFunctionCorrect)
     .build();
 
   public static final Criterion H2_3 = Criterion.builder()

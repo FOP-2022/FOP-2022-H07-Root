@@ -1,6 +1,6 @@
 package H07.person;
 
-public class PersonFunctionCreator {
+public class PersonFunctionFactory {
   private static boolean firstImplementationActive;
 
   /**
@@ -18,11 +18,11 @@ public class PersonFunctionCreator {
    * @param firstImplementationActive the firstImplementationActive to set
    */
   public static void setFirstImplementationActive(boolean firstImplementationActive) {
-    PersonFunctionCreator.firstImplementationActive = firstImplementationActive;
+    PersonFunctionFactory.firstImplementationActive = firstImplementationActive;
   }
 
   /**
-   * Constructs either {@link MyFunctionWithFilterMapAndFold1} or {@link MyFunctionWithFilterMapAndFold2} according to {{@link PersonFunctionCreator#isFirstImplementationActive()}}
+   * Constructs either {@link MyFunctionWithFilterMapAndFold1} or {@link MyFunctionWithFilterMapAndFold2} according to {{@link PersonFunctionFactory#isFirstImplementationActive()}}
    *
    * @param traits the traits to configure the {@link FunctionWithFilterMapAndFold} with
    * @return the function
@@ -32,14 +32,14 @@ public class PersonFunctionCreator {
   }
 
   /**
-   * Constructs the particular function as defined in the exercise
+   * Constructs the strange function as defined in the exercise
    *
    * @param name the name to compare to
    * @return the function
    */
-  public static FunctionWithFilterMapAndFold combinedFct(String name) {
-    Traits traits = new Traits((a, b) -> a + b + 1, 357, p -> p.postalCode, p -> p.lastName.equals(name), null);
-    return PersonFunctionCreator.createFunctionWithFilterMapAndFold(traits);
+  public static FunctionWithFilterMapAndFold createStrangeFunction(String name) {
+    Traits traits = new Traits((a, b) -> a + b + 1, 357, Person::getPostalCode, p -> p.getLastName().equals(name), null);
+    return PersonFunctionFactory.createFunctionWithFilterMapAndFold(traits);
   }
 
   /**
@@ -48,7 +48,7 @@ public class PersonFunctionCreator {
    * @return the function as a {@link MyFunctionWithAdjacent}
    */
   public static FunctionWithFilterMapAndFold distance() {
-    Traits traits = new Traits(Integer::sum, 0, p -> p.postalCode, p -> p.postalCode != 64289, (a, b) -> Math.abs(a - b));
+    Traits traits = new Traits(Integer::sum, 0, Person::getPostalCode, p -> p.getPostalCode() != 64289, (a, b) -> Math.abs(a - b));
     return new MyFunctionWithAdjacent(traits);
   }
 }

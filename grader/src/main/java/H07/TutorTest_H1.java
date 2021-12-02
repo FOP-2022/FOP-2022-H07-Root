@@ -124,37 +124,37 @@ public class TutorTest_H1 {
   }
 
   @Test
-  public void complexDoublePredicateCreatorExist() {
+  public void doublePredicateFactoryExist() {
     Class<?> creator = null;
     try {
       creator = Class
-        .forName("H07.predicate.ComplexDoublePredicateCreator");
+        .forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     assertTrue(
       Modifier.isPublic(creator.getModifiers()),
-      "ComplexDoublePredicateCreator soll öffentlich sein");
+      "DoublePredicateFactory soll öffentlich sein");
     assertFalse(creator.isInterface(),
-      "ComplexDoublePredicateCreator soll eine Klasse sein");
+      "DoublePredicateFactory soll eine Klasse sein");
     assertFalse(Modifier.isAbstract(creator.getModifiers()),
-      "ComplexDoublePredicateCreator soll nicht abstrakt sein");
+      "DoublePredicateFactory soll nicht abstrakt sein");
   }
 
   @Test
   public void buildComplexPredicateExists() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+      creator = Class.forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     try {
       creator.getDeclaredMethod("buildComplexPredicate", DoublePredicate[][].class);
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode buildComplexPredicate(DoublePredicate[][])");
+      fail("DoublePredicateFactory hat keine Methode buildComplexPredicate(DoublePredicate[][])");
     }
   }
 
@@ -162,16 +162,16 @@ public class TutorTest_H1 {
   public void complexDoublePredicateWorksSimple() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+      creator = Class.forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     Method create = null;
     try {
       create = creator.getDeclaredMethod("buildComplexPredicate", DoublePredicate[][].class);
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode buildComplexPredicate(DoublePredicate[][])");
+      fail("DoublePredicateFactory hat keine Methode buildComplexPredicate(DoublePredicate[][])");
     }
 
     try {
@@ -197,16 +197,16 @@ public class TutorTest_H1 {
   public void complexDoublePredicateWorksAll() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+      creator = Class.forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     Method create = null;
     try {
       create = creator.getDeclaredMethod("buildComplexPredicate", DoublePredicate[][].class);
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode buildComplexPredicate(DoublePredicate[][])");
+      fail("DoublePredicateFactory hat keine Methode buildComplexPredicate(DoublePredicate[][])");
     }
 
     try {
@@ -244,7 +244,7 @@ public class TutorTest_H1 {
       }, "Die Verknüpfungsreihenfolge entspricht nicht den Anforderungen. Erkennbar an zu langer Ausführungszeit.");
       assertTrue(((DoublePredicate) pred).test(2.0));
     } catch (IllegalAccessException | InvocationTargetException e) {
-      fail("Die Methode create von ComplexDoublePredicateCreator schlug fehl.", e);
+      fail("Die Methode create von DoublePredicateFactory schlug fehl.", e);
     }
   }
 
@@ -252,15 +252,15 @@ public class TutorTest_H1 {
   public void getDefaultComplexPredicateExists() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+      creator = Class.forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     try {
       creator.getDeclaredMethod("getDefaultComplexPredicate");
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode getDefaultComplexPredicate()");
+      fail("DoublePredicateFactory hat keine Methode getDefaultComplexPredicate()");
     }
   }
 
@@ -268,16 +268,16 @@ public class TutorTest_H1 {
   public void getDefaultComplexPredicateWorksMostOfTheTime() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+      creator = Class.forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     Method create = null;
     try {
       create = creator.getDeclaredMethod("getDefaultComplexPredicate");
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode getDefaultComplexPredicate()");
+      fail("DoublePredicateFactory hat keine Methode getDefaultComplexPredicate()");
     }
 
     try {
@@ -296,8 +296,8 @@ public class TutorTest_H1 {
   @Test
   @ExtendWith(TestCycleResolver.class)
   public void lambdaInCorrectForm(TestCycle testCycle) {
-    var cdpc = testCycle.getSubmission().getSourceFile("H07/predicate/ComplexDoublePredicateCreator.java");
-    assertNotNull(cdpc, "Der Sourcecode von H07/predicate/ComplexDoublePredicateCreator.java konnte nicht geladen werden. Falls dies unerwartet ist, bitte beim Ansprechpartner melden.");
+    var cdpc = testCycle.getSubmission().getSourceFile("H07/predicate/DoublePredicateFactory.java");
+    assertNotNull(cdpc, "Der Sourcecode von H07/predicate/DoublePredicateFactory.java konnte nicht geladen werden. Falls dies unerwartet ist, bitte beim Ansprechpartner melden.");
     var content = cdpc.getContent();
     var statements = Arrays.asList(content.split(";"));
     assertTrue(content.contains("getDefaultComplexPredicate"), "Methode getDefaultComplexPredicate konnte nicht im Quelltext gefunden werden.");
@@ -316,16 +316,16 @@ public class TutorTest_H1 {
   public void getDefaultComplexPredicateWorks() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+      creator = Class.forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     Method create = null;
     try {
       create = creator.getDeclaredMethod("getDefaultComplexPredicate");
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode getDefaultComplexPredicate()");
+      fail("DoublePredicateFactory hat keine Methode getDefaultComplexPredicate()");
     }
 
     try {
@@ -361,16 +361,16 @@ public class TutorTest_H1 {
   public void checksumPredExists() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+      creator = Class.forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     Method checksum = null;
     try {
       checksum = creator.getDeclaredMethod("getChecksumPredicate", int.class, int.class);
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode getChecksumPredicate(int, int)");
+      fail("DoublePredicateFactory hat keine Methode getChecksumPredicate(int, int)");
     }
   }
 
@@ -378,32 +378,32 @@ public class TutorTest_H1 {
   public void checksumPredWorksMostly() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+      creator = Class.forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     Method checksum = null;
     try {
       checksum = creator.getDeclaredMethod("getChecksumPredicate", int.class, int.class);
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode getChecksumPredicate(int, int)");
+      fail("DoublePredicateFactory hat keine Methode getChecksumPredicate(int, int)");
     }
 
     try {
       var pred = (DoublePredicate) checksum.invoke(null, 3, 2);
-      assertTrue(pred.test(1 / 8.0), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1 / 8.0)");
-      assertTrue(pred.test(2 / 9.0), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(2 / 9.0)");
-      assertFalse(pred.test(5.111), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(5.111)");
-      assertTrue(pred.test(1.233), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.233)");
-      assertFalse(pred.test(1.234567), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.234567)");
+      assertTrue(pred.test(1 / 8.0), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1 / 8.0)");
+      assertTrue(pred.test(2 / 9.0), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(2 / 9.0)");
+      assertFalse(pred.test(5.111), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(5.111)");
+      assertTrue(pred.test(1.233), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.233)");
+      assertFalse(pred.test(1.234567), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.234567)");
 
       pred = (DoublePredicate) checksum.invoke(null, 5, 7);
-      assertFalse(pred.test(0.14331412), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.14331412)");
-      assertFalse(pred.test(123123.14331414), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(123123.14331412)");
-      assertTrue(pred.test(923157.96785), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(923157.96785)");
+      assertFalse(pred.test(0.14331412), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.14331412)");
+      assertFalse(pred.test(123123.14331414), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=5, divisor=7).test(123123.14331412)");
+      assertTrue(pred.test(923157.96785), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=5, divisor=7).test(923157.96785)");
     } catch (IllegalAccessException | InvocationTargetException e) {
-      fail("ComplexDoublePredicateCreator.getChecksumPredicate bzw. die test-Methode vom Ergebnis schlug fehl. ", e);
+      fail("DoublePredicateFactory.getChecksumPredicate bzw. die test-Methode vom Ergebnis schlug fehl. ", e);
     }
   }
 
@@ -411,36 +411,36 @@ public class TutorTest_H1 {
   public void checksumPredIsFullyCorrect() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.ComplexDoublePredicateCreator");
+      creator = Class.forName("H07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
-      fail("Die Klasse ComplexDoublePredicateCreator existiert nicht");
+      fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
 
     Method checksum = null;
     try {
       checksum = creator.getDeclaredMethod("getChecksumPredicate", int.class, int.class);
     } catch (NoSuchMethodException e) {
-      fail("ComplexDoublePredicateCreator hat keine Methode getChecksumPredicate(int, int)");
+      fail("DoublePredicateFactory hat keine Methode getChecksumPredicate(int, int)");
     }
 
     try {
       var pred = (DoublePredicate) checksum.invoke(null, 3, 2);
-      assertFalse(pred.test(4.9), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(4.9)");
-      assertTrue(pred.test(0.24), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(0.24)");
-      assertTrue(pred.test(1 / 8.0), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1 / 8.0)");
-      assertTrue(pred.test(2 / 9.0), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(2 / 9.0)");
-      assertFalse(pred.test(5.111), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(5.111)");
-      assertTrue(pred.test(1.233), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.233)");
-      assertFalse(pred.test(1.234567), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.234567)");
+      assertFalse(pred.test(4.9), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(4.9)");
+      assertTrue(pred.test(0.24), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(0.24)");
+      assertTrue(pred.test(1 / 8.0), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1 / 8.0)");
+      assertTrue(pred.test(2 / 9.0), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(2 / 9.0)");
+      assertFalse(pred.test(5.111), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(5.111)");
+      assertTrue(pred.test(1.233), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.233)");
+      assertFalse(pred.test(1.234567), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1.234567)");
 
       pred = (DoublePredicate) checksum.invoke(null, 5, 7);
-      assertTrue(pred.test(0.7), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.7)");
-      assertTrue(pred.test(2), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.7)");
-      assertFalse(pred.test(0.14331412), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.14331412)");
-      assertFalse(pred.test(123123.14331414), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(123123.14331412)");
-      assertTrue(pred.test(923157.96785), "Unerwartetes Ergebnis für ComplexDoublePredicateCreator.getChecksumPredicate(decimalPlaces=5, divisor=7).test(923157.96785)");
+      assertTrue(pred.test(0.7), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.7)");
+      assertTrue(pred.test(2), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.7)");
+      assertFalse(pred.test(0.14331412), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=5, divisor=7).test(0.14331412)");
+      assertFalse(pred.test(123123.14331414), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=5, divisor=7).test(123123.14331412)");
+      assertTrue(pred.test(923157.96785), "Unerwartetes Ergebnis für DoublePredicateFactory.getChecksumPredicate(decimalPlaces=5, divisor=7).test(923157.96785)");
     } catch (IllegalAccessException | InvocationTargetException e) {
-      fail("ComplexDoublePredicateCreator.getChecksumPredicate bzw. die test-Methode vom Ergebnis schlug fehl. ", e);
+      fail("DoublePredicateFactory.getChecksumPredicate bzw. die test-Methode vom Ergebnis schlug fehl. ", e);
     }
   }
 }

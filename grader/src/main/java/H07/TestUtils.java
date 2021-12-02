@@ -200,29 +200,29 @@ public class TestUtils {
                     "test",
                     MethodType.methodType(TestUtils.getPersonClass("PersonFilter")),
                     methodType,
-                    lookup.findStatic(TestUtils.class, "postalCodeEquals1",
-                            MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"))),
-                    methodType);
-            return (PersonFilter) site.getTarget().invokeExact();
+                    lookup.findStatic(TestUtils.class, "postalCodeEquals3",
+                      MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"))),
+              methodType);
+          return (PersonFilter) site.getTarget().invokeExact();
 
         } catch (Throwable t) {
-            t.printStackTrace();
-            throw new RuntimeException();
+          t.printStackTrace();
+          throw new RuntimeException();
         }
     }
 
-    private static boolean postalCodeEquals1(Person p) {
-        return p.postalCode == 3;
-    }
+  private static boolean postalCodeEquals3(Person p) {
+    return p.getPostalCode() == 3;
+  }
 
-    public static Object personToIntFunction() {
-        try {
-            final MethodHandles.Lookup lookup = MethodHandles.lookup();
-            MethodType methodType = MethodType.methodType(int.class, TestUtils.getPersonClass("Person"));
-            final CallSite site = LambdaMetafactory.metafactory(lookup,
-                    "apply",
-                    MethodType.methodType(TestUtils.getPersonClass("PersonToIntFunction")),
-                    methodType,
+  public static Object personToIntFunction() {
+    try {
+      final MethodHandles.Lookup lookup = MethodHandles.lookup();
+      MethodType methodType = MethodType.methodType(int.class, TestUtils.getPersonClass("Person"));
+      final CallSite site = LambdaMetafactory.metafactory(lookup,
+        "apply",
+        MethodType.methodType(TestUtils.getPersonClass("PersonToIntFunction")),
+        methodType,
                     lookup.findStatic(TestUtils.class, "personIntProduct", MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
                     methodType);
             return (PersonToIntFunction) site.getTarget().invokeExact();
@@ -233,6 +233,6 @@ public class TestUtils {
     }
 
     private static int personIntProduct(Person p) {
-        return p.postalCode * p.houseNumber;
+      return p.getPostalCode() * p.getHouseNumber();
     }
 }
