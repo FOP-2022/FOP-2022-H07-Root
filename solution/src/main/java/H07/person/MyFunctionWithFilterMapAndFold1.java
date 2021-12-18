@@ -14,7 +14,7 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
    * @param filter a {@link PersonFilter} to filter matching
    * @return all {@link Person} p of people, where filter.test(p)
    */
-  public static Person[] filter(Person[] people, PersonFilter filter) {
+  public static Person[] filter(PersonFilter filter, Person[] people) {
     Person[] filtered = new Person[people.length];
     int n = 0;
     for (Person p : people) {
@@ -34,7 +34,7 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
    * @param map    a {@link PersonToIntFunction} that realises the mapping to int
    * @return for each {@link Person} p the result contains map.apply(p) in the same order
    */
-  public static int[] map(Person[] people, PersonToIntFunction map) {
+  public static int[] map(PersonToIntFunction map, Person[] people) {
     int[] toInts = new int[people.length];
     for (int i = 0; i < people.length; i++) {
       toInts[i] = map.apply(people[i]);
@@ -50,10 +50,10 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
    * @param operator how ints are combined
    * @return returns the result of the foldl for [int1, ..., intN] as operator(... operator(init, int1) ..., intN)
    */
-  public static int foldl(int[] ints, int init, IntBinaryOperator operator) {
+  public static int foldl(IntBinaryOperator operator, int init, int[] ints) {
     int acc = init;
     for (var val : ints) {
-      acc = operator.applyAsInt(acc, val);
+      acc = operator.applyAsInt(val, acc);
     }
     return acc;
   }
@@ -63,8 +63,8 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
    */
   @Override
   public int apply(Person[] people) {
-    var filtered = filter(people, traits.getPred());
-    var mapped = map(filtered, traits.getFct());
-    return foldl(mapped, traits.getInit(), traits.getOp());
+    var filtered = filter(traits.getPred(), people);
+    var mapped = map(traits.getFct(), filtered);
+    return foldl(traits.getOp(), traits.getInit(), mapped);
   }
 }

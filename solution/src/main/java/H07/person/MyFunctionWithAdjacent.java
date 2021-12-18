@@ -19,11 +19,11 @@ public class MyFunctionWithAdjacent extends FunctionWithFilterMapAndFold {
    */
   @Override
   public int apply(Person[] people) {
-    var filtered = MyFunctionWithFilterMapAndFold1.filter(people, traits.getPred());
-    var mapped = MyFunctionWithFilterMapAndFold1.map(filtered, traits.getFct());
+    var filtered = MyFunctionWithFilterMapAndFold1.filter(traits.getPred(), people);
+    var mapped = MyFunctionWithFilterMapAndFold1.map(traits.getFct(), filtered);
     var acc = traits.getInit();
     for (int i = 0; i < mapped.length - 1; i++) {
-      acc = traits.getOp().applyAsInt(acc, traits.getCombine().applyAsInt(mapped[i], mapped[i + 1]));
+      acc = traits.getOp().applyAsInt(traits.getCombine().applyAsInt(mapped[i], mapped[i + 1]), acc);
     }
     return acc;
   }

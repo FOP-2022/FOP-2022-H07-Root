@@ -16,7 +16,7 @@ public class MyFunctionWithFilterMapAndFold2 extends FunctionWithFilterMapAndFol
         continue;
       }
       int val = traits.getFct().apply(p);
-      acc = traits.getOp().applyAsInt(acc, val);
+      acc = traits.getOp().applyAsInt(val, acc);
     }
     return acc;
   }

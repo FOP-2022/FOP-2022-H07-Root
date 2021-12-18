@@ -69,7 +69,7 @@ public class DoublePredicateFactory {
    * This predicate requires the double to be:
    * d >= -20 * Math.PI && d <= 10 * Math.E OR Math.sin(d) > Math.cos(d) OR d < Math.pow(Math.log(d), 3)
    * AND
-   * not too far from n + 0.5 for some n, that is a natural number in [1, 1000]
+   * not too far from n + 0.5 for some n, that is a natural number in [0, 999]
    *
    * @return the predicate
    */
@@ -91,6 +91,14 @@ public class DoublePredicateFactory {
     return buildComplexPredicate(predicates);
   }
 
+  /**
+   * Returns a predicate configured by decimalPlaces and divisor, as such that any value satisfies the predicate, iff
+   * the sum of its first "decimalPlaces" digits of its decimalPlaces in decimal notation is divisible by divisor
+   *
+   * @param decimalPlaces the number of decimal places to consider (e.g. decimalPlaces = 3 and input 1.23456 leads to 234
+   * @param divisor       the divisor to divide the sum of decimalPlaces by
+   * @return the predicate described above
+   */
   public static DoublePredicate getChecksumPredicate(int decimalPlaces, int divisor) {
     return (double value) -> {
       var asString = "" + value;
