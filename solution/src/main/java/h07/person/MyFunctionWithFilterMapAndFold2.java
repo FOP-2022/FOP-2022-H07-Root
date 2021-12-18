@@ -1,4 +1,4 @@
-package H07.person;
+package h07.person;
 
 public class MyFunctionWithFilterMapAndFold2 extends FunctionWithFilterMapAndFold {
   public MyFunctionWithFilterMapAndFold2(Traits traits) {

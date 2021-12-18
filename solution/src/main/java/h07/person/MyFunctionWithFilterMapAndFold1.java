@@ -1,4 +1,4 @@
-package H07.person;
+package h07.person;
 
 import java.util.function.IntBinaryOperator;
 

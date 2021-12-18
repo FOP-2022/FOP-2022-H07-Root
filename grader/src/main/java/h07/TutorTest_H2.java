@@ -1,6 +1,6 @@
-package H07;
+package h07;
 
-import H07.person.Person;
+import h07.person.Person;
 import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestForSubmission("H07")
+@TestForSubmission("h07")
 public class TutorTest_H2 {
 
   @Test
@@ -21,9 +21,9 @@ public class TutorTest_H2 {
     Class<?> person = TestUtils.getPersonClass("Person");
 
     assertTrue(Modifier.isPublic(person.getModifiers()),
-            "Die Klasse Person soll öffentlich sein");
+      "Die Klasse Person soll öffentlich sein");
     assertFalse(Modifier.isInterface(person.getModifiers()),
-            "Die Klasse Person soll kein Interface sein");
+      "Die Klasse Person soll kein Interface sein");
 
     Person p = null;
     for (Constructor<?> cons : person.getDeclaredConstructors()) {
@@ -69,9 +69,9 @@ public class TutorTest_H2 {
     Class<?> person = TestUtils.getPersonClass("Person");
 
     assertTrue(personToIntFunction.isAnnotationPresent(FunctionalInterface.class),
-            "Die Klasse PersonToIntFunction soll ein FunctionalInterface sein");
+      "Die Klasse PersonToIntFunction soll ein FunctionalInterface sein");
     assertTrue(Modifier.isPublic(personToIntFunction.getModifiers()),
-            "Die Klasse PersonToIntFunction soll öffentlich sein");
+      "Die Klasse PersonToIntFunction soll öffentlich sein");
 
     Method method = null;
     try {
@@ -86,11 +86,11 @@ public class TutorTest_H2 {
     Class<?> traits = TestUtils.getPersonClass("Traits");
 
     assertEquals(Object.class, traits.getSuperclass(),
-            "Die Klasse Traits soll lediglich von Object erben");
+      "Die Klasse Traits soll lediglich von Object erben");
     assertTrue(Modifier.isPublic(traits.getModifiers()),
-            "Die Klasse Traits soll öffentlich sein");
+      "Die Klasse Traits soll öffentlich sein");
     assertFalse(Modifier.isAbstract(traits.getModifiers()),
-            "Die Klasse Traits soll nicht abstrakt sein");
+      "Die Klasse Traits soll nicht abstrakt sein");
   }
 
 
@@ -99,19 +99,19 @@ public class TutorTest_H2 {
     Class<?> traits = TestUtils.getPersonClass("Traits");
 
     assertEquals(Object.class, traits.getSuperclass(),
-            "Die Klasse Traits soll lediglich von Object erben");
+      "Die Klasse Traits soll lediglich von Object erben");
     assertTrue(Modifier.isPublic(traits.getModifiers()),
-            "Die Klasse Traits soll öffentlich sein");
+      "Die Klasse Traits soll öffentlich sein");
     assertFalse(Modifier.isAbstract(traits.getModifiers()),
-            "Die Klasse Traits soll nicht abstrakt sein");
+      "Die Klasse Traits soll nicht abstrakt sein");
     var expectedFields = List.of("op", "init", "fct", "pred");
     var expectedFieldClasses = List.of(IntBinaryOperator.class, int.class,
-            TestUtils.getPersonClass("PersonToIntFunction"), TestUtils.getPersonClass("PersonFilter"));
+      TestUtils.getPersonClass("PersonToIntFunction"), TestUtils.getPersonClass("PersonFilter"));
     var actualFields = Arrays.stream(traits.getDeclaredFields())
-            .map(Field::getName).filter(fn -> !fn.equals("combine"))
-            .collect(Collectors.toList());
+      .map(Field::getName).filter(fn -> !fn.equals("combine"))
+      .collect(Collectors.toList());
     assertTrue(actualFields.containsAll(expectedFields), "Die Attribute [op, init, fct, pred] " +
-            "sollten alle in Traits vorhanden sein.");
+      "sollten alle in Traits vorhanden sein.");
     TestUtils.forEach(expectedFields, expectedFieldClasses, (f, c) -> fieldAndGetterCorrect(traits, f, c));
 
     var consOpt = Arrays.stream(traits.getConstructors()).filter(c -> c.getParameterCount() >= 5).findAny();
@@ -132,7 +132,7 @@ public class TutorTest_H2 {
       assertEquals(op, TestUtils.get(traits, traitsObj, "op"), "Op-Getter falsch in Traits");
       assertEquals(personToIntFunction, TestUtils.get(traits, traitsObj, "fct"), "Fct-Getter falsch in Traits");
       assertEquals(personFilter, TestUtils.get(traits, traitsObj, "pred"), "Pred-Getter falsch in Traits");
-      assertEquals(357, TestUtils.get(traits, traitsObj, "init"),"Init-Getter falsch in Traits");
+      assertEquals(357, TestUtils.get(traits, traitsObj, "init"), "Init-Getter falsch in Traits");
     } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
       fail("Traits-Objekt konnte nicht richtig erstellt oder verwendet werden", e);
     }
@@ -155,19 +155,19 @@ public class TutorTest_H2 {
     Class<?> traits = TestUtils.getPersonClass("Traits");
 
     assertEquals(Object.class, fwfmf.getSuperclass(),
-            "Die Klasse FunctionWithFilterMapAndFold soll lediglich von Object erben");
+      "Die Klasse FunctionWithFilterMapAndFold soll lediglich von Object erben");
     assertTrue(Modifier.isPublic(fwfmf.getModifiers()),
-            "Die Klasse FunctionWithFilterMapAndFold soll öffentlich sein");
+      "Die Klasse FunctionWithFilterMapAndFold soll öffentlich sein");
     assertTrue(Modifier.isAbstract(fwfmf.getModifiers()),
-            "Die Klasse FunctionWithFilterMapAndFold soll abstrakt sein");
+      "Die Klasse FunctionWithFilterMapAndFold soll abstrakt sein");
     var f = TestUtils.getField(fwfmf, "traits");
     assertTrue(Modifier.isFinal(f.getModifiers()));
     assertTrue(Modifier.isProtected(f.getModifiers()));
     assertEquals(traits, f.getType());
 
     var cons = Arrays.stream(fwfmf.getConstructors())
-            .filter(c -> c.getParameterCount() == 1 && c.getParameters()[0].getType().equals(traits))
-            .findAny().orElse(null);
+      .filter(c -> c.getParameterCount() == 1 && c.getParameters()[0].getType().equals(traits))
+      .findAny().orElse(null);
     if (cons == null) {
       fail("Kein geeigneter Konstuktor von FunctionWithFilterMapAndFold konnte gefunden werden.");
     }
@@ -181,20 +181,20 @@ public class TutorTest_H2 {
     Class<?> fwfmf1 = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold1");
 
     assertEquals(fwfmf, fwfmf1.getSuperclass(),
-            "Die Klasse MyFunctionWithFilterMapAndFold1 soll von FunctionWithFilterMapAndFold erben");
+      "Die Klasse MyFunctionWithFilterMapAndFold1 soll von FunctionWithFilterMapAndFold erben");
     assertTrue(Modifier.isPublic(fwfmf1.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold1 soll öffentlich sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold1 soll öffentlich sein");
     assertFalse(Modifier.isAbstract(fwfmf1.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold1 soll nicht abstrakt sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold1 soll nicht abstrakt sein");
 
     Class<?> fwfmf2 = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold2");
 
     assertEquals(fwfmf, fwfmf2.getSuperclass(),
-            "Die Klasse MyFunctionWithFilterMapAndFold2 soll von FunctionWithFilterMapAndFold erben");
+      "Die Klasse MyFunctionWithFilterMapAndFold2 soll von FunctionWithFilterMapAndFold erben");
     assertTrue(Modifier.isPublic(fwfmf2.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold2 soll öffentlich sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold2 soll öffentlich sein");
     assertFalse(Modifier.isAbstract(fwfmf2.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold2 soll nicht abstrakt sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold2 soll nicht abstrakt sein");
   }
 
   @Test
@@ -211,43 +211,44 @@ public class TutorTest_H2 {
 
     var classUT = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold1");
     assertTrue(Modifier.isPublic(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold1 soll öffentlich sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold1 soll öffentlich sein");
     assertFalse(Modifier.isAbstract(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold1 soll nicht abstrakt sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold1 soll nicht abstrakt sein");
     try {
       var filter = TestUtils.getMethod(classUT, "filter",
-              Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass(),
-              TestUtils.getPersonClass("PersonFilter"));
+        TestUtils.getPersonClass("PersonFilter"),
+        Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
       var personFilter = TestUtils.personFilter();
-      var actual = TestUtils.invokeMethod(filter, null, TestUtils.people(), personFilter);
+      var actual = TestUtils.invokeMethod(filter, null, personFilter, TestUtils.people());
       TestUtils.assertPeopleEquals((Object[]) TestUtils.filtered(), (Object[]) actual);
     } catch (Throwable t) {
-      erroneous.add("Filter");
+      erroneous.add("Filter[" + t.getMessage() + "]");
     }
 
     try {
       var map = TestUtils.getMethod(classUT, "map",
-              Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass(),
-              TestUtils.getPersonClass("PersonToIntFunction"));
+        TestUtils.getPersonClass("PersonToIntFunction"),
+        Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
       var personToIntFunction = TestUtils.personToIntFunction();
-      var actual = TestUtils.invokeMethod(map, null, TestUtils.people(), personToIntFunction);
+      var actual = TestUtils.invokeMethod(map, null, personToIntFunction, TestUtils.people());
       assertArrayEquals(TestUtils.mapped, (int[]) actual);
     } catch (Throwable t) {
-      erroneous.add("Map");
+      erroneous.add("Map[" + t.getMessage() + "]");
     }
 
     try {
       var foldl = TestUtils.getMethod(classUT, "foldl",
-              int[].class, int.class,
-              IntBinaryOperator.class);
-      List<IntBinaryOperator> functions = List.of(Integer::sum, Integer::sum, (a, b) -> a - b);
+        IntBinaryOperator.class,
+        int.class,
+        int[].class);
+      List<IntBinaryOperator> functions = List.of(Integer::sum, Integer::sum, Math::max);
       List<Integer> inits = List.of(0, 5, 5);
-      List<Integer> expected = List.of(128613, 128618, -128608);
+      List<Integer> expected = List.of(128613, 128618, 64289);
       TestUtils.forEach(functions, inits, expected, (f, init, result) -> {
-        var actual = TestUtils.invokeMethod(foldl, null, TestUtils.mapped, init, f);
+        var actual = TestUtils.invokeMethod(foldl, null, f, init, TestUtils.mapped);
         assertEquals(result, actual, "Für Eingabe " + Arrays.toString(TestUtils.mapped) + ", Init " + init +
-                " und " + (result < 0 ? "Substraktion" : "Addition") +
-                " folgt bei foldl nicht der erwartete Wert " + result + ".");
+          " und " + (result < 0 ? "Funktion: Math::max" : "Addition") +
+          " folgt bei foldl nicht der erwartete Wert " + result + " sondern " + actual + " .");
       });
     } catch (Throwable t) {
       erroneous.add("Foldl[" + t.getMessage() + "]");
@@ -259,14 +260,14 @@ public class TutorTest_H2 {
   public void myFunctionWithFilterMapAndFold1All() {
     var erroneous = determineWrongFilterMapFold();
     assertEquals(0, erroneous.size(), "Bei MyFunctionWithFilterMapAndFold1" +
-            " schlugen folgende Funktionen fehl: " + erroneous.toString());
+      " schlugen folgende Funktionen fehl: " + erroneous.toString());
     var classUT = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold1");
     assertTrue(Modifier.isPublic(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold1 soll öffentlich sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold1 soll öffentlich sein");
     assertFalse(Modifier.isAbstract(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold1 soll nicht abstrakt sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold1 soll nicht abstrakt sein");
     var apply = TestUtils.getMethod(classUT, "apply",
-            Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
+      Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
     var traitsObj = TestUtils.getTraitsObject(false);
     Object uut;
     try {
@@ -282,13 +283,13 @@ public class TutorTest_H2 {
   public void myFunctionWithFilterMapAndFoldCorrect2() {
     var classUT = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold2");
     assertTrue(Modifier.isPublic(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold2 soll öffentlich sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold2 soll öffentlich sein");
     assertFalse(Modifier.isAbstract(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithFilterMapAndFold2 soll nicht abstrakt sein");
+      "Die Klasse MyFunctionWithFilterMapAndFold2 soll nicht abstrakt sein");
     var traitsObj = TestUtils.getTraitsObject(false);
     Object uut;
     var apply = TestUtils.getMethod(classUT, "apply",
-            Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
+      Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
     try {
       uut = classUT.getConstructor(TestUtils.getPersonClass("Traits")).newInstance(traitsObj);
       var actual = TestUtils.invokeMethod(apply, uut, TestUtils.filtered());
@@ -318,10 +319,10 @@ public class TutorTest_H2 {
       assertTrue(Modifier.isStatic(setter.getModifiers()), "setFirstImplementationActive sollte static sein");
       setter.invoke(null, true);
       assertTrue((Boolean) getter.invoke(null), "Getter isFirstImplementationActive sollte true zurückgeben," +
-              " nachdem setFirstImplementationActive(true) aufgerufen wurde.");
+        " nachdem setFirstImplementationActive(true) aufgerufen wurde.");
       setter.invoke(null, false);
       assertFalse((Boolean) getter.invoke(null), "Getter isFirstImplementationActive sollte false zurückgeben," +
-              " nachdem setFirstImplementationActive(false) aufgerufen wurde.");
+        " nachdem setFirstImplementationActive(false) aufgerufen wurde.");
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
       fail("Getter oder Setter von firstImplementationActive konnte nicht erfolgreich verwendet werden.", e);
     }
@@ -375,13 +376,13 @@ public class TutorTest_H2 {
       var person1 = TestUtils.makePerson("cake", "vincent", "baker street", 2, 234);
       var person2 = TestUtils.makePerson("muffin", "alex", "baker street", 56, 120);
       assertTrue((Boolean) personFilterClass.getDeclaredMethod("test", personClass).invoke(personFilter, person1),
-              "Pred sollte  p -> p.lastName.equals(<parameter>)  entsprechen");
+        "Pred sollte  p -> p.lastName.equals(<parameter>)  entsprechen");
       assertFalse((Boolean) personFilterClass.getDeclaredMethod("test", personClass).invoke(personFilter, person2),
-              "Pred sollte  p -> p.lastName.equals(<parameter>)  entsprechen");
+        "Pred sollte  p -> p.lastName.equals(<parameter>)  entsprechen");
       assertEquals(234, personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person1),
-              "Fct sollte  p -> p.postalCode  entsprechen");
+        "Fct sollte  p -> p.postalCode  entsprechen");
       assertEquals(120, personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person2),
-              "Fct sollte  p -> p.postalCode  entsprechen");
+        "Fct sollte  p -> p.postalCode  entsprechen");
     } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
       fail("Beim Testen von createStrangeFunction konnte eine notwendige Operation nicht durchgeführt werden", e);
     }
@@ -394,14 +395,14 @@ public class TutorTest_H2 {
     Class<?> fwfmf = TestUtils.getPersonClass("FunctionWithFilterMapAndFold");
 
     assertEquals(fwfmf, classUT.getSuperclass(),
-            "Die Klasse MyFunctionWithAdjacent soll von FunctionWithFilterMapAndFold erben");
+      "Die Klasse MyFunctionWithAdjacent soll von FunctionWithFilterMapAndFold erben");
     assertTrue(Modifier.isPublic(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithAdjacent soll öffentlich sein");
+      "Die Klasse MyFunctionWithAdjacent soll öffentlich sein");
     assertFalse(Modifier.isAbstract(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithAdjacent soll nicht abstrakt sein");
+      "Die Klasse MyFunctionWithAdjacent soll nicht abstrakt sein");
     var cons = Arrays.stream(classUT.getConstructors())
-            .filter(c -> c.getParameterCount() == 1 && c.getParameters()[0].getType().equals(traits))
-            .findAny().orElse(null);
+      .filter(c -> c.getParameterCount() == 1 && c.getParameters()[0].getType().equals(traits))
+      .findAny().orElse(null);
     if (cons == null) {
       fail("Kein geeigneter Konstuktor von FunctionWithFilterMapAndFold konnte gefunden werden.");
     }
@@ -427,8 +428,8 @@ public class TutorTest_H2 {
       assertEquals(op, TestUtils.get(traits, traitsObj, "op"), "Op-Getter falsch in Traits");
       assertEquals(personToIntFunction, TestUtils.get(traits, traitsObj, "fct"), "Fct-Getter falsch in Traits");
       assertEquals(personFilter, TestUtils.get(traits, traitsObj, "pred"), "Pred-Getter falsch in Traits");
-      assertEquals(357, TestUtils.get(traits, traitsObj, "init"),"Init-Getter falsch in Traits");
-      assertEquals(combine, TestUtils.get(traits, traitsObj, "combine"),"Combine-Getter falsch in Traits");
+      assertEquals(357, TestUtils.get(traits, traitsObj, "init"), "Init-Getter falsch in Traits");
+      assertEquals(combine, TestUtils.get(traits, traitsObj, "combine"), "Combine-Getter falsch in Traits");
     } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
       fail("Traits-Objekt konnte nicht richtig erstellt oder verwendet werden", e);
     }
@@ -438,13 +439,13 @@ public class TutorTest_H2 {
   public void myFunctionWithAdjacentCorrect() {
     var classUT = TestUtils.getPersonClass("MyFunctionWithAdjacent");
     assertTrue(Modifier.isPublic(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithAdjacent soll öffentlich sein");
+      "Die Klasse MyFunctionWithAdjacent soll öffentlich sein");
     assertFalse(Modifier.isAbstract(classUT.getModifiers()),
-            "Die Klasse MyFunctionWithAdjacent soll nicht abstrakt sein");
+      "Die Klasse MyFunctionWithAdjacent soll nicht abstrakt sein");
     var traitsObj = TestUtils.getTraitsObject(true);
     Object uut;
     var apply = TestUtils.getMethod(classUT, "apply",
-            Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
+      Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
     try {
       uut = classUT.getConstructor(TestUtils.getPersonClass("Traits")).newInstance(traitsObj);
       var actual = TestUtils.invokeMethod(apply, uut, TestUtils.people());

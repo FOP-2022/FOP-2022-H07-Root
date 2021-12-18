@@ -1,4 +1,4 @@
-package H07.person;
+package h07.person;
 
 public abstract class FunctionWithFilterMapAndFold {
   protected final Traits traits;

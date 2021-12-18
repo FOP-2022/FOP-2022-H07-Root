@@ -1,4 +1,4 @@
-package H07.person;
+package h07.person;
 
 @FunctionalInterface
 public interface PersonFilter {

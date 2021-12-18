@@ -1,4 +1,4 @@
-package H07;
+package h07;
 
 @FunctionalInterface
 public interface TriConsumer<T, S, R> {

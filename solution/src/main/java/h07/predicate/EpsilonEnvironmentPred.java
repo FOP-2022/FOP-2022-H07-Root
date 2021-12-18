@@ -1,4 +1,4 @@
-package H07.predicate;
+package h07.predicate;
 
 import java.util.function.DoublePredicate;
 

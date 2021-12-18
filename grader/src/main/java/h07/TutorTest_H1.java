@@ -1,22 +1,18 @@
-package H07;
+package h07;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
-import org.sourcegrade.jagr.api.testing.TestCycle;
-import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.function.DoublePredicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestForSubmission("H07")
+@TestForSubmission("h07")
 public class TutorTest_H1 {
 
   @Test
@@ -24,7 +20,7 @@ public class TutorTest_H1 {
     Class<?> epsilonEnvironmentPred = null;
     try {
       epsilonEnvironmentPred = Class
-        .forName("H07.predicate.EpsilonEnvironmentPred");
+        .forName("h07.predicate.EpsilonEnvironmentPred");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse EpsilonEnvironmentPred existiert nicht");
     }
@@ -40,7 +36,7 @@ public class TutorTest_H1 {
     Class<?> epsilonEnvironmentPred = null;
     try {
       epsilonEnvironmentPred = Class
-        .forName("H07.predicate.EpsilonEnvironmentPred");
+        .forName("h07.predicate.EpsilonEnvironmentPred");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse EpsilonEnvironmentPred existiert nicht");
     }
@@ -78,7 +74,7 @@ public class TutorTest_H1 {
     Class<?> epsilonEnvironmentPred = null;
     try {
       epsilonEnvironmentPred = Class
-        .forName("H07.predicate.EpsilonEnvironmentPred");
+        .forName("h07.predicate.EpsilonEnvironmentPred");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse EpsilonEnvironmentPred existiert nicht");
     }
@@ -128,7 +124,7 @@ public class TutorTest_H1 {
     Class<?> creator = null;
     try {
       creator = Class
-        .forName("H07.predicate.DoublePredicateFactory");
+        .forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
@@ -146,7 +142,7 @@ public class TutorTest_H1 {
   public void buildComplexPredicateExists() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.DoublePredicateFactory");
+      creator = Class.forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
@@ -162,7 +158,7 @@ public class TutorTest_H1 {
   public void complexDoublePredicateWorksSimple() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.DoublePredicateFactory");
+      creator = Class.forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
@@ -197,7 +193,7 @@ public class TutorTest_H1 {
   public void complexDoublePredicateWorksAll() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.DoublePredicateFactory");
+      creator = Class.forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
@@ -252,7 +248,7 @@ public class TutorTest_H1 {
   public void getDefaultComplexPredicateExists() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.DoublePredicateFactory");
+      creator = Class.forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
@@ -268,7 +264,7 @@ public class TutorTest_H1 {
   public void getDefaultComplexPredicateWorksMostOfTheTime() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.DoublePredicateFactory");
+      creator = Class.forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
@@ -294,29 +290,10 @@ public class TutorTest_H1 {
   }
 
   @Test
-  @ExtendWith(TestCycleResolver.class)
-  public void lambdaInCorrectForm(TestCycle testCycle) {
-    var cdpc = testCycle.getSubmission().getSourceFile("H07/predicate/DoublePredicateFactory.java");
-    assertNotNull(cdpc, "Der Sourcecode von H07/predicate/DoublePredicateFactory.java konnte nicht geladen werden. Falls dies unerwartet ist, bitte beim Ansprechpartner melden.");
-    var content = cdpc.getContent();
-    var statements = Arrays.asList(content.split(";"));
-    assertTrue(content.contains("getDefaultComplexPredicate"), "Methode getDefaultComplexPredicate konnte nicht im Quelltext gefunden werden.");
-    assertTrue(content.contains("new DoublePredicate[3][]"), "Array, der in getDefaultComplexPredicate erstellt " +
-      "und als Argument an buildComplexPredicate weitergeben wird, konnte nicht gefunden werden.");
-    assertTrue(statements.stream().anyMatch(st -> st.contains("new EpsilonEnvironmentPred") && st.contains("=")
-      && !st.contains("(double")), "Keine Zuweisung mit new EpsilonEnvironmentPred für ersten Teilarray in getDefaultComplexPredicate");
-    assertTrue(statements.stream().anyMatch(st -> st.contains("->") && st.contains("=")
-      && !st.contains("(double") && !st.contains("return")), "Keine Zuweisung in Lambda-Kurzform für zweiten Teilarray in getDefaultComplexPredicate");
-    assertTrue(statements.stream().anyMatch(st -> st.contains("->") && st.contains("=")
-      && st.contains("(double") && st.contains("{") && st.contains("}")), "Keine Zuweisung mit Lambda-Standardform " +
-      "für dritten Teilarray in getDefaultComplexPredicate");
-  }
-
-  @Test
   public void getDefaultComplexPredicateWorks() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.DoublePredicateFactory");
+      creator = Class.forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
@@ -347,10 +324,11 @@ public class TutorTest_H1 {
       assertTrue(pred.test(129.5), "129.5 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 129.5]");
       assertFalse(pred.test(130.5), "130.5 sollte getDefaultComplexPredicate nicht erfüllen da keines der Predicates von Predicate-Teil 3 zutrifft");
       assertTrue(pred.test(994.5), "994.5 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 994.5]");
-      assertTrue(pred.test(996.5 - 3.99 / 50000), "996.5 - 3.99 / 50000 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 996.5]");
-      assertFalse(pred.test(996.5 - 4.01 / 50000), "996.5 - 4.01 / 50000 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug 996.5 für Predicate-Teil 2]");
-      assertTrue(pred.test(996.5 + 3.99 / 50000), "996.5 + 3.99 / 50000 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 996.5]");
-      assertFalse(pred.test(996.5 + 4.01 / 50000), "996.5 + 4.01 / 50000 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug 996.5 für Predicate-Teil 2]");
+      // Etwas breitere Spanne für Teilarray an Index 1, da Beschreibung schwierig war.
+      assertTrue(pred.test(996.5 - 2.99 / 50000), "996.5 - 2.99 / 50000 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 996.5]");
+      assertFalse(pred.test(996.5 - 5.01 / 50000), "996.5 - 5.01 / 50000 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug 996.5 für Predicate-Teil 2]");
+      assertTrue(pred.test(996.5 + 2.99 / 50000), "996.5 + 2.99 / 50000 sollte getDefaultComplexPredicate erfüllen [sin > cos, ~= 996.5]");
+      assertFalse(pred.test(996.5 + 5.01 / 50000), "996.5 + 5.01 / 50000 sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug 996.5 für Predicate-Teil 2]");
       assertFalse(pred.test(-93.5), "-93.5 sollte getDefaultComplexPredicate nicht erfüllen da u.A. keines der Predicates von Predicate-Teil 3 zutrifft");
     } catch (IllegalAccessException | InvocationTargetException e) {
       fail("Die Methode von complexDoublePredicate schlug fehl.", e);
@@ -361,7 +339,7 @@ public class TutorTest_H1 {
   public void checksumPredExists() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.DoublePredicateFactory");
+      creator = Class.forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
@@ -378,7 +356,7 @@ public class TutorTest_H1 {
   public void checksumPredWorksMostly() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.DoublePredicateFactory");
+      creator = Class.forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }
@@ -411,7 +389,7 @@ public class TutorTest_H1 {
   public void checksumPredIsFullyCorrect() {
     Class<?> creator = null;
     try {
-      creator = Class.forName("H07.predicate.DoublePredicateFactory");
+      creator = Class.forName("h07.predicate.DoublePredicateFactory");
     } catch (ClassNotFoundException e) {
       fail("Die Klasse DoublePredicateFactory existiert nicht");
     }

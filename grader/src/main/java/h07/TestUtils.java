@@ -1,8 +1,8 @@
-package H07;
+package h07;
 
-import H07.person.Person;
-import H07.person.PersonFilter;
-import H07.person.PersonToIntFunction;
+import h07.person.Person;
+import h07.person.PersonFilter;
+import h07.person.PersonToIntFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.invoke.CallSite;

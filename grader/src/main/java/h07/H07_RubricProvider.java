@@ -1,9 +1,9 @@
-package H07;
+package h07;
 
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 
-@RubricForSubmission("H07")
+@RubricForSubmission("h07")
 public class H07_RubricProvider implements RubricProvider {
   /*---------------------------------- H1 ----------------------------------*/
   public static final Criterion epsEnvPredExists = Criterion.builder()
@@ -104,8 +104,8 @@ public class H07_RubricProvider implements RubricProvider {
     .grader(Grader.testAwareBuilder()
       .requirePass(JUnitTestRef.ofMethod(() ->
         TutorTest_H1.class.getMethod("getDefaultComplexPredicateWorks")))
-      .requirePass(JUnitTestRef.ofMethod(() ->
-        TutorTest_H1.class.getMethod("lambdaInCorrectForm", TestCycle.class)))
+      /*.requirePass(JUnitTestRef.ofMethod(() ->
+        TutorTest_H1.class.getMethod("lambdaInCorrectForm", TestCycle.class)))*/
       .pointsPassedMax()
       .pointsFailedMin()
       .build()
@@ -390,7 +390,7 @@ public class H07_RubricProvider implements RubricProvider {
     .build();
 
   public static final Rubric RUBRIC = Rubric.builder()
-    .title("H07")
+    .title("h07")
     .addChildCriteria(H1, H2, JAVADOC)
     .build();
 
