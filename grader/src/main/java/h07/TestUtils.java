@@ -19,8 +19,7 @@ import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.IntBinaryOperator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestUtils {
     @NotNull
@@ -29,7 +28,7 @@ public class TestUtils {
         try {
             personFilter = Class.forName("H07.person." + s);
         } catch (ClassNotFoundException e) {
-            fail("Die Klasse " +  s + " existiert nicht");
+            fail("Die Klasse " + s + " existiert nicht");
         }
         return personFilter;
     }
@@ -47,7 +46,7 @@ public class TestUtils {
     public static Object get(Class<?> clazz, Object traits, String name) {
         try {
             var getter = Arrays.stream(clazz.getMethods()).filter(me -> me.getName().toLowerCase()
-                    .contains(name.toLowerCase())).findAny().orElseThrow();
+                .contains(name.toLowerCase())).findAny().orElseThrow();
             return getter.invoke(traits);
         } catch (IllegalAccessException | InvocationTargetException e) {
             fail("Attribut " + name + " eines Objekts von Typ " + clazz.getSimpleName() + " konnte nicht bestimmt werden  ");
@@ -104,7 +103,7 @@ public class TestUtils {
         var person = getPersonClass("Person");
         try {
             return person.getConstructor(String.class, String.class, String.class, int.class, int.class)
-                    .newInstance(lastName, firstName, street, houseNumber, postalCode);
+                .newInstance(lastName, firstName, street, houseNumber, postalCode);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             fail("Ein Person konnnte nicht erstellt werden", e);
             return null;
@@ -113,16 +112,16 @@ public class TestUtils {
 
     public static Object people() {
         var init = new Object[]{
-                makePerson("a", "a", "a", 3, 3),
-                makePerson("a", "a", "a", 2, 3),
-                makePerson("a", "a", "a", 1, 2),
-                makePerson("b", "a", "a", 1, 2),
-                makePerson("a", "a", "a", 1, 2),
-                makePerson("a", "a", "a", 2, 2),
-                makePerson("a", "a", "a", 2, 2),
-                makePerson("c", "a", "a", 1, 64289),
-                makePerson("c", "a", "a", 1, 64289),
-                makePerson("c", "a", "a", 2, 3),
+            makePerson("a", "a", "a", 3, 3),
+            makePerson("a", "a", "a", 2, 3),
+            makePerson("a", "a", "a", 1, 2),
+            makePerson("b", "a", "a", 1, 2),
+            makePerson("a", "a", "a", 1, 2),
+            makePerson("a", "a", "a", 2, 2),
+            makePerson("a", "a", "a", 2, 2),
+            makePerson("c", "a", "a", 1, 64289),
+            makePerson("c", "a", "a", 1, 64289),
+            makePerson("c", "a", "a", 2, 3),
         };
         var result = Array.newInstance(getPersonClass("Person"), init.length);
         for (var i = 0; i < init.length; i++) {
@@ -133,9 +132,9 @@ public class TestUtils {
 
     public static Object filtered() {
         var init = new Object[]{
-                makePerson("a", "a", "a", 3, 3),
-                makePerson("a", "a", "a", 2, 3),
-                makePerson("c", "a", "a", 2, 3),
+            makePerson("a", "a", "a", 3, 3),
+            makePerson("a", "a", "a", 2, 3),
+            makePerson("c", "a", "a", 2, 3),
         };
         var result = Array.newInstance(getPersonClass("Person"), init.length);
         for (var i = 0; i < init.length; i++) {
@@ -145,7 +144,6 @@ public class TestUtils {
     }
 
     public static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
-
 
     static void assertPeopleEquals(Object[] filtered, Object[] result) {
         assertEquals(filtered.length, result.length);
@@ -187,7 +185,7 @@ public class TestUtils {
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             fail("Der Konstruktor des Traits-Objekt (das zur Erstellung der " +
-                    "MyFunctionWithFilterMapAndFold1 nötig ist) konnte nicht erfolgreich aufgerufen werden.", e);
+                "MyFunctionWithFilterMapAndFold1 nötig ist) konnte nicht erfolgreich aufgerufen werden.", e);
         }
         return traitsObj;
     }
@@ -197,34 +195,33 @@ public class TestUtils {
             final MethodHandles.Lookup lookup = MethodHandles.lookup();
             MethodType methodType = MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"));
             final CallSite site = LambdaMetafactory.metafactory(lookup,
-                    "test",
-                    MethodType.methodType(TestUtils.getPersonClass("PersonFilter")),
-                    methodType,
-                    lookup.findStatic(TestUtils.class, "postalCodeEquals3",
-                      MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"))),
-              methodType);
-          return (PersonFilter) site.getTarget().invokeExact();
-
+                "test",
+                MethodType.methodType(TestUtils.getPersonClass("PersonFilter")),
+                methodType,
+                lookup.findStatic(TestUtils.class, "postalCodeEquals3",
+                    MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"))),
+                methodType);
+            return (PersonFilter) site.getTarget().invokeExact();
         } catch (Throwable t) {
-          t.printStackTrace();
-          throw new RuntimeException();
+            t.printStackTrace();
+            throw new RuntimeException();
         }
     }
 
-  private static boolean postalCodeEquals3(Person p) {
-    return p.getPostalCode() == 3;
-  }
+    private static boolean postalCodeEquals3(Person p) {
+        return p.getPostalCode() == 3;
+    }
 
-  public static Object personToIntFunction() {
-    try {
-      final MethodHandles.Lookup lookup = MethodHandles.lookup();
-      MethodType methodType = MethodType.methodType(int.class, TestUtils.getPersonClass("Person"));
-      final CallSite site = LambdaMetafactory.metafactory(lookup,
-        "apply",
-        MethodType.methodType(TestUtils.getPersonClass("PersonToIntFunction")),
-        methodType,
-                    lookup.findStatic(TestUtils.class, "personIntProduct", MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
-                    methodType);
+    public static Object personToIntFunction() {
+        try {
+            final MethodHandles.Lookup lookup = MethodHandles.lookup();
+            MethodType methodType = MethodType.methodType(int.class, TestUtils.getPersonClass("Person"));
+            final CallSite site = LambdaMetafactory.metafactory(lookup,
+                "apply",
+                MethodType.methodType(TestUtils.getPersonClass("PersonToIntFunction")),
+                methodType,
+                lookup.findStatic(TestUtils.class, "personIntProduct", MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
+                methodType);
             return (PersonToIntFunction) site.getTarget().invokeExact();
         } catch (Throwable t) {
             t.printStackTrace();
@@ -233,6 +230,6 @@ public class TestUtils {
     }
 
     private static int personIntProduct(Person p) {
-      return p.getPostalCode() * p.getHouseNumber();
+        return p.getPostalCode() * p.getHouseNumber();
     }
 }
