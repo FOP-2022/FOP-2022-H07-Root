@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.sourcegrade.style") version "0.1.0"
+    id("org.sourcegrade.style")
 }
 allprojects {
     apply(plugin = "java")

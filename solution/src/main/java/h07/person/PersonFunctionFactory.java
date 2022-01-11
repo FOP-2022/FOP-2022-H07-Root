@@ -7,9 +7,9 @@ public class PersonFunctionFactory {
     private static boolean firstImplementationActive;
 
     /**
-     * Is firstImplementationActive true.
+     * Whether the first implementation is active.
      *
-     * @return firstImplementation
+     * @return The value of {@code firstImplementationActive}
      */
     public static boolean isFirstImplementationActive() {
         return firstImplementationActive;
@@ -18,7 +18,7 @@ public class PersonFunctionFactory {
     /**
      * Set firstImplementationActive.
      *
-     * @param firstImplementationActive the firstImplementationActive to set
+     * @param firstImplementationActive The firstImplementationActive to set
      */
     public static void setFirstImplementationActive(boolean firstImplementationActive) {
         PersonFunctionFactory.firstImplementationActive = firstImplementationActive;

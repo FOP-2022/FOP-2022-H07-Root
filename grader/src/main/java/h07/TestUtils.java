@@ -184,8 +184,8 @@ public class TestUtils {
                 }
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            fail("Der Konstruktor des Traits-Objekt (das zur Erstellung der " +
-                "MyFunctionWithFilterMapAndFold1 nötig ist) konnte nicht erfolgreich aufgerufen werden.", e);
+            fail("Der Konstruktor des Traits-Objekt (das zur Erstellung der "
+                + "MyFunctionWithFilterMapAndFold1 nötig ist) konnte nicht erfolgreich aufgerufen werden.", e);
         }
         return traitsObj;
     }
@@ -220,7 +220,8 @@ public class TestUtils {
                 "apply",
                 MethodType.methodType(TestUtils.getPersonClass("PersonToIntFunction")),
                 methodType,
-                lookup.findStatic(TestUtils.class, "personIntProduct", MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
+                lookup.findStatic(TestUtils.class, "personIntProduct",
+                    MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
                 methodType);
             return (PersonToIntFunction) site.getTarget().invokeExact();
         } catch (Throwable t) {

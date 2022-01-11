@@ -87,7 +87,7 @@ public class DoublePredicateFactory {
             int backwardsI = i + 1;
             predicates[1][largeArraySize - backwardsI] = d -> Math.abs(1000 - backwardsI + 0.5 - d) < backwardsI / 50000.0;
         }
-        predicates[2] = new DoublePredicate[] {
+        predicates[2] = new DoublePredicate[]{
             d -> d >= -20 * Math.PI && d <= 10 * Math.E,
             d -> Math.sin(d) > Math.cos(d),
             d -> d < Math.pow(Math.log(d), 3),

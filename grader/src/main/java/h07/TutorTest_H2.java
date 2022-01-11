@@ -114,8 +114,8 @@ public class TutorTest_H2 {
         var actualFields = Arrays.stream(traits.getDeclaredFields())
             .map(Field::getName).filter(fn -> !fn.equals("combine"))
             .collect(Collectors.toList());
-        assertTrue(actualFields.containsAll(expectedFields), "Die Attribute [op, init, fct, pred] " +
-            "sollten alle in Traits vorhanden sein.");
+        assertTrue(actualFields.containsAll(expectedFields), "Die Attribute [op, init, fct, pred] "
+            + "sollten alle in Traits vorhanden sein.");
         TestUtils.forEach(expectedFields, expectedFieldClasses, (f, c) -> fieldAndGetterCorrect(traits, f, c));
 
         var consOpt = Arrays.stream(traits.getConstructors()).filter(c -> c.getParameterCount() >= 5).findAny();
@@ -145,18 +145,24 @@ public class TutorTest_H2 {
     // Only for non-boolean getters
     private void fieldAndGetterCorrect(Class<?> clazz, String field, Class<?> expectedFieldClass) {
         var f = TestUtils.getField(clazz, field);
-        assertTrue(Modifier.isFinal(f.getModifiers()), "Field " + field + " sollte final sein.");
-        assertTrue(Modifier.isPrivate(f.getModifiers()), "Field " + field + " sollte private sein.");
-        assertEquals(expectedFieldClass, f.getType(), "Field " + field + " sollte den Typ " + expectedFieldClass.getSimpleName() + " haben.");
-        var getter = TestUtils.getMethod(clazz, "get" + field.substring(0, 1).toUpperCase() + field.substring(1));
-        assertTrue(Modifier.isPublic(getter.getModifiers()), "Getter von " + field + " sollte public sein.");
-        assertEquals(expectedFieldClass, getter.getReturnType(), "Getter von " + field + " Objekt von Typ " + expectedFieldClass.getSimpleName() + " zurückgeben.");
+        assertTrue(Modifier.isFinal(f.getModifiers()),
+            "Field " + field + " sollte final sein.");
+        assertTrue(Modifier.isPrivate(f.getModifiers()),
+            "Field " + field + " sollte private sein.");
+        assertEquals(expectedFieldClass, f.getType(),
+            "Field " + field + " sollte den Typ " + expectedFieldClass.getSimpleName() + " haben.");
+        var getter = TestUtils.getMethod(clazz,
+            "get" + field.substring(0, 1).toUpperCase() + field.substring(1));
+        assertTrue(Modifier.isPublic(getter.getModifiers()),
+            "Getter von " + field + " sollte public sein.");
+        assertEquals(expectedFieldClass, getter.getReturnType(),
+            "Getter von " + field + " Objekt von Typ " + expectedFieldClass.getSimpleName() + " zurückgeben.");
     }
 
     @Test
     public void functionWithFilterMapAndFoldExists() {
-        Class<?> fwfmf = TestUtils.getPersonClass("FunctionWithFilterMapAndFold");
-        Class<?> traits = TestUtils.getPersonClass("Traits");
+        final Class<?> fwfmf = TestUtils.getPersonClass("FunctionWithFilterMapAndFold");
+        final Class<?> traits = TestUtils.getPersonClass("Traits");
 
         assertEquals(Object.class, fwfmf.getSuperclass(),
             "Die Klasse FunctionWithFilterMapAndFold soll lediglich von Object erben");
@@ -164,12 +170,12 @@ public class TutorTest_H2 {
             "Die Klasse FunctionWithFilterMapAndFold soll öffentlich sein");
         assertTrue(Modifier.isAbstract(fwfmf.getModifiers()),
             "Die Klasse FunctionWithFilterMapAndFold soll abstrakt sein");
-        var f = TestUtils.getField(fwfmf, "traits");
+        final var f = TestUtils.getField(fwfmf, "traits");
         assertTrue(Modifier.isFinal(f.getModifiers()));
         assertTrue(Modifier.isProtected(f.getModifiers()));
         assertEquals(traits, f.getType());
 
-        var cons = Arrays.stream(fwfmf.getConstructors())
+        final var cons = Arrays.stream(fwfmf.getConstructors())
             .filter(c -> c.getParameterCount() == 1 && c.getParameters()[0].getType().equals(traits))
             .findAny().orElse(null);
         if (cons == null) {
@@ -177,12 +183,12 @@ public class TutorTest_H2 {
         }
         assertTrue(Modifier.isPublic(cons.getModifiers()));
 
-        var apply = TestUtils.getMethod(fwfmf, "apply", Person[].class);
+        final var apply = TestUtils.getMethod(fwfmf, "apply", Person[].class);
         assertTrue(Modifier.isPublic(apply.getModifiers()));
         assertTrue(Modifier.isAbstract(apply.getModifiers()));
         assertEquals(int.class, apply.getReturnType());
 
-        Class<?> fwfmf1 = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold1");
+        final Class<?> fwfmf1 = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold1");
 
         assertEquals(fwfmf, fwfmf1.getSuperclass(),
             "Die Klasse MyFunctionWithFilterMapAndFold1 soll von FunctionWithFilterMapAndFold erben");
@@ -191,7 +197,7 @@ public class TutorTest_H2 {
         assertFalse(Modifier.isAbstract(fwfmf1.getModifiers()),
             "Die Klasse MyFunctionWithFilterMapAndFold1 soll nicht abstrakt sein");
 
-        Class<?> fwfmf2 = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold2");
+        final Class<?> fwfmf2 = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold2");
 
         assertEquals(fwfmf, fwfmf2.getSuperclass(),
             "Die Klasse MyFunctionWithFilterMapAndFold2 soll von FunctionWithFilterMapAndFold erben");
@@ -206,8 +212,8 @@ public class TutorTest_H2 {
 
         var erroneous = determineWrongFilterMapFold();
 
-        assertTrue(erroneous.size() <= 1, "Bei MyFunctionWithFilterMapAndFold1" +
-            " schlugen folgende Funktionen fehl: " + erroneous);
+        assertTrue(erroneous.size() <= 1, "Bei MyFunctionWithFilterMapAndFold1"
+            + " schlugen folgende Funktionen fehl: " + erroneous);
     }
 
     private List<String> determineWrongFilterMapFold() {
@@ -250,9 +256,15 @@ public class TutorTest_H2 {
             List<Integer> expected = List.of(128613, 128618, 64289);
             TestUtils.forEach(functions, inits, expected, (f, init, result) -> {
                 var actual = TestUtils.invokeMethod(foldl, null, f, init, TestUtils.mapped);
-                assertEquals(result, actual, "Für Eingabe " + Arrays.toString(TestUtils.mapped) + ", Init " + init +
-                    " und " + (result < 0 ? "Funktion: Math::max" : "Addition") +
-                    " folgt bei foldl nicht der erwartete Wert " + result + " sondern " + actual + " .");
+                assertEquals(result, actual,
+                    String.format("Für Eingabe %s, Init %d und %s folgt bei foldl nicht der erwartete Wert %d sondern %s .",
+                        Arrays.toString(TestUtils.mapped),
+                        init,
+                        result < 0 ? "Funktion: Math::max" : "Addition",
+                        result,
+                        actual
+                    )
+                );
             });
         } catch (Throwable t) {
             erroneous.add("Foldl[" + t.getMessage() + "]");
@@ -263,8 +275,8 @@ public class TutorTest_H2 {
     @Test
     public void myFunctionWithFilterMapAndFold1All() {
         var erroneous = determineWrongFilterMapFold();
-        assertEquals(0, erroneous.size(), "Bei MyFunctionWithFilterMapAndFold1" +
-            " schlugen folgende Funktionen fehl: " + erroneous.toString());
+        assertEquals(0, erroneous.size(), "Bei MyFunctionWithFilterMapAndFold1"
+            + " schlugen folgende Funktionen fehl: " + erroneous);
         var classUT = TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold1");
         assertTrue(Modifier.isPublic(classUT.getModifiers()),
             "Die Klasse MyFunctionWithFilterMapAndFold1 soll öffentlich sein");
@@ -322,11 +334,11 @@ public class TutorTest_H2 {
             assertTrue(Modifier.isPublic(setter.getModifiers()), "setFirstImplementationActive sollte public sein");
             assertTrue(Modifier.isStatic(setter.getModifiers()), "setFirstImplementationActive sollte static sein");
             setter.invoke(null, true);
-            assertTrue((Boolean) getter.invoke(null), "Getter isFirstImplementationActive sollte true zurückgeben," +
-                " nachdem setFirstImplementationActive(true) aufgerufen wurde.");
+            assertTrue((Boolean) getter.invoke(null), "Getter isFirstImplementationActive sollte true zurückgeben,"
+                + " nachdem setFirstImplementationActive(true) aufgerufen wurde.");
             setter.invoke(null, false);
-            assertFalse((Boolean) getter.invoke(null), "Getter isFirstImplementationActive sollte false zurückgeben," +
-                " nachdem setFirstImplementationActive(false) aufgerufen wurde.");
+            assertFalse((Boolean) getter.invoke(null), "Getter isFirstImplementationActive sollte false zurückgeben,"
+                + " nachdem setFirstImplementationActive(false) aufgerufen wurde.");
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail("Getter oder Setter von firstImplementationActive konnte nicht erfolgreich verwendet werden.", e);
         }
@@ -345,46 +357,51 @@ public class TutorTest_H2 {
             assertEquals(fct.getClass(), TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold1"));
             var field = fct.getClass().getSuperclass().getDeclaredField("traits");
             field.setAccessible(true);
-            assertSame(traitsObj, field.get(fct), "Traits vom MyFunctionWithFilterMapAndFold1-Objekt ist nicht das Gleiche wie das im Konstruktor übergebene.");
+            assertSame(traitsObj, field.get(fct),
+                "Traits vom MyFunctionWithFilterMapAndFold1-Objekt ist nicht das Gleiche wie das im Konstruktor übergebene.");
             setter.invoke(null, false);
             var fct2 = create.invoke(null, traitsObj);
             assertEquals(fct2.getClass(), TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold2"));
             var field2 = fct2.getClass().getSuperclass().getDeclaredField("traits");
             field2.setAccessible(true);
-            assertSame(traitsObj, field2.get(fct2), "Traits vom MyFunctionWithFilterMapAndFold2-Objekt ist nicht das Gleiche wie das im Konstruktor übergebene.");
+            assertSame(traitsObj, field2.get(fct2),
+                "Traits vom MyFunctionWithFilterMapAndFold2-Objekt ist nicht das Gleiche wie das im Konstruktor übergebene.");
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
-            fail("Beim Erstellen einer Funktion mit createFunctionWithFilterMapAndFoldCreator konnte nicht erfolgreich verwendet werden.", e);
+            fail("Beim Erstellen einer Funktion mit createFunctionWithFilterMapAndFoldCreator"
+                + "konnte nicht erfolgreich verwendet werden.", e);
         }
     }
 
     @Test
     public void createStrangeFunctionCorrect() {
-        var classUT = TestUtils.getPersonClass("PersonFunctionFactory");
-        var traits = TestUtils.getPersonClass("Traits");
-        var personFilterClass = TestUtils.getPersonClass("PersonFilter");
-        var personToIntFunctionClass = TestUtils.getPersonClass("PersonToIntFunction");
-        var personClass = TestUtils.getPersonClass("Person");
+        final var classUT = TestUtils.getPersonClass("PersonFunctionFactory");
+        final var traits = TestUtils.getPersonClass("Traits");
+        final var personFilterClass = TestUtils.getPersonClass("PersonFilter");
+        final var personToIntFunctionClass = TestUtils.getPersonClass("PersonToIntFunction");
+        final var personClass = TestUtils.getPersonClass("Person");
         try {
-            var createCreateStrangeFunction = classUT.getDeclaredMethod("createStrangeFunction", String.class);
-            var fct = createCreateStrangeFunction.invoke(null, "cake");
-            var field = fct.getClass().getSuperclass().getDeclaredField("traits");
+            final var createCreateStrangeFunction = classUT.getDeclaredMethod("createStrangeFunction", String.class);
+            final var fct = createCreateStrangeFunction.invoke(null, "cake");
+            final var field = fct.getClass().getSuperclass().getDeclaredField("traits");
             field.setAccessible(true);
-            var traitsObj = field.get(fct);
+            final var traitsObj = field.get(fct);
             assertEquals(357, TestUtils.get(traits, traitsObj, "init"), "createStrangeFunctions Init sollte 357 sein");
-            var personFilter = TestUtils.get(traits, traitsObj, "pred");
-            var intOperator = (IntBinaryOperator) TestUtils.get(traits, traitsObj, "op");
-            var personToIntFunction = TestUtils.get(traits, traitsObj, "fct");
+            final var personFilter = TestUtils.get(traits, traitsObj, "pred");
+            final var intOperator = (IntBinaryOperator) TestUtils.get(traits, traitsObj, "op");
+            final var personToIntFunction = TestUtils.get(traits, traitsObj, "fct");
             assertEquals(5, intOperator.applyAsInt(1, 3), "Op sollte  a + b + 1  entsprechen");
             assertEquals(-3, intOperator.applyAsInt(3, -7), "Op sollte  a + b + 1  entsprechen");
-            var person1 = TestUtils.makePerson("cake", "vincent", "baker street", 2, 234);
-            var person2 = TestUtils.makePerson("muffin", "alex", "baker street", 56, 120);
+            final var person1 = TestUtils.makePerson("cake", "vincent", "baker street", 2, 234);
+            final var person2 = TestUtils.makePerson("muffin", "alex", "baker street", 56, 120);
             assertTrue((Boolean) personFilterClass.getDeclaredMethod("test", personClass).invoke(personFilter, person1),
                 "Pred sollte  p -> p.lastName.equals(<parameter>)  entsprechen");
             assertFalse((Boolean) personFilterClass.getDeclaredMethod("test", personClass).invoke(personFilter, person2),
                 "Pred sollte  p -> p.lastName.equals(<parameter>)  entsprechen");
-            assertEquals(234, personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person1),
+            assertEquals(234,
+                personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person1),
                 "Fct sollte  p -> p.postalCode  entsprechen");
-            assertEquals(120, personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person2),
+            assertEquals(120,
+                personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person2),
                 "Fct sollte  p -> p.postalCode  entsprechen");
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
             fail("Beim Testen von createStrangeFunction konnte eine notwendige Operation nicht durchgeführt werden", e);
@@ -460,39 +477,43 @@ public class TutorTest_H2 {
 
     @Test
     public void distanceCorrect() {
-        var classUT = TestUtils.getPersonClass("PersonFunctionFactory");
-        var fctClass = TestUtils.getPersonClass("MyFunctionWithAdjacent");
-        var traits = TestUtils.getPersonClass("Traits");
-        var personFilterClass = TestUtils.getPersonClass("PersonFilter");
-        var personToIntFunctionClass = TestUtils.getPersonClass("PersonToIntFunction");
-        var personClass = TestUtils.getPersonClass("Person");
+        final var classUT = TestUtils.getPersonClass("PersonFunctionFactory");
+        final var fctClass = TestUtils.getPersonClass("MyFunctionWithAdjacent");
+        final var traits = TestUtils.getPersonClass("Traits");
+        final var personFilterClass = TestUtils.getPersonClass("PersonFilter");
+        final var personToIntFunctionClass = TestUtils.getPersonClass("PersonToIntFunction");
+        final var personClass = TestUtils.getPersonClass("Person");
         try {
-            var createCreateStrangeFunction = classUT.getDeclaredMethod("distance");
-            var fct = createCreateStrangeFunction.invoke(null);
+            final var createCreateStrangeFunction = classUT.getDeclaredMethod("distance");
+            final var fct = createCreateStrangeFunction.invoke(null);
             assertEquals(fctClass, fct.getClass());
-            var field = fct.getClass().getSuperclass().getDeclaredField("traits");
+            final var field = fct.getClass().getSuperclass().getDeclaredField("traits");
             field.setAccessible(true);
-            var traitsObj = field.get(fct);
+            final var traitsObj = field.get(fct);
             assertEquals(0, TestUtils.get(traits, traitsObj, "init"), "distance: Init sollte 357 sein");
-            var personFilter = TestUtils.get(traits, traitsObj, "pred");
-            var intOperator = (IntBinaryOperator) TestUtils.get(traits, traitsObj, "op");
-            var combine = (IntBinaryOperator) TestUtils.get(traits, traitsObj, "combine");
-            var personToIntFunction = TestUtils.get(traits, traitsObj, "fct");
+            final var personFilter = TestUtils.get(traits, traitsObj, "pred");
+            final var intOperator = (IntBinaryOperator) TestUtils.get(traits, traitsObj, "op");
+            final var combine = (IntBinaryOperator) TestUtils.get(traits, traitsObj, "combine");
+            final var personToIntFunction = TestUtils.get(traits, traitsObj, "fct");
             assertEquals(4, intOperator.applyAsInt(1, 3), "Op sollte  a + b  entsprechen");
             assertEquals(-4, intOperator.applyAsInt(3, -7), "Op sollte  a + b  entsprechen");
-            var person1 = TestUtils.makePerson("cake", "vincent", "baker street", 2, 234);
-            var person2 = TestUtils.makePerson("muffin", "alex", "baker street", 56, 64289);
+            final var person1 = TestUtils.makePerson("cake", "vincent", "baker street", 2, 234);
+            final var person2 = TestUtils.makePerson("muffin", "alex", "baker street", 56, 64289);
             assertTrue((Boolean) personFilterClass.getDeclaredMethod("test", personClass).invoke(personFilter, person1),
                 "Pred sollte  p -> p.postalCode != 64289  entsprechen");
             assertFalse((Boolean) personFilterClass.getDeclaredMethod("test", personClass).invoke(personFilter, person2),
                 "Pred sollte  p -> p.postalCode != 64289  entsprechen");
-            assertEquals(234, personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person1),
+            assertEquals(234,
+                personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person1),
                 "Fct sollte  p -> p.postalCode  entsprechen");
-            assertEquals(64289, personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person2),
+            assertEquals(64289,
+                personToIntFunctionClass.getDeclaredMethod("apply", personClass).invoke(personToIntFunction, person2),
                 "Fct sollte  p -> p.postalCode  entsprechen");
-            assertEquals(20, combine.applyAsInt(20, 40),
+            assertEquals(20,
+                combine.applyAsInt(20, 40),
                 "Combine sollte  (a, b) -> Math.abs(a - b)  entsprechen");
-            assertEquals(45, combine.applyAsInt(34, -11),
+            assertEquals(45,
+                combine.applyAsInt(34, -11),
                 "Combine sollte  (a, b) -> Math.abs(a - b)  entsprechen");
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
             fail("Beim Testen von createStrangeFunction konnte eine notwendige Operation nicht durchgeführt werden", e);
