@@ -13,8 +13,8 @@ allprojects {
         withSourcesJar()
     }
     dependencies {
-        implementation("org.sourcegrade:jagr-grader-api:0.1.0-SNAPSHOT")
-        implementation("org.junit.jupiter:junit-jupiter:5.7.1")
+        implementation("org.sourcegrade:jagr-grader-api:0.3")
+        implementation("org.junit.jupiter:junit-jupiter:5.8.2")
     }
     tasks {
         withType<JavaCompile> {
