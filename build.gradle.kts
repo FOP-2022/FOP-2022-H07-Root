@@ -2,9 +2,22 @@ plugins {
     java
     id("org.sourcegrade.style") version "1.1.0"
 }
+
+tasks {
+    create<Jar>("graderJar") {
+        group = "build"
+        afterEvaluate {
+            archiveFileName.set("FOP-2022-H07-${project.version}.jar")
+            from(project(":grader").sourceSets.main.get().allSource)
+            from(project(":solution").sourceSets.main.get().allSource)
+        }
+    }
+}
+
 allprojects {
     apply(plugin = "java")
     apply(plugin = "org.sourcegrade.style")
+    version = "1.0.0-SNAPSHOT"
     repositories {
         mavenCentral()
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots")

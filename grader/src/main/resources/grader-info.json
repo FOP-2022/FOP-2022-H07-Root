@@ -1,0 +1,34 @@
+{
+  "name": "FOP-2022-H07",
+  "assignmentIds": [
+    "h07"
+  ],
+  "sourceSets": [
+    {
+      "name": "grader",
+      "files": [
+        "h07/H07_RubricProvider.java",
+        "h07/TestUtils.java",
+        "h07/TriConsumer.java",
+        "h07/TutorTest_H1.java",
+        "h07/TutorTest_H2.java"
+      ]
+    },
+    {
+      "name": "solution",
+      "files": [
+        "h07/person/FunctionWithFilterMapAndFold.java",
+        "h07/person/MyFunctionWithAdjacent.java",
+        "h07/person/MyFunctionWithFilterMapAndFold1.java",
+        "h07/person/MyFunctionWithFilterMapAndFold2.java",
+        "h07/person/Person.java",
+        "h07/person/PersonFilter.java",
+        "h07/person/PersonFunctionFactory.java",
+        "h07/person/PersonToIntFunction.java",
+        "h07/person/Traits.java",
+        "h07/predicate/DoublePredicateFactory.java",
+        "h07/predicate/EpsilonEnvironmentPred.java"
+      ]
+    }
+  ]
+}
