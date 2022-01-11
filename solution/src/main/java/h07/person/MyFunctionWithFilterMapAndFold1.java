@@ -2,6 +2,9 @@ package h07.person;
 
 import java.util.function.IntBinaryOperator;
 
+/**
+ * H2.3
+ */
 public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFold {
     public MyFunctionWithFilterMapAndFold1(Traits traits) {
         super(traits);

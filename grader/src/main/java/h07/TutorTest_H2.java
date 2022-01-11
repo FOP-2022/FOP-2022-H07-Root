@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * The JUnit tests for H2.
+ */
 @TestForSubmission("h07")
 public class TutorTest_H2 {
 

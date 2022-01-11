@@ -1,5 +1,8 @@
 package h07.person;
 
+/**
+ * H2.3
+ */
 public abstract class FunctionWithFilterMapAndFold {
     protected final Traits traits;
 

@@ -1,5 +1,8 @@
 package h07.person;
 
+/**
+ * H2.6
+ */
 public class MyFunctionWithAdjacent extends FunctionWithFilterMapAndFold {
 
     /**

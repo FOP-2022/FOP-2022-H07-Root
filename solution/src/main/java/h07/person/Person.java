@@ -1,5 +1,8 @@
 package h07.person;
 
+/**
+ * H2.1
+ */
 public class Person {
     private String lastName;
     private String firstName;

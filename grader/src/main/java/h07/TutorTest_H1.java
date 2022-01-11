@@ -12,6 +12,9 @@ import java.util.function.DoublePredicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * The JUnit tests for H1.
+ */
 @TestForSubmission("h07")
 public class TutorTest_H1 {
 

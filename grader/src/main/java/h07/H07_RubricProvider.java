@@ -8,6 +8,9 @@ import org.sourcegrade.jagr.api.rubric.RubricForSubmission;
 import org.sourcegrade.jagr.api.rubric.RubricProvider;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 
+/**
+ * The rubric provider for h07, see {@link RubricProvider}.
+ */
 @RubricForSubmission("h07")
 public class H07_RubricProvider implements RubricProvider {
     /*---------------------------------- H1 ----------------------------------*/

@@ -1,5 +1,8 @@
 package h07;
 
+/**
+ * A consumer that accepts three arguments.
+ */
 @FunctionalInterface
 public interface TriConsumer<T, S, R> {
 
