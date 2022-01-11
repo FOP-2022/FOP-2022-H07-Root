@@ -1,8 +1,10 @@
 plugins {
     java
+    id("org.sourcegrade.style") version "0.1.0"
 }
 allprojects {
     apply(plugin = "java")
+    apply(plugin = "org.sourcegrade.style")
     repositories {
         mavenCentral()
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots")

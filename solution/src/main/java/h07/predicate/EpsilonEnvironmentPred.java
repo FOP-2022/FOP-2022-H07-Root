@@ -2,13 +2,17 @@ package h07.predicate;
 
 import java.util.function.DoublePredicate;
 
+/**
+ * A predicate that tests whether a given {@code double value} is within an {@code epsilon} distance
+ * from {@code x0}.
+ */
 public class EpsilonEnvironmentPred implements DoublePredicate {
 
     private final double epsilon;
     private final double x0;
 
     /**
-     * Constructs the object
+     * Constructs the object.
      *
      * @param x0      the target value
      * @param epsilon the acceptable difference
@@ -19,7 +23,7 @@ public class EpsilonEnvironmentPred implements DoublePredicate {
     }
 
     /**
-     * Test if the value is close enough to the target
+     * Test if the value is close enough to the target.
      *
      * @param value the value to test
      * @return true if the absolute difference is less than epsilon

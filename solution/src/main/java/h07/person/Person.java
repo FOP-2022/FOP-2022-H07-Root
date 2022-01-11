@@ -8,7 +8,7 @@ public class Person {
     private int postalCode;
 
     /**
-     * Constructs a Person Object
+     * Constructs a {@code Person} Object.
      *
      * @param lastName    the lastname
      * @param firstName   the firstname
@@ -25,90 +25,90 @@ public class Person {
     }
 
     /**
-     * the lastname of the person
+     * The lastname of the person.
      *
-     * @return lastname
+     * @return The last name of the person
      */
     public String getLastName() {
         return lastName;
     }
 
     /**
-     * Sets the lastName
+     * Sets the lastName of the person.
      *
-     * @param lastName the lastName to set
+     * @param lastName The lastName to set
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
     /**
-     * the firstname of the person
+     * The firstname of the person.
      *
-     * @return firstname
+     * @return The first name of the person
      */
     public String getFirstName() {
         return firstName;
     }
 
     /**
-     * Sets the firstName
+     * Sets the firstName of the person.
      *
-     * @param firstName the firstName to set
+     * @param firstName The first name to set
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
     /**
-     * the street of the person
+     * The street of the person.
      *
-     * @return street
+     * @return The street of the person
      */
     public String getStreet() {
         return street;
     }
 
     /**
-     * Sets the street
+     * Sets the street of the person.
      *
-     * @param street the street to set
+     * @param street The street to set
      */
     public void setStreet(String street) {
         this.street = street;
     }
 
     /**
-     * the houseNumber of the person
+     * The houseNumber of the person.
      *
-     * @return houseNumber
+     * @return The house number of the person
      */
     public int getHouseNumber() {
         return houseNumber;
     }
 
     /**
-     * Sets the houseNumber
+     * Sets the house number of the person.
      *
-     * @param houseNumber the houseNumber to set
+     * @param houseNumber The house number to set
      */
     public void setHouseNumber(int houseNumber) {
         this.houseNumber = houseNumber;
     }
 
     /**
-     * the postalCode of the person
+     * The postal code of the person.
      *
-     * @return postalCode
+     * @return The postal code of the person
      */
     public int getPostalCode() {
         return postalCode;
     }
 
     /**
-     * Sets the postalCode
+     * Sets the postal code of the person.
      *
-     * @param postalCode the postalCode to set
+     * @param postalCode The postalCode to set
      */
     public void setPostalCode(int postalCode) {
         this.postalCode = postalCode;

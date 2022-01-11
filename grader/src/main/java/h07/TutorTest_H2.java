@@ -393,9 +393,9 @@ public class TutorTest_H2 {
 
     @Test
     public void myFunctionWithAdjacentExistsAndCombineInTraits() {
-        Class<?> classUT = TestUtils.getPersonClass("MyFunctionWithAdjacent");
-        Class<?> traits = TestUtils.getPersonClass("Traits");
-        Class<?> fwfmf = TestUtils.getPersonClass("FunctionWithFilterMapAndFold");
+        final Class<?> classUT = TestUtils.getPersonClass("MyFunctionWithAdjacent");
+        final Class<?> traits = TestUtils.getPersonClass("Traits");
+        final Class<?> fwfmf = TestUtils.getPersonClass("FunctionWithFilterMapAndFold");
 
         assertEquals(fwfmf, classUT.getSuperclass(),
             "Die Klasse MyFunctionWithAdjacent soll von FunctionWithFilterMapAndFold erben");

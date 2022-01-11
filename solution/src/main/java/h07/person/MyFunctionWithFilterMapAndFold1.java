@@ -8,7 +8,7 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
     }
 
     /**
-     * Filters people according to a filter
+     * Filters people according to a filter.
      *
      * @param people an array of {@link Person}
      * @param filter a {@link PersonFilter} to filter matching
@@ -28,7 +28,7 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
     }
 
     /**
-     * Maps all people to a corresponding int
+     * Maps all people to a corresponding int.
      *
      * @param people an array of {@link Person}
      * @param map    a {@link PersonToIntFunction} that realises the mapping to int
@@ -43,7 +43,7 @@ public class MyFunctionWithFilterMapAndFold1 extends FunctionWithFilterMapAndFol
     }
 
     /**
-     * Folds many int values into one, from left to right
+     * Folds many int values into one, from left to right.
      *
      * @param ints     the int values
      * @param init     the start value

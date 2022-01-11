@@ -2,6 +2,10 @@ package h07.person;
 
 import java.util.function.IntBinaryOperator;
 
+/**
+ * A collection of functional types and other traits (such as {@code init}) that are used
+ * to configure other functional types.
+ */
 public class Traits {
     private final IntBinaryOperator op;
     private final int init;
@@ -10,7 +14,7 @@ public class Traits {
     private final IntBinaryOperator combine;
 
     /**
-     * Constructs the object. See {@link FunctionWithFilterMapAndFold} for usage
+     * Constructs the object. See {@link FunctionWithFilterMapAndFold} for usage.
      *
      * @param op      the foldl operator
      * @param init    the initial value for foldl
@@ -27,7 +31,7 @@ public class Traits {
     }
 
     /**
-     * the foldl operator
+     * The foldl operator.
      *
      * @return op
      */
@@ -36,7 +40,7 @@ public class Traits {
     }
 
     /**
-     * the initial value for foldl
+     * The initial value for foldl.
      *
      * @return init
      */
@@ -45,7 +49,7 @@ public class Traits {
     }
 
     /**
-     * the mapping function
+     * The mapping function.
      *
      * @return fct
      */
@@ -54,7 +58,7 @@ public class Traits {
     }
 
     /**
-     * the predicate used for filtering
+     * The predicate used for filtering.
      *
      * @return pred
      */
@@ -63,7 +67,7 @@ public class Traits {
     }
 
     /**
-     * the combination function for two ints
+     * The combination function for two ints.
      *
      * @return combine
      */

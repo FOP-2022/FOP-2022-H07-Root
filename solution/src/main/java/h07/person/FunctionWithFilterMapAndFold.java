@@ -13,7 +13,7 @@ public abstract class FunctionWithFilterMapAndFold {
     }
 
     /**
-     * Apply filter, map and fold to the input array, according to {@link Traits}
+     * Apply filter, map and fold to the input array, according to {@link Traits}.
      *
      * @param people an array of {@link Person} that should be processed
      * @return the filtered, mapped and folded result

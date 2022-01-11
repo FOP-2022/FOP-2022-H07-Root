@@ -2,6 +2,9 @@ package h07.predicate;
 
 import java.util.function.DoublePredicate;
 
+/**
+ * A utility class with static methods to create a {@link DoublePredicate}.
+ */
 public class DoublePredicateFactory {
 
     /**
@@ -19,7 +22,7 @@ public class DoublePredicateFactory {
     }
 
     /**
-     * Combines the predicates with a logical OR
+     * Combines the predicates with a logical OR.
      *
      * @param predicates the predicates to combine
      * @param forward    if false combines them in opposite iteration direction
@@ -42,7 +45,7 @@ public class DoublePredicateFactory {
     }
 
     /**
-     * Combines the predicates with a logical AND
+     * Combines the predicates with a logical AND.
      *
      * @param predicates the predicates to combine
      * @return the Conjunction over predicates
@@ -52,6 +55,8 @@ public class DoublePredicateFactory {
     }
 
     /**
+     * Combines the predicates with a logical AND.
+     *
      * @param acc        collects the already build conjunction
      * @param predicates the predicates to combine
      * @param i          recursive counter
@@ -74,15 +79,15 @@ public class DoublePredicateFactory {
      */
     public static DoublePredicate getDefaultComplexPredicate() {
         DoublePredicate[][] predicates = new DoublePredicate[3][];
-        final var LARGE_ARRAY_SIZE = 1000;
-        predicates[0] = new EpsilonEnvironmentPred[LARGE_ARRAY_SIZE];
-        predicates[1] = new DoublePredicate[LARGE_ARRAY_SIZE];
-        for (int i = 0; i < LARGE_ARRAY_SIZE; i++) {
+        final var largeArraySize = 1000;
+        predicates[0] = new EpsilonEnvironmentPred[largeArraySize];
+        predicates[1] = new DoublePredicate[largeArraySize];
+        for (int i = 0; i < largeArraySize; i++) {
             predicates[0][i] = new EpsilonEnvironmentPred(i + 0.5, i / 50000.0);
             int backwardsI = i + 1;
-            predicates[1][LARGE_ARRAY_SIZE - backwardsI] = d -> Math.abs(1000 - backwardsI + 0.5 - d) < backwardsI / 50000.0;
+            predicates[1][largeArraySize - backwardsI] = d -> Math.abs(1000 - backwardsI + 0.5 - d) < backwardsI / 50000.0;
         }
-        predicates[2] = new DoublePredicate[]{
+        predicates[2] = new DoublePredicate[] {
             d -> d >= -20 * Math.PI && d <= 10 * Math.E,
             d -> Math.sin(d) > Math.cos(d),
             d -> d < Math.pow(Math.log(d), 3),
@@ -91,8 +96,8 @@ public class DoublePredicateFactory {
     }
 
     /**
-     * Returns a predicate configured by decimalPlaces and divisor, as such that any value satisfies the predicate, iff
-     * the sum of its first "decimalPlaces" digits of its decimalPlaces in decimal notation is divisible by divisor
+     * Returns a predicate configured by decimalPlaces and divisor, so that any value satisfies the predicate, iff
+     * the sum of its first "decimalPlaces" digits of its decimalPlaces in decimal notation is divisible by divisor.
      *
      * @param decimalPlaces the number of decimal places to consider (e.g. decimalPlaces = 3 and input 1.23456 leads to 234
      * @param divisor       the divisor to divide the sum of decimalPlaces by
