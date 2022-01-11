@@ -22,15 +22,15 @@ public class TutorTest_H1 {
     public void epsilonEnvironmentPredExists() {
         Class<?> epsilonEnvironmentPred = null;
         try {
-            epsilonEnvironmentPred = Class
-                .forName("h07.predicate.EpsilonEnvironmentPred");
+            epsilonEnvironmentPred = Class.forName("h07.predicate.EpsilonEnvironmentPred");
         } catch (ClassNotFoundException e) {
             fail("Die Klasse EpsilonEnvironmentPred existiert nicht");
         }
 
-        assertTrue(
-            Modifier.isPublic(epsilonEnvironmentPred.getModifiers()), "EpsilonEnvironmentPred soll öffentlich sein");
-        assertFalse(epsilonEnvironmentPred.isInterface(), "EpsilonEnvironmentPred soll eine Klasse sein");
+        assertTrue(Modifier.isPublic(epsilonEnvironmentPred.getModifiers()),
+            "EpsilonEnvironmentPred soll öffentlich sein");
+        assertFalse(epsilonEnvironmentPred.isInterface(),
+            "EpsilonEnvironmentPred soll eine Klasse sein");
         assertTrue(DoublePredicate.class.isAssignableFrom(epsilonEnvironmentPred));
     }
 
@@ -38,8 +38,7 @@ public class TutorTest_H1 {
     public void epsilonEnvironmentPredMostlyCorrect() {
         Class<?> epsilonEnvironmentPred = null;
         try {
-            epsilonEnvironmentPred = Class
-                .forName("h07.predicate.EpsilonEnvironmentPred");
+            epsilonEnvironmentPred = Class.forName("h07.predicate.EpsilonEnvironmentPred");
         } catch (ClassNotFoundException e) {
             fail("Die Klasse EpsilonEnvironmentPred existiert nicht");
         }

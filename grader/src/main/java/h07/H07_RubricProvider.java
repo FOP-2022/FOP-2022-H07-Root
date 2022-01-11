@@ -6,7 +6,6 @@ import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
 import org.sourcegrade.jagr.api.rubric.RubricForSubmission;
 import org.sourcegrade.jagr.api.rubric.RubricProvider;
-import org.sourcegrade.jagr.api.testing.TestCycle;
 
 /**
  * The rubric provider for h07, see {@link RubricProvider}.
@@ -111,8 +110,6 @@ public class H07_RubricProvider implements RubricProvider {
         .grader(Grader.testAwareBuilder()
             .requirePass(JUnitTestRef.ofMethod(() ->
                 TutorTest_H1.class.getMethod("getDefaultComplexPredicateWorks")))
-            /*.requirePass(JUnitTestRef.ofMethod(() ->
-              TutorTest_H1.class.getMethod("lambdaInCorrectForm", TestCycle.class)))*/
             .pointsPassedMax()
             .pointsFailedMin()
             .build()
@@ -144,8 +141,6 @@ public class H07_RubricProvider implements RubricProvider {
         .grader(Grader.testAwareBuilder()
             .requirePass(JUnitTestRef.ofMethod(() ->
                 TutorTest_H1.class.getMethod("checksumPredIsFullyCorrect")))
-            .requirePass(JUnitTestRef.ofMethod(() ->
-                TutorTest_H1.class.getMethod("lambdaInCorrectForm", TestCycle.class)))
             .pointsPassedMax()
             .pointsFailedMin()
             .build()
