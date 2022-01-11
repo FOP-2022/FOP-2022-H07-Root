@@ -26,7 +26,7 @@ class TestUtils {
     static Class<?> getPersonClass(String s) {
         Class<?> personFilter = null;
         try {
-            personFilter = Class.forName("H07.person." + s);
+            personFilter = Class.forName("h07.person." + s);
         } catch (ClassNotFoundException e) {
             fail("Die Klasse " + s + " existiert nicht");
         }
