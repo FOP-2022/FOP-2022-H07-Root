@@ -3,7 +3,6 @@ package h07;
 import h07.person.Person;
 import h07.person.PersonFilter;
 import h07.person.PersonToIntFunction;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
@@ -19,42 +18,43 @@ import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.IntBinaryOperator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-class TestUtils {
-    @NotNull
-    static Class<?> getPersonClass(String s) {
+public class TestUtils {
+    public static Class<?> getPersonClass(String s) {
         Class<?> personFilter = null;
         try {
             personFilter = Class.forName("h07.person." + s);
         } catch (ClassNotFoundException e) {
-            fail("Die Klasse " + s + " existiert nicht");
+            fail("Die Klasse " +  s + " existiert nicht");
         }
         return personFilter;
     }
 
-    static Object personGet(Class<?> clazz, Object person, String name) {
+    public static Object personGet(Class<?> clazz, Object person, String name) {
         try {
-            var field = clazz.getField(name);
-            return field.get(person);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+            var getter = Arrays.stream(clazz.getMethods()).filter(me -> me.getName().toLowerCase()
+                .contains(name.toLowerCase()) && me.getName().contains("get")).findAny().orElseThrow(NoSuchMethodException::new);
+            return getter.invoke(person);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             fail("Attribut " + name + " eines Person-Objekts konnte nicht bestimmt werden  ");
             throw new RuntimeException(e);
         }
     }
 
-    static Object get(Class<?> clazz, Object traits, String name) {
+    public static Object get(Class<?> clazz, Object traits, String name) {
         try {
             var getter = Arrays.stream(clazz.getMethods()).filter(me -> me.getName().toLowerCase()
-                .contains(name.toLowerCase())).findAny().orElseThrow();
+                .contains(name.toLowerCase())).findAny().orElseThrow(NoSuchMethodException::new);
             return getter.invoke(traits);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             fail("Attribut " + name + " eines Objekts von Typ " + clazz.getSimpleName() + " konnte nicht bestimmt werden  ");
             throw new RuntimeException(e);
         }
     }
 
-    static Method getMethod(Class<?> clazz, String name, Class<?>... parameter) {
+    public static Method getMethod(Class<?> clazz, String name, Class<?>... parameter) {
         try {
             return clazz.getMethod(name, parameter);
         } catch (NoSuchMethodException e) {
@@ -63,7 +63,7 @@ class TestUtils {
         }
     }
 
-    static Object invokeMethod(Method method, Object caller, Object... parameter) {
+    public static Object invokeMethod(Method method, Object caller, Object... parameter) {
         try {
             return method.invoke(caller, parameter);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -72,7 +72,7 @@ class TestUtils {
         }
     }
 
-    static Field getField(Class<?> clazz, String name) {
+    public static Field getField(Class<?> clazz, String name) {
         try {
             return clazz.getDeclaredField(name);
         } catch (NoSuchFieldException e) {
@@ -81,7 +81,7 @@ class TestUtils {
         }
     }
 
-    static <T, R> void forEach(Collection<T> inputT, Collection<R> inputR, BiConsumer<T, R> biConsumer) {
+    public static <T, R> void forEach(Collection<T> inputT, Collection<R> inputR, BiConsumer<T, R> biConsumer) {
         Iterator<R> rit = inputR.iterator();
         Iterator<T> tit = inputT.iterator();
         while (tit.hasNext() && rit.hasNext()) {
@@ -89,8 +89,8 @@ class TestUtils {
         }
     }
 
-    static <T, R, S> void forEach(Collection<T> inputT, Collection<R> inputR, Collection<S> inputS,
-                                  TriConsumer<T, R, S> triConsumer) {
+    public static <T, R, S> void forEach(Collection<T> inputT, Collection<R> inputR, Collection<S> inputS,
+                                         TriConsumer<T, R, S> triConsumer) {
         Iterator<R> rit = inputR.iterator();
         Iterator<T> tit = inputT.iterator();
         Iterator<S> sit = inputS.iterator();
@@ -99,7 +99,7 @@ class TestUtils {
         }
     }
 
-    static Object makePerson(String lastName, String firstName, String street, int houseNumber, int postalCode) {
+    public static Object makePerson(String lastName, String firstName, String street, int houseNumber, int postalCode) {
         var person = getPersonClass("Person");
         try {
             return person.getConstructor(String.class, String.class, String.class, int.class, int.class)
@@ -110,7 +110,7 @@ class TestUtils {
         }
     }
 
-    static Object people() {
+    public static Object people() {
         var init = new Object[]{
             makePerson("a", "a", "a", 3, 3),
             makePerson("a", "a", "a", 2, 3),
@@ -130,7 +130,7 @@ class TestUtils {
         return result;
     }
 
-    static Object filtered() {
+    public static Object filtered() {
         var init = new Object[]{
             makePerson("a", "a", "a", 3, 3),
             makePerson("a", "a", "a", 2, 3),
@@ -143,7 +143,8 @@ class TestUtils {
         return result;
     }
 
-    static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
+    public static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
+
 
     static void assertPeopleEquals(Object[] filtered, Object[] result) {
         assertEquals(filtered.length, result.length);
@@ -161,7 +162,7 @@ class TestUtils {
         assertEquals(personGet(person, p1, "street"), personGet(person, p2, "street"));
     }
 
-    static Object getTraitsObject(boolean withCombine) {
+    public static Object getTraitsObject(boolean withCombine) {
         var personFilter = personFilter();
         var personToIntFunction = personToIntFunction();
         var traits = TestUtils.getPersonClass("Traits");
@@ -184,13 +185,13 @@ class TestUtils {
                 }
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            fail("Der Konstruktor des Traits-Objekt (das zur Erstellung der "
-                + "MyFunctionWithFilterMapAndFold1 nötig ist) konnte nicht erfolgreich aufgerufen werden.", e);
+            fail("Der Konstruktor des Traits-Objekt (das zur Erstellung der " +
+                "MyFunctionWithFilterMapAndFold1 nötig ist) konnte nicht erfolgreich aufgerufen werden.", e);
         }
         return traitsObj;
     }
 
-    static Object personFilter() {
+    public static Object personFilter() {
         try {
             final MethodHandles.Lookup lookup = MethodHandles.lookup();
             MethodType methodType = MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"));
@@ -198,21 +199,22 @@ class TestUtils {
                 "test",
                 MethodType.methodType(TestUtils.getPersonClass("PersonFilter")),
                 methodType,
-                lookup.findStatic(TestUtils.class, "postalCodeEquals3",
+                lookup.findStatic(TestUtils.class, "postalCodeEquals1",
                     MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"))),
                 methodType);
             return (PersonFilter) site.getTarget().invokeExact();
+
         } catch (Throwable t) {
             t.printStackTrace();
             throw new RuntimeException();
         }
     }
 
-    private static boolean postalCodeEquals3(Person p) {
+    private static boolean postalCodeEquals1(Person p) {
         return p.getPostalCode() == 3;
     }
 
-    static Object personToIntFunction() {
+    public static Object personToIntFunction() {
         try {
             final MethodHandles.Lookup lookup = MethodHandles.lookup();
             MethodType methodType = MethodType.methodType(int.class, TestUtils.getPersonClass("Person"));
@@ -220,8 +222,7 @@ class TestUtils {
                 "apply",
                 MethodType.methodType(TestUtils.getPersonClass("PersonToIntFunction")),
                 methodType,
-                lookup.findStatic(TestUtils.class, "personIntProduct",
-                    MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
+                lookup.findStatic(TestUtils.class, "personIntProduct", MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
                 methodType);
             return (PersonToIntFunction) site.getTarget().invokeExact();
         } catch (Throwable t) {
