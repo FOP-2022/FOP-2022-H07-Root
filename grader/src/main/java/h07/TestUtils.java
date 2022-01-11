@@ -21,8 +21,8 @@ import java.util.function.IntBinaryOperator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TestUtils {
-    public static Class<?> getPersonClass(String s) {
+class TestUtils {
+    static Class<?> getPersonClass(String s) {
         Class<?> personFilter = null;
         try {
             personFilter = Class.forName("h07.person." + s);
@@ -32,7 +32,7 @@ public class TestUtils {
         return personFilter;
     }
 
-    public static Object personGet(Class<?> clazz, Object person, String name) {
+    static Object personGet(Class<?> clazz, Object person, String name) {
         try {
             var getter = Arrays.stream(clazz.getMethods()).filter(me -> me.getName().toLowerCase()
                 .contains(name.toLowerCase()) && me.getName().contains("get")).findAny().orElseThrow(NoSuchMethodException::new);
@@ -43,7 +43,7 @@ public class TestUtils {
         }
     }
 
-    public static Object get(Class<?> clazz, Object traits, String name) {
+    static Object get(Class<?> clazz, Object traits, String name) {
         try {
             var getter = Arrays.stream(clazz.getMethods()).filter(me -> me.getName().toLowerCase()
                 .contains(name.toLowerCase())).findAny().orElseThrow(NoSuchMethodException::new);
@@ -54,7 +54,7 @@ public class TestUtils {
         }
     }
 
-    public static Method getMethod(Class<?> clazz, String name, Class<?>... parameter) {
+    static Method getMethod(Class<?> clazz, String name, Class<?>... parameter) {
         try {
             return clazz.getMethod(name, parameter);
         } catch (NoSuchMethodException e) {
@@ -63,7 +63,7 @@ public class TestUtils {
         }
     }
 
-    public static Object invokeMethod(Method method, Object caller, Object... parameter) {
+    static Object invokeMethod(Method method, Object caller, Object... parameter) {
         try {
             return method.invoke(caller, parameter);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -72,7 +72,7 @@ public class TestUtils {
         }
     }
 
-    public static Field getField(Class<?> clazz, String name) {
+    static Field getField(Class<?> clazz, String name) {
         try {
             return clazz.getDeclaredField(name);
         } catch (NoSuchFieldException e) {
@@ -81,7 +81,7 @@ public class TestUtils {
         }
     }
 
-    public static <T, R> void forEach(Collection<T> inputT, Collection<R> inputR, BiConsumer<T, R> biConsumer) {
+    static <T, R> void forEach(Collection<T> inputT, Collection<R> inputR, BiConsumer<T, R> biConsumer) {
         Iterator<R> rit = inputR.iterator();
         Iterator<T> tit = inputT.iterator();
         while (tit.hasNext() && rit.hasNext()) {
@@ -89,7 +89,7 @@ public class TestUtils {
         }
     }
 
-    public static <T, R, S> void forEach(Collection<T> inputT, Collection<R> inputR, Collection<S> inputS,
+    static <T, R, S> void forEach(Collection<T> inputT, Collection<R> inputR, Collection<S> inputS,
                                          TriConsumer<T, R, S> triConsumer) {
         Iterator<R> rit = inputR.iterator();
         Iterator<T> tit = inputT.iterator();
@@ -99,7 +99,7 @@ public class TestUtils {
         }
     }
 
-    public static Object makePerson(String lastName, String firstName, String street, int houseNumber, int postalCode) {
+    static Object makePerson(String lastName, String firstName, String street, int houseNumber, int postalCode) {
         var person = getPersonClass("Person");
         try {
             return person.getConstructor(String.class, String.class, String.class, int.class, int.class)
@@ -110,7 +110,7 @@ public class TestUtils {
         }
     }
 
-    public static Object people() {
+    static Object people() {
         var init = new Object[]{
             makePerson("a", "a", "a", 3, 3),
             makePerson("a", "a", "a", 2, 3),
@@ -130,7 +130,7 @@ public class TestUtils {
         return result;
     }
 
-    public static Object filtered() {
+    static Object filtered() {
         var init = new Object[]{
             makePerson("a", "a", "a", 3, 3),
             makePerson("a", "a", "a", 2, 3),
@@ -143,7 +143,7 @@ public class TestUtils {
         return result;
     }
 
-    public static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
+    static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
 
 
     static void assertPeopleEquals(Object[] filtered, Object[] result) {
@@ -162,7 +162,7 @@ public class TestUtils {
         assertEquals(personGet(person, p1, "street"), personGet(person, p2, "street"));
     }
 
-    public static Object getTraitsObject(boolean withCombine) {
+    static Object getTraitsObject(boolean withCombine) {
         var personFilter = personFilter();
         var personToIntFunction = personToIntFunction();
         var traits = TestUtils.getPersonClass("Traits");
@@ -185,13 +185,13 @@ public class TestUtils {
                 }
             }
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            fail("Der Konstruktor des Traits-Objekt (das zur Erstellung der " +
-                "MyFunctionWithFilterMapAndFold1 nötig ist) konnte nicht erfolgreich aufgerufen werden.", e);
+            fail("Der Konstruktor des Traits-Objekt (das zur Erstellung der "
+                + "MyFunctionWithFilterMapAndFold1 nötig ist) konnte nicht erfolgreich aufgerufen werden.", e);
         }
         return traitsObj;
     }
 
-    public static Object personFilter() {
+    static Object personFilter() {
         try {
             final MethodHandles.Lookup lookup = MethodHandles.lookup();
             MethodType methodType = MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"));
@@ -214,7 +214,7 @@ public class TestUtils {
         return p.getPostalCode() == 3;
     }
 
-    public static Object personToIntFunction() {
+    static Object personToIntFunction() {
         try {
             final MethodHandles.Lookup lookup = MethodHandles.lookup();
             MethodType methodType = MethodType.methodType(int.class, TestUtils.getPersonClass("Person"));
@@ -222,7 +222,8 @@ public class TestUtils {
                 "apply",
                 MethodType.methodType(TestUtils.getPersonClass("PersonToIntFunction")),
                 methodType,
-                lookup.findStatic(TestUtils.class, "personIntProduct", MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
+                lookup.findStatic(TestUtils.class, "personIntProduct",
+                    MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
                 methodType);
             return (PersonToIntFunction) site.getTarget().invokeExact();
         } catch (Throwable t) {
