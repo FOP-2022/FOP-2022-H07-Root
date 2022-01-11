@@ -18,8 +18,7 @@ import java.util.Iterator;
 import java.util.function.BiConsumer;
 import java.util.function.IntBinaryOperator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TestUtils {
     static Class<?> getPersonClass(String s) {
@@ -27,7 +26,7 @@ class TestUtils {
         try {
             personFilter = Class.forName("h07.person." + s);
         } catch (ClassNotFoundException e) {
-            fail("Die Klasse " +  s + " existiert nicht");
+            fail("Die Klasse " + s + " existiert nicht");
         }
         return personFilter;
     }
@@ -90,7 +89,7 @@ class TestUtils {
     }
 
     static <T, R, S> void forEach(Collection<T> inputT, Collection<R> inputR, Collection<S> inputS,
-                                         TriConsumer<T, R, S> triConsumer) {
+                                  TriConsumer<T, R, S> triConsumer) {
         Iterator<R> rit = inputR.iterator();
         Iterator<T> tit = inputT.iterator();
         Iterator<S> sit = inputS.iterator();
@@ -144,7 +143,6 @@ class TestUtils {
     }
 
     static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
-
 
     static void assertPeopleEquals(Object[] filtered, Object[] result) {
         assertEquals(filtered.length, result.length);
@@ -203,7 +201,6 @@ class TestUtils {
                     MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"))),
                 methodType);
             return (PersonFilter) site.getTarget().invokeExact();
-
         } catch (Throwable t) {
             t.printStackTrace();
             throw new RuntimeException();
