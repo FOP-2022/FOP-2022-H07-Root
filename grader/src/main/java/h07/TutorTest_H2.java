@@ -1,6 +1,8 @@
 package h07;
 
 import h07.person.Person;
+import h07.person.PersonFilter;
+import h07.person.PersonToIntFunction;
 import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 
@@ -13,6 +15,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
 
@@ -174,8 +177,8 @@ public class TutorTest_H2 {
         assertTrue(Modifier.isAbstract(fwfmf.getModifiers()),
             "Die Klasse FunctionWithFilterMapAndFold soll abstrakt sein");
         final var f = TestUtils.getField(fwfmf, "traits");
-        assertTrue(Modifier.isFinal(f.getModifiers()));
-        assertTrue(Modifier.isProtected(f.getModifiers()));
+        assertTrue(Modifier.isFinal(f.getModifiers()), "Das Traits-Attribut in FunctionWithFilterMapAndFold sollte final sein");
+        assertTrue(Modifier.isProtected(f.getModifiers()), "Das Traits-Attribut in FunctionWithFilterMapAndFold sollte protected sein");
         assertEquals(traits, f.getType());
 
         final var cons = Arrays.stream(fwfmf.getConstructors())
@@ -228,37 +231,33 @@ public class TutorTest_H2 {
         assertFalse(Modifier.isAbstract(classUT.getModifiers()),
             "Die Klasse MyFunctionWithFilterMapAndFold1 soll nicht abstrakt sein");
         try {
-            var filter = TestUtils.getMethod(classUT, "filter",
-                TestUtils.getPersonClass("PersonFilter"),
-                Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
+            var filter = TestUtils.getHigherOrderMethod(classUT, "filter");
             var personFilter = TestUtils.personFilter();
-            var actual = TestUtils.invokeMethod(filter, null, personFilter, TestUtils.people());
+            var actual = TestUtils.invokeHigherOrderMethod(filter,
+                TestUtils.makeTraits(Map.of(PersonFilter.class, new ArrayList<>(List.of(personFilter)))), personFilter, TestUtils.people());
             TestUtils.assertPeopleEquals((Object[]) TestUtils.filtered(), (Object[]) actual);
         } catch (Throwable t) {
-            erroneous.add("Filter[" + t.getMessage() + "]");
+            erroneous.add("Filter[" + (t.getMessage() == null ? t.getClass().getSimpleName() : t.getMessage()) + "]");
         }
 
         try {
-            var map = TestUtils.getMethod(classUT, "map",
-                TestUtils.getPersonClass("PersonToIntFunction"),
-                Array.newInstance(TestUtils.getPersonClass("Person"), 0).getClass());
+            var map = TestUtils.getHigherOrderMethod(classUT, "map");
             var personToIntFunction = TestUtils.personToIntFunction();
-            var actual = TestUtils.invokeMethod(map, null, personToIntFunction, TestUtils.people());
+            var actual = TestUtils.invokeHigherOrderMethod(map,
+                TestUtils.makeTraits(Map.of(PersonToIntFunction.class, new ArrayList<>(List.of(personToIntFunction)))), personToIntFunction, TestUtils.people());
             assertArrayEquals(TestUtils.mapped, (int[]) actual);
         } catch (Throwable t) {
-            erroneous.add("Map[" + t.getMessage() + "]");
+            erroneous.add("Map[" + (t.getMessage() == null ? t.getClass().getSimpleName() : t.getMessage()) + "]");
         }
 
         try {
-            var foldl = TestUtils.getMethod(classUT, "foldl",
-                IntBinaryOperator.class,
-                int.class,
-                int[].class);
+            var foldl = TestUtils.getHigherOrderMethod(classUT, "fold");
             List<IntBinaryOperator> functions = List.of(Integer::sum, Integer::sum, Math::max);
             List<Integer> inits = List.of(0, 5, 5);
             List<Integer> expected = List.of(128613, 128618, 64289);
             TestUtils.forEach(functions, inits, expected, (f, init, result) -> {
-                var actual = TestUtils.invokeMethod(foldl, null, f, init, TestUtils.mapped);
+                var actual = TestUtils.invokeHigherOrderMethod(foldl,
+                    TestUtils.makeTraits(Map.of(IntBinaryOperator.class, new ArrayList<>(List.of(f)), int.class, new ArrayList<>(List.of(init)))), f, init, TestUtils.mapped);
                 assertEquals(result, actual,
                     String.format("Für Eingabe %s, Init %d und %s folgt bei foldl nicht der erwartete Wert %d sondern %s .",
                         Arrays.toString(TestUtils.mapped),
@@ -270,7 +269,7 @@ public class TutorTest_H2 {
                 );
             });
         } catch (Throwable t) {
-            erroneous.add("Foldl[" + t.getMessage() + "]");
+            erroneous.add("Foldl[" + (t.getMessage() == null ? t.getClass().getSimpleName() : t.getMessage()) + "]");
         }
         return erroneous;
     }
@@ -355,23 +354,31 @@ public class TutorTest_H2 {
             var setter = classUT.getDeclaredMethod("setFirstImplementationActive", boolean.class);
             var create = classUT.getDeclaredMethod("createFunctionWithFilterMapAndFold", traits);
             var traitsObj = TestUtils.getTraitsObject(false);
-            setter.invoke(null, true);
+            try {
+                setter.invoke(null, true);
+            } catch (Exception e) {
+                setter.invoke(classUT.getDeclaredConstructor().newInstance(), true);
+            }
             var fct = create.invoke(null, traitsObj);
             assertEquals(fct.getClass(), TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold1"));
             var field = fct.getClass().getSuperclass().getDeclaredField("traits");
             field.setAccessible(true);
             assertSame(traitsObj, field.get(fct),
                 "Traits vom MyFunctionWithFilterMapAndFold1-Objekt ist nicht das Gleiche wie das im Konstruktor übergebene.");
-            setter.invoke(null, false);
+            try {
+                setter.invoke(null, false);
+            } catch (Exception e) {
+                setter.invoke(classUT.getDeclaredConstructor().newInstance(), false);
+            }
             var fct2 = create.invoke(null, traitsObj);
             assertEquals(fct2.getClass(), TestUtils.getPersonClass("MyFunctionWithFilterMapAndFold2"));
             var field2 = fct2.getClass().getSuperclass().getDeclaredField("traits");
             field2.setAccessible(true);
             assertSame(traitsObj, field2.get(fct2),
                 "Traits vom MyFunctionWithFilterMapAndFold2-Objekt ist nicht das Gleiche wie das im Konstruktor übergebene.");
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
-            fail("Beim Erstellen einer Funktion mit createFunctionWithFilterMapAndFoldCreator"
-                + "konnte nicht erfolgreich verwendet werden.", e);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException | InstantiationException e) {
+            fail("Beim Erstellen einer Funktion konnte createFunctionWithFilterMapAndFoldCreator"
+                + " nicht erfolgreich verwendet werden.", e);
         }
     }
 

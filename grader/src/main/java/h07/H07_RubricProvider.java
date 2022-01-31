@@ -6,6 +6,8 @@ import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
 import org.sourcegrade.jagr.api.rubric.RubricForSubmission;
 import org.sourcegrade.jagr.api.rubric.RubricProvider;
+import org.sourcegrade.jagr.api.testing.RubricConfiguration;
+import org.sourcegrade.jagr.api.testing.TestCycle;
 
 /**
  * The rubric provider for h07, see {@link RubricProvider}.
@@ -34,7 +36,7 @@ public class H07_RubricProvider implements RubricProvider {
         ).build();
 
     public static final Criterion epsEnvPredIsCorrect = Criterion.builder()
-        .shortDescription("Das Klasse EpsilonEnvironmentPred ist korrekt")
+        .shortDescription("Die Klasse EpsilonEnvironmentPred ist korrekt")
         .grader(Grader.testAwareBuilder()
             .requirePass(JUnitTestRef.ofMethod(() ->
                 TutorTest_H1.class.getMethod("epsilonEnvironmentPredIsCorrect")))
@@ -43,9 +45,11 @@ public class H07_RubricProvider implements RubricProvider {
             .build()
         ).build();
 
-    public static final Criterion doublePredicateFactoryExist = Criterion.builder()
-        .shortDescription("Die Klasse DoublePredicateFactory existiert")
+    public static final Criterion buildConjunctionExists = Criterion.builder()
+        .shortDescription("Die Klasse DoublePredicateFactory beinhaltet die rekursive Methode buildConjunction")
         .grader(Grader.testAwareBuilder()
+            .requirePass(JUnitTestRef.ofMethod(() ->
+                TutorTest_H1.class.getMethod("buildDisjunctionExists")))
             .requirePass(JUnitTestRef.ofMethod(() ->
                 TutorTest_H1.class.getMethod("doublePredicateFactoryExist")))
             .pointsPassedMax()
@@ -53,11 +57,33 @@ public class H07_RubricProvider implements RubricProvider {
             .build()
         ).build();
 
-    public static final Criterion buildComplexPredicateExists = Criterion.builder()
-        .shortDescription("Die Klasse DoublePredicateFactory hat die Methode buildComplexPredicate")
+    public static final Criterion buildConjunctionWorks = Criterion.builder()
+        .shortDescription("BuildConjunction funktioniert korrekt")
         .grader(Grader.testAwareBuilder()
             .requirePass(JUnitTestRef.ofMethod(() ->
-                TutorTest_H1.class.getMethod("buildComplexPredicateExists")))
+                TutorTest_H1.class.getMethod("buildConjunctionWorks")))
+            .pointsPassedMax()
+            .pointsFailedMin()
+            .build()
+        ).build();
+
+    public static final Criterion buildDisjunctionExists = Criterion.builder()
+        .shortDescription("Die Klasse DoublePredicateFactory beinhaltet die iterative Methode buildConjunction")
+        .grader(Grader.testAwareBuilder()
+            .requirePass(JUnitTestRef.ofMethod(() ->
+                TutorTest_H1.class.getMethod("buildDisjunctionExists")))
+            .requirePass(JUnitTestRef.ofMethod(() ->
+                TutorTest_H1.class.getMethod("doublePredicateFactoryExist")))
+            .pointsPassedMax()
+            .pointsFailedMin()
+            .build()
+        ).build();
+
+    public static final Criterion buildDisjunctionWorks = Criterion.builder()
+        .shortDescription("BuildDisjunction funktioniert korrekt")
+        .grader(Grader.testAwareBuilder()
+            .requirePass(JUnitTestRef.ofMethod(() ->
+                TutorTest_H1.class.getMethod("buildDisjunctionWorks")))
             .pointsPassedMax()
             .pointsFailedMin()
             .build()
@@ -94,6 +120,16 @@ public class H07_RubricProvider implements RubricProvider {
             .build()
         ).build();
 
+    public static final Criterion getDefaultComplexPredicateStructure = Criterion.builder()
+        .shortDescription("Die Methode getDefaultComplexPredicate verwendet die geforderte Struktur mit Lambdas und EpsEnvPredicates")
+        .grader(Grader.testAwareBuilder()
+            .requirePass(JUnitTestRef.ofMethod(() ->
+                TutorTest_H1.class.getMethod("lambdaInCorrectForm", TestCycle.class)))
+            .pointsPassedMax()
+            .pointsFailedMin()
+            .build()
+        ).build();
+
     public static final Criterion getDefaultComplexPredicateWorksMostOfTheTime = Criterion.builder()
         .shortDescription("Die Methode getDefaultComplexPredicate funktioniert mit vielen Eingaben")
         .grader(Grader.testAwareBuilder()
@@ -106,7 +142,6 @@ public class H07_RubricProvider implements RubricProvider {
 
     public static final Criterion getDefaultComplexPredicateWorks = Criterion.builder()
         .shortDescription("Die Methode getDefaultComplexPredicate ist korrekt")
-        .maxPoints(2)
         .grader(Grader.testAwareBuilder()
             .requirePass(JUnitTestRef.ofMethod(() ->
                 TutorTest_H1.class.getMethod("getDefaultComplexPredicateWorks")))
@@ -310,24 +345,37 @@ public class H07_RubricProvider implements RubricProvider {
         .build();
 
     public static final Criterion H1_2 = Criterion.builder()
-        .shortDescription("H1.2 - DoublePredicateFactory")
+        .shortDescription("H1.2 - buildDisjunction")
         .addChildCriteria(
-            doublePredicateFactoryExist,
-            buildComplexPredicateExists,
-            buildComplexPredicateWorksSimple,
-            buildComplexPredicateWorksAll)
-        .build();
+            buildDisjunctionExists,
+            buildDisjunctionWorks
+        ).build();
 
     public static final Criterion H1_3 = Criterion.builder()
-        .shortDescription("H1.3 - getDefaultComplexPredicate")
+        .shortDescription("H1.3 - buildConjunction")
+        .addChildCriteria(
+            buildConjunctionExists,
+            buildConjunctionWorks
+        ).build();
+
+    public static final Criterion H1_4 = Criterion.builder()
+        .shortDescription("H1.4 - buildComplexPredicate")
+        .addChildCriteria(
+            buildComplexPredicateWorksSimple,
+            buildComplexPredicateWorksAll
+        ).build();
+
+    public static final Criterion H1_5 = Criterion.builder()
+        .shortDescription("H1.5 - buildComplexPredicate")
         .addChildCriteria(
             getDefaultComplexPredicateExists,
+            getDefaultComplexPredicateStructure,
             getDefaultComplexPredicateWorksMostOfTheTime,
             getDefaultComplexPredicateWorks)
         .build();
 
-    public static final Criterion H1_4 = Criterion.builder()
-        .shortDescription("H1.4 - getChecksumPredicate")
+    public static final Criterion H1_6 = Criterion.builder()
+        .shortDescription("H1.6 - getChecksumPredicate")
         .addChildCriteria(
             getChecksumPredicateExists,
             getChecksumPredicateWorksMostOfTheTime,
@@ -340,7 +388,9 @@ public class H07_RubricProvider implements RubricProvider {
             H1_1,
             H1_2,
             H1_3,
-            H1_4
+            H1_4,
+            H1_5,
+            H1_6
         )
         .build();
 
@@ -397,5 +447,10 @@ public class H07_RubricProvider implements RubricProvider {
     @Override
     public Rubric getRubric() {
         return RUBRIC;
+    }
+
+    @Override
+    public void configure(RubricConfiguration configuration) {
+        configuration.addTransformer(Global.TRANSFORMER);
     }
 }
