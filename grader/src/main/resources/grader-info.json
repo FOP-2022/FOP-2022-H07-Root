@@ -45,10 +45,10 @@
     {
       "name": "solution",
       "files": [
-        "h07/person/FunctionWithFilterMapAndFold.java",K
+        "h07/person/FunctionWithFilterMapAndFold.java",
         "h07/person/MyFunctionWithAdjacent.java",
         "h07/person/MyFunctionWithFilterMapAndFold1.java",
-        "h07/person/MyFunctionWithFilterMapAndFold2.java",K
+        "h07/person/MyFunctionWithFilterMapAndFold2.java",
         "h07/person/Person.java",
         "h07/person/PersonFilter.java",
         "h07/person/PersonFunctionFactory.java",
