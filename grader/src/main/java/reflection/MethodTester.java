@@ -283,11 +283,6 @@ public class MethodTester {
         return String.format("Methode %s existiert nicht.", methodName);
     }
 
-    public void assertCorrectDeclaration() {
-        assertMethodResolved();
-        test().add(() -> assertParametersMatch()).add(() -> assertReturnType()).add(() -> assertAccessModifier()).run();
-    }
-
     /**
      * Assert that a given method is not {@code null}
      *
@@ -394,7 +389,10 @@ public class MethodTester {
         return false;
     }
 
-
+    public void assertCorrectDeclaration() {
+        assertMethodResolved();
+        test().add(() -> assertParametersMatch()).add(() -> assertReturnType()).add(() -> assertAccessModifier()).run();
+    }
 
     /**
      * returns the Value of {@link #classTester}

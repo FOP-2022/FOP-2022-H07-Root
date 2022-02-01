@@ -15,6 +15,24 @@ import static java.util.Objects.requireNonNull;
 public class ReturnData_STUD implements Mocked {
 
     private static ClassTester<?> cReturnDataO;
+    private static AttributeTester aResultO;
+    private static AttributeTester aNextIndexO;
+    private final Object object;
+
+    public ReturnData_STUD(Object object) {
+        this.object = requireNonNull(object);
+    }
+
+    public ReturnData_STUD() {
+        this(cReturnData().getNewInstance());
+    }
+
+
+    public ReturnData_STUD(int result, int nextIndex) {
+        this(cReturnData().getNewInstance());
+        setResult(result);
+        setNextIndex(nextIndex);
+    }
 
     public static ClassTester<?> cReturnData() {
         return cReturnDataO = Objects.requireNonNullElseGet(cReturnDataO, () -> new ClassTester<>(
@@ -22,8 +40,6 @@ public class ReturnData_STUD implements Mocked {
             "ReturnData",
             SIMILARITY).assureResolved());
     }
-
-    private static AttributeTester aResultO;
 
     public static AttributeTester aResult() {
         return aResultO = Objects.requireNonNullElseGet(aResultO, () ->
@@ -37,8 +53,6 @@ public class ReturnData_STUD implements Mocked {
                         int.class)).assureExists());
     }
 
-    private static AttributeTester aNextIndexO;
-
     public static AttributeTester aNextIndex() {
         return aNextIndexO = Objects.requireNonNullElseGet(aNextIndexO, () -> new AttributeTester()
             .setClassTester(cReturnData())
@@ -51,37 +65,20 @@ public class ReturnData_STUD implements Mocked {
             ).assureExists());
     }
 
-
-    private final Object object;
-
-    public ReturnData_STUD(Object object) {
-        this.object = requireNonNull(object);
-    }
-
-    public ReturnData_STUD() {
-        this(cReturnData().getNewInstance());
-    }
-
-    public ReturnData_STUD(int result, int nextIndex) {
-        this(cReturnData().getNewInstance());
-        setResult(result);
-        setNextIndex(nextIndex);
+    public int getResult() {
+        return aResult().getValue(object);
     }
 
     public void setResult(int result) {
         aResult().setValue(object, result);
     }
 
-    public void setNextIndex(int result) {
-        aNextIndex().setValue(object, result);
-    }
-
-    public int getResult() {
-        return aResult().getValue(object);
-    }
-
     public int getNextIndex() {
         return aNextIndex().getValue(object);
+    }
+
+    public void setNextIndex(int result) {
+        aNextIndex().setValue(object, result);
     }
 
     public @NotNull

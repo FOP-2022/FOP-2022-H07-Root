@@ -11,6 +11,7 @@ import static h07.Global.SIMILARITY;
 public class Main_STUD {
 
     private static ClassTester<?> cMainO;
+    private static MethodTester mMainO;
 
     public static ClassTester<?> cMain() {
         return cMainO = Objects.requireNonNullElseGet(cMainO, () -> new ClassTester<>(
@@ -19,8 +20,6 @@ public class Main_STUD {
             SIMILARITY
         ).assureResolved());
     }
-
-    private static MethodTester mMainO;
 
     public static MethodTester mMain() {
         return mMainO = Objects.requireNonNullElseGet(mMainO, () -> new MethodTester(

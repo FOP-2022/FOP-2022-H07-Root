@@ -18,6 +18,8 @@ import java.util.function.IntBinaryOperator;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestUtils {
+    static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
+
     static Class<?> getPersonClass(String s) {
         Class<?> personFilter = null;
         try {
@@ -138,8 +140,6 @@ class TestUtils {
         }
         return result;
     }
-
-    static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
 
     static void assertPeopleEquals(Object[] filtered, Object[] result) {
         assertEquals(filtered.length, result.length);

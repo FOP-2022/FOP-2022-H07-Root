@@ -20,6 +20,16 @@ import static tutor.Utils.TestCollection.Mode.SILENT;
 
 public interface Utils {
 
+    static <T> Iterable<T> iterate(Stream<T> s) {
+        return s::iterator;
+    }
+
+    static void repeat(int times, Runnable runnable) {
+        for (int i = 0; i < times; i++) {
+            runnable.run();
+        }
+    }
+
     public interface Test {
 
         static void a() {
@@ -30,16 +40,6 @@ public interface Utils {
 
         }
 
-    }
-
-    static <T> Iterable<T> iterate(Stream<T> s) {
-        return s::iterator;
-    }
-
-    static void repeat(int times, Runnable runnable) {
-        for (int i = 0; i < times; i++) {
-            runnable.run();
-        }
     }
 
     interface Messages {

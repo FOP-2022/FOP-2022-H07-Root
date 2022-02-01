@@ -16,6 +16,14 @@ import static org.mockito.Mockito.mock;
 public class UpTraverser_STUD extends Traverser_STUD {
 
     private static ClassTester<?> cUpTraverserO;
+    private static MethodTester mGetFirstIndexO;
+    private static MethodTester mGetNextIndexO;
+    private final Object object;
+
+    public UpTraverser_STUD() {
+        object = mock(cUpTraverser().getTheClass(), CALLS_REAL_METHODS);
+        cUpTraverser().setClassInstance(object);
+    }
 
     public static ClassTester<?> cUpTraverser() {
         return cUpTraverserO = requireNonNullElseGet(cUpTraverserO, () -> new ClassTester<>(
@@ -24,8 +32,6 @@ public class UpTraverser_STUD extends Traverser_STUD {
             SIMILARITY,
             Modifier.PUBLIC).assureResolved());
     }
-
-    private static MethodTester mGetFirstIndexO;
 
     public static MethodTester mGetFirstIndexS() {
         return mGetFirstIndexO = requireNonNullElseGet(mGetFirstIndexO, () -> new MethodTester(
@@ -38,8 +44,6 @@ public class UpTraverser_STUD extends Traverser_STUD {
         ).assureResolved());
     }
 
-    private static MethodTester mGetNextIndexO;
-
     public static MethodTester mGetNextIndexS() {
         return mGetNextIndexO = requireNonNullElseGet(mGetNextIndexO, () -> new MethodTester(
             cUpTraverser(),
@@ -49,13 +53,6 @@ public class UpTraverser_STUD extends Traverser_STUD {
             int.class,
             List.of(new ParameterMatcher(int.class))
         ).assureResolved());
-    }
-
-    private final Object object;
-
-    public UpTraverser_STUD() {
-        object = mock(cUpTraverser().getTheClass(), CALLS_REAL_METHODS);
-        cUpTraverser().setClassInstance(object);
     }
 
     @Override

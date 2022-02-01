@@ -16,6 +16,8 @@ import static java.util.Objects.requireNonNullElseGet;
 public abstract class Traverser_STUD implements Mocked {
 
     private static ClassTester<?> cTraverserO;
+    private static MethodTester mGetFirstIndexO;
+    private static MethodTester mGetNextIndexO;
 
     public static ClassTester<?> cTraverser() {
         return cTraverserO = Objects.requireNonNullElseGet(cTraverserO, () -> new ClassTester<>(
@@ -24,8 +26,6 @@ public abstract class Traverser_STUD implements Mocked {
             SIMILARITY,
             PUBLIC | ABSTRACT | INTERFACE).assureResolved());
     }
-
-    private static MethodTester mGetFirstIndexO;
 
     public static MethodTester mGetFirstIndex() {
         return mGetFirstIndexO = requireNonNullElseGet(mGetFirstIndexO, () -> new MethodTester(
@@ -37,8 +37,6 @@ public abstract class Traverser_STUD implements Mocked {
             List.of(new ParameterMatcher(double[].class))
         ).assureResolved());
     }
-
-    private static MethodTester mGetNextIndexO;
 
     public static MethodTester mGetNextIndex() {
         return mGetNextIndexO = requireNonNullElseGet(mGetNextIndexO, () -> new MethodTester(

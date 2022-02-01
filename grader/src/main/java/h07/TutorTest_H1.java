@@ -58,6 +58,60 @@ public class TutorTest_H1 {
             new ParameterMatcher(double.class)
         )
     );
+    public static final ClassTester<?> DPF_CLASS = new ClassTester(
+        "h07.predicate",
+        "DoublePredicateFactory",
+        SIMILARITY,
+        PUBLIC);
+    public static final MethodTester DPF_CONJUNCTION = new MethodTester(
+        DPF_CLASS,
+        "buildConjunction",
+        SIMILARITY,
+        PUBLIC | STATIC,
+        DoublePredicate.class,
+        List.of(
+            new ParameterMatcher(DoublePredicate[].class)
+        )
+    );
+    public static final MethodTester DPF_DISJUNCTION = new MethodTester(
+        DPF_CLASS,
+        "buildDisjunction",
+        SIMILARITY,
+        PUBLIC | STATIC,
+        DoublePredicate.class,
+        List.of(
+            new ParameterMatcher(DoublePredicate[].class), new ParameterMatcher(boolean.class)
+        )
+    );
+    public static final MethodTester DPF_COMPLEX_PREDICATE = new MethodTester(
+        DPF_CLASS,
+        "buildComplexPredicate",
+        SIMILARITY,
+        PUBLIC | STATIC,
+        DoublePredicate.class,
+        List.of(
+            new ParameterMatcher(DoublePredicate[][].class)
+        )
+    );
+    public static final MethodTester DPF_DEFAULT_PREDICATE = new MethodTester(
+        DPF_CLASS,
+        "getDefaultComplexPredicate",
+        SIMILARITY,
+        PUBLIC | STATIC,
+        DoublePredicate.class,
+        List.of()
+    );
+    public static final MethodTester DPF_CHECKSUM = new MethodTester(
+        DPF_CLASS,
+        "getChecksumPredicate",
+        SIMILARITY,
+        PUBLIC | STATIC,
+        DoublePredicate.class,
+        List.of(
+            new ParameterMatcher("decimalPlaces", 0, int.class),
+            new ParameterMatcher("divisor", 0, int.class)
+        )
+    );
 
     @Test
     public void epsilonEnvironmentPredExists() {
@@ -67,7 +121,6 @@ public class TutorTest_H1 {
             .add(EPS_CLASS::assertImplementsInterfaces)
             .add(EPS_CLASS::assertIsPlainClass).run();
     }
-
 
     @Test
     public void epsilonEnvironmentPredMostlyCorrect() {
@@ -171,66 +224,6 @@ public class TutorTest_H1 {
                 }
             }).run();
     }
-
-    public static final ClassTester<?> DPF_CLASS = new ClassTester(
-        "h07.predicate",
-        "DoublePredicateFactory",
-        SIMILARITY,
-        PUBLIC);
-
-    public static final MethodTester DPF_CONJUNCTION = new MethodTester(
-        DPF_CLASS,
-        "buildConjunction",
-        SIMILARITY,
-        PUBLIC | STATIC,
-        DoublePredicate.class,
-        List.of(
-            new ParameterMatcher(DoublePredicate[].class)
-        )
-    );
-
-    public static final MethodTester DPF_DISJUNCTION = new MethodTester(
-        DPF_CLASS,
-        "buildDisjunction",
-        SIMILARITY,
-        PUBLIC | STATIC,
-        DoublePredicate.class,
-        List.of(
-            new ParameterMatcher(DoublePredicate[].class), new ParameterMatcher(boolean.class)
-        )
-    );
-
-    public static final MethodTester DPF_COMPLEX_PREDICATE = new MethodTester(
-        DPF_CLASS,
-        "buildComplexPredicate",
-        SIMILARITY,
-        PUBLIC | STATIC,
-        DoublePredicate.class,
-        List.of(
-            new ParameterMatcher(DoublePredicate[][].class)
-        )
-    );
-
-    public static final MethodTester DPF_DEFAULT_PREDICATE = new MethodTester(
-        DPF_CLASS,
-        "getDefaultComplexPredicate",
-        SIMILARITY,
-        PUBLIC | STATIC,
-        DoublePredicate.class,
-        List.of()
-    );
-
-    public static final MethodTester DPF_CHECKSUM = new MethodTester(
-        DPF_CLASS,
-        "getChecksumPredicate",
-        SIMILARITY,
-        PUBLIC | STATIC,
-        DoublePredicate.class,
-        List.of(
-            new ParameterMatcher("decimalPlaces", 0, int.class),
-            new ParameterMatcher("divisor", 0, int.class)
-        )
-    );
 
     @Test
     public void doublePredicateFactoryExist() {
