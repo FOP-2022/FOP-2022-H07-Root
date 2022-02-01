@@ -432,14 +432,16 @@ public class H07_RubricProvider implements RubricProvider {
             H2_3
         )
         .build();
-    public static final Rubric RUBRIC = Rubric.builder()
-        .title("h07")
-        .addChildCriteria(H1, H2, JAVADOC)
-        .build();
+
     public static final Criterion JAVADOC = Criterion.builder()
         .shortDescription("Alle selbstgeschriebenen Methoden wurden korrekt mit JavaDoc dokumentiert")
         .maxPoints(0)
         .minPoints(-4)
+        .build();
+
+    public static final Rubric RUBRIC = Rubric.builder()
+        .title("h07")
+        .addChildCriteria(H1, H2, JAVADOC)
         .build();
 
     @Override
