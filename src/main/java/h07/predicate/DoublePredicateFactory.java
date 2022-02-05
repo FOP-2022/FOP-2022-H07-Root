@@ -13,7 +13,7 @@ public class DoublePredicateFactory {
      * @param predicates the predicates as a not null and non-empty array
      * @return a predicate containing the aforementioned Conjunction over Disjunctions
      */
-    public static DoublePredicate buildComplexPredicate(DoublePredicate[][] predicates) {
+    public DoublePredicate buildComplexPredicate(DoublePredicate[][] predicates) {
         DoublePredicate[] disjunctions = new DoublePredicate[predicates.length];
         for (int i = 0; i < predicates.length; i++) {
             disjunctions[i] = buildDisjunction(predicates[i], i % 2 == 0);
@@ -28,7 +28,7 @@ public class DoublePredicateFactory {
      * @param forward    if false combines them in opposite iteration direction
      * @return the Disjunction over predicates
      */
-    public static DoublePredicate buildDisjunction(DoublePredicate[] predicates, boolean forward) {
+    public DoublePredicate buildDisjunction(DoublePredicate[] predicates, boolean forward) {
         DoublePredicate result;
         if (forward) {
             result = predicates[0];
@@ -50,7 +50,7 @@ public class DoublePredicateFactory {
      * @param predicates the predicates to combine
      * @return the Conjunction over predicates
      */
-    public static DoublePredicate buildConjunction(DoublePredicate[] predicates) {
+    public DoublePredicate buildConjunction(DoublePredicate[] predicates) {
         return buildConjunction(predicates[0], predicates, 1);
     }
 
@@ -62,7 +62,7 @@ public class DoublePredicateFactory {
      * @param i          recursive counter
      * @return one predicate after the last index was processed
      */
-    public static DoublePredicate buildConjunction(DoublePredicate acc, DoublePredicate[] predicates, int i) {
+    public DoublePredicate buildConjunction(DoublePredicate acc, DoublePredicate[] predicates, int i) {
         if (i >= predicates.length) {
             return acc;
         }
@@ -77,7 +77,7 @@ public class DoublePredicateFactory {
      *
      * @return the predicate
      */
-    public static DoublePredicate getDefaultComplexPredicate() {
+    public DoublePredicate getDefaultComplexPredicate() {
         DoublePredicate[][] predicates = new DoublePredicate[3][];
         final var largeArraySize = 1000;
         predicates[0] = new EpsilonEnvironmentPred[largeArraySize];
@@ -103,7 +103,7 @@ public class DoublePredicateFactory {
      * @param divisor       the divisor to divide the sum of decimalPlaces by
      * @return the predicate described above
      */
-    public static DoublePredicate getChecksumPredicate(int decimalPlaces, int divisor) {
+    public DoublePredicate getChecksumPredicate(int decimalPlaces, int divisor) {
         return (double value) -> {
             var asString = "" + value;
             var checksum = 0;

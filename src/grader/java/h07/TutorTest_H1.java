@@ -3,14 +3,17 @@ package h07;
 import h07.predicate.DoublePredicateFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.invocation.Invocation;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
+import org.sourcegrade.jagr.launcher.env.Jagr;
 import reflection.ClassTester;
 import reflection.IdentifierMatcher;
 import reflection.MethodTester;
@@ -31,6 +34,7 @@ import static h07.Global.SIMILARITY;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static tutor.Utils.TestCollection.test;
 
 /**
@@ -259,7 +263,9 @@ public class TutorTest_H1 {
             .add(DPF_CONJUNCTION::assertParametersMatch)
             .add(() -> {
                 DoublePredicate[] predicates = new DoublePredicate[]{d -> true};
-                var pred = DPF_CONJUNCTION.invoke(null, (Object) predicates);
+                var instanz = mock(DPF_CLASS.resolveClass().getTheClass(), Answers.CALLS_REAL_METHODS);
+                DPF_CLASS.setClassInstance(instanz);
+                var pred = DPF_CONJUNCTION.invoke(instanz, (Object) predicates);
                 var predString1 = "{d -> true}";
                 if (pred == null) {
                     fail("Resultat von buildConjunction ist null bei Input " + predString1);
@@ -269,7 +275,7 @@ public class TutorTest_H1 {
 
                 predicates = new DoublePredicate[]{d -> d > 3, d -> d < 5, d -> d % 2 < 0.5};
                 var predString2 = "{d -> d > 3, d -> d < 5, d -> d % 2 < 0.5}";
-                pred = DPF_CONJUNCTION.invoke(null, (Object) predicates);
+                pred = DPF_CONJUNCTION.invoke(instanz, (Object) predicates);
                 if (pred == null) {
                     fail("Resultat von buildDisjunction ist null bei Input " + predString2);
                 }
@@ -311,7 +317,9 @@ public class TutorTest_H1 {
             .add(DPF_DISJUNCTION::assertParametersMatch)
             .add(() -> {
                 DoublePredicate[] predicates = new DoublePredicate[]{d -> true};
-                var pred = DPF_DISJUNCTION.invoke(null, predicates, true);
+                var instance = mock(DPF_CLASS.resolveClass().getTheClass(), Answers.CALLS_REAL_METHODS);
+                DPF_CLASS.setClassInstance(instance);
+                var pred = DPF_DISJUNCTION.invoke(instance, predicates, true);
                 var predString1 = "{d -> true}";
                 if (pred == null) {
                     fail("Resultat von buildDisjunction ist null bei Input " + predString1);
@@ -321,7 +329,7 @@ public class TutorTest_H1 {
 
                 predicates = new DoublePredicate[]{d -> d < 3, d -> d > 5, d -> d % 2 < 0.5};
                 var predString2 = "{d -> d < 3, d -> d > 5, d -> d % 2 < 0.5}";
-                pred = DPF_DISJUNCTION.invoke(null, predicates, true);
+                pred = DPF_DISJUNCTION.invoke(instance, predicates, true);
                 if (pred == null) {
                     fail("Resultat von buildDisjunction ist null bei Input " + predString2);
                 }
@@ -341,7 +349,7 @@ public class TutorTest_H1 {
                     return false;
                 };
                 DoublePredicate[] timeout = new DoublePredicate[]{waiting, d -> true};
-                var timePred = DPF_DISJUNCTION.invoke(null, timeout, false);
+                var timePred = DPF_DISJUNCTION.invoke(instance, timeout, false);
                 if (timePred == null) {
                     fail("Resultat von buildDisjunction ist null bei Input Prädikate: {d -> [langsames Prädikat], d -> true}");
                 }
@@ -350,7 +358,7 @@ public class TutorTest_H1 {
                 }, "Die Verknüpfungsreihenfolge entspricht nicht den Anforderungen." +
                     " Erkennbar an zu langer Ausführungszeit. Prädikate: {d -> [langsames Prädikat], d -> true}, Forward: false");
                 DoublePredicate[] timeout2 = new DoublePredicate[]{d -> true, waiting};
-                var timePred2 = DPF_DISJUNCTION.invoke(null, timeout2, true);
+                var timePred2 = DPF_DISJUNCTION.invoke(instance, timeout2, true);
                 if (timePred2 == null) {
                     fail("Resultat von buildDisjunction ist null bei Input Prädikate: {d -> true, d -> [langsames Prädikat]}");
                 }
@@ -377,14 +385,16 @@ public class TutorTest_H1 {
                     new DoublePredicate[]{d -> true}
                 };
                 var predString1 = "{{d -> true}}";
-                var pred = DPF_COMPLEX_PREDICATE.invoke(null, (Object) predicates);
+                var instance = mock(DPF_CLASS.resolveClass().getTheClass(), Answers.CALLS_REAL_METHODS);
+                DPF_CLASS.setClassInstance(instance);
+                var pred = DPF_COMPLEX_PREDICATE.invoke(instance, (Object) predicates);
                 assertTrue(((DoublePredicate) pred).test(2.0), "Fehler bei Prädikaten: " + predString1 + " und Input: 2.0");
                 assertTrue(((DoublePredicate) pred).test(-2.3), "Fehler bei Prädikaten: " + predString1 + " und Input: -2.3");
                 predicates = new DoublePredicate[][]{
                     new DoublePredicate[]{d -> d < 3}
                 };
                 var predString2 = "{{d -> d < 3}}";
-                pred = DPF_COMPLEX_PREDICATE.invoke(null, (Object) predicates);
+                pred = DPF_COMPLEX_PREDICATE.invoke(instance, (Object) predicates);
                 assertTrue(((DoublePredicate) pred).test(2.0), "Fehler bei Prädikaten: " + predString2 + " und Input: 2.0");
                 assertFalse(((DoublePredicate) pred).test(5), "Fehler bei Prädikaten: " + predString2 + " und Input: 5");
                 assertFalse(((DoublePredicate) pred).test(3), "Fehler bei Prädikaten: " + predString2 + " und Input: 3");
@@ -393,21 +403,17 @@ public class TutorTest_H1 {
 
     @Test
     public void complexDoublePredicateWorksAll() {
-        try (var mockedStatic = Mockito.mockStatic(DPF_CLASS.findClass())) {
-            mockedStatic.when(() ->
-                DoublePredicateFactory.buildConjunction(Mockito.any())).thenAnswer((Answer<DoublePredicate>) invocation -> {
-                var arg = (DoublePredicate[]) invocation.getArgument(0);
-                return DoublePredicateFactorySolution.buildConjunction(arg);
-            });
+        var instanz = mock(DPF_CLASS.findClass(), Answers.CALLS_REAL_METHODS);
+        when(DPF_CONJUNCTION.invoke(instanz, any(DoublePredicate[].class))).then(a ->{
+                var arg = (DoublePredicate[]) a.getArgument(0);
+                return DoublePredicateFactorySolution.buildConjunction(arg);//TODO prüfen, ob man nicht noch mehr als nur ein DoublePredicate-Array übergeben müsste, um die andere der überladenen Methoden aufzurufen
+        });
 
-            mockedStatic.when(() ->
-                DoublePredicateFactory.buildDisjunction(Mockito.any(), Mockito.anyBoolean())).thenAnswer((Answer<DoublePredicate>) invocation -> {
-                var arg1 = (DoublePredicate[]) invocation.getArgument(0);
-                var arg2 = (boolean) invocation.getArgument(1);
-                return DoublePredicateFactorySolution.buildDisjunction(arg1, arg2);
-            });
-            mockedStatic.when(() -> DoublePredicateFactory.buildComplexPredicate(Mockito.any())).thenCallRealMethod();
-
+        when(DPF_DISJUNCTION.invoke(instanz, any(DoublePredicate[].class), anyBoolean())).then(a ->{
+            var arg1 = (DoublePredicate[]) a.getArgument(0);
+            var arg2 = (boolean) a.getArgument(1);
+            return DoublePredicateFactorySolution.buildDisjunction(arg1, arg2);
+        });
 
             test()
                 .addReq(DPF_CLASS::resolveClass)
@@ -422,7 +428,9 @@ public class TutorTest_H1 {
                         new DoublePredicate[]{d -> false, d -> true, d -> false},
                         new DoublePredicate[]{d -> d > 0, d -> d < -3}
                     };
-                    var pred = DPF_COMPLEX_PREDICATE.invoke(null, (Object) predicates);
+                    var instance = mock(DPF_CLASS.resolveClass().getTheClass(), Answers.CALLS_REAL_METHODS);
+                    DPF_CLASS.setClassInstance(instance);
+                    var pred = DPF_COMPLEX_PREDICATE.invoke(instance, (Object) predicates);
                     var predString = "{{d -> true}, {d -> false, d -> true, d -> false}, {d -> d > 0, d -> d < -3}}";
                     if (pred == null) {
                         fail("buildComplexPredicate returned null for input [" + predString + "]");
@@ -448,7 +456,7 @@ public class TutorTest_H1 {
                         new DoublePredicate[]{d -> true, waiting},
                         new DoublePredicate[]{waiting, d -> true},
                     };
-                    pred = DPF_COMPLEX_PREDICATE.invoke(null, (Object) timeout);
+                    pred = DPF_COMPLEX_PREDICATE.invoke(instance, (Object) timeout);
                     if (pred == null) {
                         fail("buildComplexPredicate returned null for input [{{d -> true, d -> [langsames Prädikat]}, {d -> [langsames Prädikat], d -> true}," +
                             " {d -> true, d -> [langsames Prädikat]}, {d -> [langsames Prädikat], d -> true}}]");
@@ -460,7 +468,7 @@ public class TutorTest_H1 {
                         " Prädikate: {{d -> true, d -> [langsames Prädikat]}, {d -> [langsames Prädikat], d -> true}}");
                     assertTrue(((DoublePredicate) pred).test(2.0));
                 }).run();
-        }
+
     }
 
     @Test
@@ -473,11 +481,11 @@ public class TutorTest_H1 {
             .add(DPF_COMPLEX_PREDICATE::assertParametersMatch).run();
     }
 
-    @Test
+   /* @Test
     public void getDefaultComplexPredicateWorksMostOfTheTime() {
-        try (var mocked = Mockito.mockStatic(DPF_CLASS.findClass())) {
+        try (var mocked = mockStatic(DPF_CLASS.findClass())) {
             mocked.when(() ->
-                DoublePredicateFactory.buildComplexPredicate(Mockito.any())).thenAnswer((Answer<DoublePredicate>) invocation -> {
+                DoublePredicateFactory.buildComplexPredicate(any())).thenAnswer((Answer<DoublePredicate>) invocation -> {
                 var arg1 = (DoublePredicate[][]) invocation.getArgument(0);
                 return DoublePredicateFactorySolution.buildComplexPredicate(arg1);
             });
@@ -490,7 +498,9 @@ public class TutorTest_H1 {
                 .add(DPF_DEFAULT_PREDICATE::assertAccessModifier)
                 .add(DPF_DEFAULT_PREDICATE::assertParametersMatch)
                 .add(() -> {
-                    var pred = (DoublePredicate) DPF_DEFAULT_PREDICATE.invoke(null);
+                    var instanz = mock(DPF_CLASS.resolveClass().getTheClass(), Answers.CALLS_REAL_METHODS);
+                    DPF_CLASS.setClassInstance(instanz);
+                    var pred = (DoublePredicate) DPF_DEFAULT_PREDICATE.invoke(instanz);
                     assertFalse(pred.test(Math.PI),
                         "Math.PI sollte getDefaultComplexPredicate nicht erfüllen [nicht nah genug an 3.5]");
                     assertTrue(pred.test(2.5),
@@ -505,13 +515,13 @@ public class TutorTest_H1 {
                         "93.5 sollte getDefaultComplexPredicate nicht erfüllen da keines der Predicates von Predicate-Teil 3 zutrifft");
                 }).run();
         }
-    }
+    }*/
 
-    @Test
+  /*  @Test
     public void getDefaultComplexPredicateWorks() {
-        try (var mocked = Mockito.mockStatic(DPF_CLASS.findClass())) {
+        try (var mocked = mockStatic(DPF_CLASS.findClass())) {
             mocked.when(() ->
-                DoublePredicateFactory.buildComplexPredicate(Mockito.any())).thenAnswer((Answer<DoublePredicate>) invocation -> {
+                DoublePredicateFactory.buildComplexPredicate(any())).thenAnswer((Answer<DoublePredicate>) invocation -> {
                 var arg1 = (DoublePredicate[][]) invocation.getArgument(0);
                 return DoublePredicateFactorySolution.buildComplexPredicate(arg1);
             });
@@ -524,7 +534,9 @@ public class TutorTest_H1 {
                 .add(DPF_DEFAULT_PREDICATE::assertAccessModifier)
                 .add(DPF_DEFAULT_PREDICATE::assertParametersMatch)
                 .add(() -> {
-                    var pred = (DoublePredicate) DPF_DEFAULT_PREDICATE.invoke(null);
+                    var instanz = mock(DPF_CLASS.resolveClass().getTheClass(), Answers.CALLS_REAL_METHODS);
+                    DPF_CLASS.setClassInstance(instanz);
+                    var pred = (DoublePredicate) DPF_DEFAULT_PREDICATE.invoke(instanz);
                     assertFalse(pred.test(Math.PI),
                         "Math.PI sollte getDefaultComplexPredicate nicht erfüllen"
                             + " [nicht nah genug an 3.5]");
@@ -589,7 +601,7 @@ public class TutorTest_H1 {
                             + " keines der Predicates von Predicate-Teil 3 zutrifft");
                 }).run();
         }
-    }
+    }*/
 
     @Test
     @ExtendWith(TestCycleResolver.class)
@@ -645,7 +657,9 @@ public class TutorTest_H1 {
             .add(this::checksumMethods)
             .add(this::checksumShape)
             .add(() -> {
-                var pred = (DoublePredicate) DPF_CHECKSUM.invoke(null, 3, 2);
+                var instanz = mock(DPF_CLASS.resolveClass().getTheClass(), Answers.CALLS_REAL_METHODS);
+                DPF_CLASS.setClassInstance(instanz);
+                var pred = (DoublePredicate) DPF_CHECKSUM.invoke(instanz, 3, 2);
                 assertTrue(pred.test(1 / 8.0),
                     "Unerwartetes Ergebnis für"
                         + " DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(1 / 8.0)");
@@ -686,7 +700,9 @@ public class TutorTest_H1 {
             .add(this::checksumMethods)
             .add(this::checksumShape)
             .add(() -> {
-                var pred = (DoublePredicate) DPF_CHECKSUM.invoke(null, 3, 2);
+                var instanz = mock(DPF_CLASS.resolveClass().getTheClass(), Answers.CALLS_REAL_METHODS);
+                DPF_CLASS.setClassInstance(instanz);
+                var pred = (DoublePredicate) DPF_CHECKSUM.invoke(instanz, 3, 2);
                 assertFalse(pred.test(4.9),
                     "Unerwartetes Ergebnis für"
                         + " DoublePredicateFactory.getChecksumPredicate(decimalPlaces=3, divisor=2).test(4.9)");

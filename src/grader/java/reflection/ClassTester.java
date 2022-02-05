@@ -1058,8 +1058,8 @@ public class ClassTester<T> {
             .sorted((x, y) -> Double.valueOf(TestUtils.similarity(className, y.getSimpleName()))
                 .compareTo(TestUtils.similarity(className, x.getSimpleName())))
             .findFirst().orElse(null);
-        var sim = TestUtils.similarity(bestMatch.getSimpleName(), className);
         assertNotNull(bestMatch, getClassNotFoundMessage());
+        var sim = TestUtils.similarity(bestMatch.getSimpleName(), className);
         if (sim < similarity) {
             fail(String.format("class <%s> not found", className));
         }

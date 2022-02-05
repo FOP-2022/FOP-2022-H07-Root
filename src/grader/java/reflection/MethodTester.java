@@ -671,7 +671,7 @@ public class MethodTester {
                 throw (RuntimeException) ((InvocationTargetException) e).getTargetException();
             }
 //            Arrays.stream(e.getStackTrace()).forEach(x -> Global.LOGGER.log(Level.WARN, x));
-            fail("method could not be invoked", e);
+            fail("method could not be invoked" + e.getMessage(), e);
 
         }
         return (T) returnValue;

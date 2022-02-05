@@ -19,6 +19,7 @@ submit {
     studentId = "ab12cdef"
     firstName = "sol_first"
     lastName = "sol_last"
+    requireTests = false
 }
 
 val grader: SourceSet by sourceSets.creating {
