@@ -93,6 +93,7 @@ tasks {
         archiveFileName.set("h07-libs.jar")
     }
     create("graderAll") {
+        group = "build"
         dependsOn(graderJar, graderLibs)
     }
     withType<JavaCompile> {
