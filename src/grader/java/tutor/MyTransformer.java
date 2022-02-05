@@ -1,6 +1,5 @@
 package tutor;
 
-import javassist.bytecode.Opcode;
 import org.objectweb.asm.*;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 
@@ -124,7 +123,7 @@ public class MyTransformer implements ClassTransformer {
                             int n = ByteUtils.store(this, types, maxVar);
                             super.visitVarInsn(Opcodes.ALOAD, 0);
                             ByteUtils.load(this, types, n);
-                            super.visitMethodInsn(Opcode.INVOKEVIRTUAL, owner, name, descriptor, isInterface);
+                            super.visitMethodInsn(Opcodes.INVOKEVIRTUAL, owner, name, descriptor, isInterface);
 
                         } else {
                             super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);

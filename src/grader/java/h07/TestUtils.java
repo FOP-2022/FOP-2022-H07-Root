@@ -187,7 +187,7 @@ class TestUtils {
                 "test",
                 MethodType.methodType(TestUtils.getPersonClass("PersonFilter")),
                 methodType,
-                lookup.findStatic(TestUtils.class, "postalCodeEquals1",
+                lookup.findStatic(TestUtils.class, "postalCodeEquals3",
                     MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"))),
                 methodType);
             return (PersonFilter) site.getTarget().invokeExact();
@@ -197,7 +197,7 @@ class TestUtils {
         }
     }
 
-    private static boolean postalCodeEquals1(Person p) {
+    private static boolean postalCodeEquals3(Person p) {
         return p.getPostalCode() == 3;
     }
 
