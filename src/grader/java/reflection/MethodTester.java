@@ -12,10 +12,14 @@ import spoon.reflect.visitor.filter.TypeFilter;
 import tutor.Mocked;
 
 import javax.management.RuntimeErrorException;
+import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +43,7 @@ public class MethodTester {
     /**
      * The resolved Method that will be tested
      */
-    Method theMethod;
+    Executable theExecutable;
     /**
      * The Expected Access Modifier
      */
@@ -225,7 +229,7 @@ public class MethodTester {
      * @param ignoreNames whether to ignore Parameter Names
      * @return the Amount of matching Parameters
      */
-    public static int countMatchingParameters(Method m, String methodName, ArrayList<ParameterMatcher> parameters, boolean ignoreNames) {
+    public static int countMatchingParameters(Executable m, String methodName, ArrayList<ParameterMatcher> parameters, boolean ignoreNames) {
         assertMethodNotNull(m, methodName);
         if (parameters == null || parameters.isEmpty()) {
             return 0;
@@ -268,7 +272,7 @@ public class MethodTester {
      * @param parameters  the Expected Parameter List
      * @param ignoreNames whether to ignore Parameter Names
      */
-    public static void assertParametersMatch(Method m, String methodName, ArrayList<ParameterMatcher> parameters, boolean ignoreNames) {
+    public static void assertParametersMatch(Executable m, String methodName, ArrayList<ParameterMatcher> parameters, boolean ignoreNames) {
         assertMethodNotNull(m, methodName);
         assertParametersMatch(parameters, new ArrayList<>(List.of(m.getParameters())), ignoreNames);
     }
@@ -289,7 +293,7 @@ public class MethodTester {
      * @param m    the Method
      * @param name the expected Method name
      */
-    public static void assertMethodNotNull(Method m, String name) {
+    public static void assertMethodNotNull(Executable m, String name) {
         assertNotNull(m, getMethodNotFoundMessage(name));
 
     }
@@ -310,7 +314,7 @@ public class MethodTester {
             try {
                 paramsString = Arrays.toString(array);
             } catch (Exception e) {
-                Arrays.stream(array).map(x -> x.getClass().getName() + "@" + Integer.toHexString(x.hashCode())).collect(Collectors.joining(", ", "[", "]"));
+                // Arrays.stream(array).map(x -> x.getClass().getName() + "@" + Integer.toHexString(x.hashCode())).collect(Collectors.joining(", ", "[", "]"));
             }
         }
         return paramsString;
@@ -323,7 +327,7 @@ public class MethodTester {
      * @param clazz   the Class to search
      * @return all Fields from a given Class and its superclasses recursively
      */
-    private static ArrayList<Method> getAllMethods(ArrayList<Method> methods, Class<?> clazz) {
+    private static ArrayList<Executable> getAllMethods(ArrayList<Executable> methods, Class<?> clazz) {
         methods.addAll(Arrays.asList(clazz.getDeclaredMethods()));
 
         if (clazz.getSuperclass() != null) {
@@ -339,7 +343,7 @@ public class MethodTester {
      * @param clazz the Class to search
      * @return all Fields from a given Class and its superclasses recursively
      */
-    public static ArrayList<Method> getAllMethods(Class<?> clazz) {
+    public static ArrayList<Executable> getAllMethods(Class<?> clazz) {
         return getAllMethods(new ArrayList<>(), clazz);
     }
 
@@ -348,16 +352,14 @@ public class MethodTester {
             return false;
         }
         for (var e : elements) {
-            if (e instanceof CtInvocation<?>) {
-                var method = (CtInvocation<?>) e;
+            if (e instanceof CtInvocation<?> method) {
                 if (method.getExecutable().equals(methodToCall.getReference())) {
                     return true;
                 }
                 if (isRecursive(e.getDirectChildren(), methodToCall, level - 1)) {
                     return true;
                 }
-            } else if (e instanceof CtExecutableReference<?>) {
-                var exe = (CtExecutableReference<?>) e;
+            } else if (e instanceof CtExecutableReference<?> exe) {
                 if (exe.equals(methodToCall.getReference())) {
                     return true;
                 }
@@ -373,8 +375,7 @@ public class MethodTester {
 
     public static boolean isChildRecursive(List<CtElement> elements, int level, Set<CtMethod<?>> methods) {
         for (var e : elements) {
-            if (e instanceof CtInvocation<?>) {
-                var invo = (CtInvocation<?>) e;
+            if (e instanceof CtInvocation<?> invo) {
                 var any = methods.stream().filter(m -> invo.getExecutable().equals(m.getReference())).findAny().orElse(null);
                 if (any == null) {
                     continue;
@@ -390,8 +391,13 @@ public class MethodTester {
     }
 
     public void assertCorrectDeclaration() {
-        assertMethodResolved();
-        test().add(() -> assertParametersMatch()).add(() -> assertReturnType()).add(() -> assertAccessModifier()).run();
+        getClassTester().assureResolved();
+        assureResolved();
+        test()
+            .add(this::assertParametersMatch)
+            .add(this::assertReturnType)
+            .add(this::assertAccessModifier)
+            .run();
     }
 
     /**
@@ -466,6 +472,9 @@ public class MethodTester {
      * asserts that the Return type matches the expected return Type
      */
     public void assertReturnType() {
+        if (!(theExecutable instanceof Method))
+            return;
+        var theMethod = (Method) this.theExecutable;
         if (returnType == null) {
             throw new RuntimeErrorException(new Error(), "Faulty Test: Cannot assert return type null");
         }
@@ -483,7 +492,7 @@ public class MethodTester {
      * @returns this
      */
     public MethodTester verify() {
-        if (!methodResolved()) {
+        if (!resolved()) {
             resolveMethod();
         }
         if (accessModifier >= 0) {
@@ -511,19 +520,19 @@ public class MethodTester {
     }
 
     /**
-     * returns the Value of {@link #theMethod}
+     * returns the Value of {@link #theExecutable}
      *
-     * @return the Value of {@link #theMethod}
+     * @return the Value of {@link #theExecutable}
      */
-    public Method getTheMethod() {
-        return theMethod;
+    public Executable getTheExecutable() {
+        return theExecutable;
     }
 
     /**
-     * Set {@link #theMethod} to the given value
+     * Set {@link #theExecutable} to the given value
      */
-    public void setTheMethod(Method theMethod) {
-        this.theMethod = theMethod;
+    public void setTheExecutable(Method theExecutable) {
+        this.theExecutable = theExecutable;
     }
 
     /**
@@ -562,7 +571,7 @@ public class MethodTester {
      * assert that the Method Parameters match with {@link #parameters}
      */
     public void assertParametersMatch() {
-        assertParametersMatch(theMethod, methodIdentifier.identifierName, parameters, false);
+        assertParametersMatch(theExecutable, methodIdentifier.identifierName, parameters, false);
     }
 
     /**
@@ -575,19 +584,19 @@ public class MethodTester {
     }
 
     /**
-     * returns {@code true} if {@link #theMethod} is not {@code null}
+     * returns {@code true} if {@link #theExecutable} is not {@code null}
      *
-     * @return {@code true} if {@link #theMethod} is not {@code null}
+     * @return {@code true} if {@link #theExecutable} is not {@code null}
      */
-    public boolean methodResolved() {
-        return theMethod != null;
+    public boolean resolved() {
+        return theExecutable != null;
     }
 
     /**
      * Assert that the method is resolved
      */
     public void assertMethodResolved() {
-        assertTrue(methodResolved(), getMethodNotFoundMessage());
+        assertTrue(resolved(), getMethodNotFoundMessage());
     }
 
     /**
@@ -621,20 +630,20 @@ public class MethodTester {
      * <br>
      * </br>
      * To be exact: returns {@code true} if
-     * {@link #classTester} {@link #theMethod} and
+     * {@link #classTester} {@link #theExecutable} and
      * {@link ClassTester#classInstance} are
      * resolved
      *
      * @return returns {@code true}, if the Method is invokable.
      */
     public boolean invokeable() {
-        return classResolved() && classTester.classInstanceResolved() && methodResolved() && classTester.classInstanceResolved();
+        return classResolved() && classTester.classInstanceResolved() && resolved() && classTester.classInstanceResolved();
     }
 
     /**
      * Asserts that the Method is invokable.
      * <p>
-     * To be exact: asserts that {@link #classTester} {@link #theMethod} and
+     * To be exact: asserts that {@link #classTester} {@link #theExecutable} and
      * {@link ClassTester#classInstance} are resolved
      */
     public void assertInvokeable() {
@@ -644,7 +653,7 @@ public class MethodTester {
     }
 
     /**
-     * Invokes {@link #theMethod} using {@link #classTester}
+     * Invokes {@link #theExecutable} using {@link #classTester}
      *
      * @param params the Parameters used for invoking
      * @return the Returned Value of the Method
@@ -662,9 +671,11 @@ public class MethodTester {
         if (instance != null) {
             assertInvokeable();
         }
-        assertDoesNotThrow(() -> theMethod.setAccessible(true), "method could not be invoked");
+        assertDoesNotThrow(() -> theExecutable.setAccessible(true), "method could not be invoked");
         Object returnValue = null;
         try {
+            assertTrue(theExecutable instanceof Method);
+            var theMethod = (Method) this.theExecutable;
             returnValue = theMethod.invoke(instance, params);
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             if (e instanceof InvocationTargetException && ((InvocationTargetException) e).getTargetException() instanceof RuntimeException) {
@@ -674,6 +685,7 @@ public class MethodTester {
             fail("method could not be invoked" + e.getMessage(), e);
 
         }
+        //noinspection unchecked
         return (T) returnValue;
     }
 
@@ -689,7 +701,7 @@ public class MethodTester {
     public List<Invocation> getInvocations() {
         assertMethodResolved();
         classTester.assertSpied();
-        return classTester.getMockingDetails().getInvocations().stream().filter(x -> x.getMethod().getName().equals(getTheMethod().getName())).collect(Collectors.toList());
+        return classTester.getMockingDetails().getInvocations().stream().filter(x -> x.getMethod().getName().equals(getTheExecutable().getName())).collect(Collectors.toList());
     }
 
     // public boolean needsJavadoc() {
@@ -722,11 +734,11 @@ public class MethodTester {
      * @return the Random Parameters
      */
     public Object[] getRandomParams() {
-        return Arrays.stream(getTheMethod().getParameters()).map(x -> ClassTester.getRandomValue(x.getType())).toArray();
+        return Arrays.stream(getTheExecutable().getParameters()).map(x -> ClassTester.getRandomValue(x.getType())).toArray();
     }
 
     /**
-     * {@link #theMethod} using {@link #classTester} with Random parameters
+     * {@link #theExecutable} using {@link #classTester} with Random parameters
      *
      * @return the Returned Value of the Method
      */
@@ -778,8 +790,7 @@ public class MethodTester {
         Launcher spoon = assertDoesNotThrow(() -> getClassTester().assureSpoonLauncherModelsBuild().getSpoon(), "Could not Create Spoon Launcher");
         CtType<?> type = assertDoesNotThrow(() -> spoon.getModel().getAllTypes().stream().filter(CtType::isTopLevel).findFirst().orElseThrow(),
             "Could not resolve Class Source for Class " + classTester.getClassIdentifier().identifierName + "." + "available Class Sources:" + spoon.getModel().getAllTypes().toString());
-        CtMethod<?> method = assertDoesNotThrow(() -> type.getMethodsByName(getMethodIdentifier().identifierName).stream().findFirst().orElseThrow(), "Could not resolve Method Source for Method " + getTheMethod().getName());
-        return method;
+        return assertDoesNotThrow(() -> type.getMethodsByName(getMethodIdentifier().identifierName).stream().findFirst().orElseThrow(), "Could not resolve Method Source for Method " + getTheExecutable().getName());
     }
 
     public Set<CtMethod<?>> getCtMethods() {
@@ -787,8 +798,7 @@ public class MethodTester {
         Launcher spoon = assertDoesNotThrow(() -> getClassTester().assureSpoonLauncherModelsBuild().getSpoon(), "Could not Create Spoon Launcher");
         CtType<?> type = assertDoesNotThrow(() -> spoon.getModel().getAllTypes().stream().filter(CtType::isTopLevel).findFirst().orElseThrow(),
             "Could not resolve Class Source for Class " + classTester.getClassIdentifier().identifierName + "." + "available Class Sources:" + spoon.getModel().getAllTypes().toString());
-        Set<CtMethod<?>> methods = assertDoesNotThrow(type::getAllMethods, "Could not resolve Method Sources for Class " + classTester.getClassIdentifier().identifierName);
-        return methods;
+        return assertDoesNotThrow(type::getAllMethods, "Could not resolve Method Sources for Class " + classTester.getClassIdentifier().identifierName);
     }
 
     public void assertDirectlyRecursive() {
@@ -853,7 +863,7 @@ public class MethodTester {
      * Asserts the actual access Modifier matches {@link #accessModifier}
      */
     public void assertAccessModifier() {
-//        disabled for this submbission
+//        disabled for this submission
 //        if (accessModifier >= 0) {
 //            TestUtils.assertModifier(accessModifier, theMethod);
 //        }
@@ -867,7 +877,7 @@ public class MethodTester {
      * The Method is first searched by name using using
      * {@link TestUtils#similarity(String, String)}. If Multiple overloads are found
      * then the function with the most matching parameters according to
-     * {@link #countMatchingParameters(Method, String, ArrayList, boolean)} is
+     * {@link #countMatchingParameters(Executable, String, ArrayList, boolean)} is
      * chosen.
      *
      * @param theClass        The Class to search in
@@ -877,13 +887,14 @@ public class MethodTester {
      * @param allowSuperClass whether to search in Super classes as well
      * @return the resolved Method
      * @see TestUtils#similarity(String, String)
-     * @see #countMatchingParameters(Method, String, ArrayList, boolean)
+     * @see #countMatchingParameters(Executable, String, ArrayList, boolean)
      */
-    public Method resolveMethod(Class<?> theClass, String methodName, double similarity, ArrayList<ParameterMatcher> parameters, boolean allowSuperClass) {
+    public Executable resolveExecutable(Class<?> theClass, String methodName, double similarity, ArrayList<ParameterMatcher> parameters, boolean allowSuperClass) {
         similarity = Math.max(0, Math.min(similarity, 1));
         ClassTester.assertClassNotNull(theClass, "zu Methode " + methodName);
-        ArrayList<Method> methods = allowSuperClass ? getAllMethods(theClass) : new ArrayList<>(Arrays.asList(theClass.getDeclaredMethods()));
-        var bestMatch = methods.stream().sorted((x, y) -> Double.valueOf(TestUtils.similarity(methodName, y.getName())).compareTo(TestUtils.similarity(methodName, x.getName()))).findFirst().orElse(null);
+        ArrayList<Executable> methods = allowSuperClass ? getAllMethods(theClass) : new ArrayList<>(Arrays.asList(theClass.getDeclaredMethods()));
+        methods.addAll(List.of(theClass.getConstructors()));
+        var bestMatch = methods.stream().min((x, y) -> Double.compare(TestUtils.similarity(methodName, y.getName()), TestUtils.similarity(methodName, x.getName()))).orElse(null);
         assertMethodNotNull(bestMatch, methodName);
         var sim = TestUtils.similarity(bestMatch.getName(), methodName);
         assertTrue(sim >= similarity, getMethodNotFoundMessage() + "Ähnlichster Methodenname:" + bestMatch.getName() + " with " + sim + " similarity.");
@@ -892,11 +903,11 @@ public class MethodTester {
             var matches = methods.stream().filter(x -> TestUtils.similarity(methodName, x.getName()) == sim).collect(Collectors.toCollection(ArrayList::new));
             if (matches.size() > 1) {
                 // Find Best match according to parameter options
-                bestMatch = matches.stream().sorted((x, y) -> Integer.valueOf(countMatchingParameters(y, methodName, parameters, true)).compareTo(countMatchingParameters(x, methodName, parameters, true))).findFirst().orElse(null);
+                bestMatch = matches.stream().min((x, y) -> Integer.compare(countMatchingParameters(y, methodName, parameters, true), countMatchingParameters(x, methodName, parameters, true))).orElse(null);
             }
         }
 
-        return theMethod = bestMatch;
+        return theExecutable = bestMatch;
     }
 
     /**
@@ -907,7 +918,7 @@ public class MethodTester {
      * The Method is first searched by name using using
      * {@link TestUtils#similarity(String, String)}. If Multiple overloads are found
      * then the function with the most matching parameters according to
-     * {@link #countMatchingParameters(Method, String, ArrayList, boolean)} is
+     * {@link #countMatchingParameters(Executable, String, ArrayList, boolean)} is
      * chosen.
      *
      * @param theClass   The Class to search in
@@ -916,10 +927,10 @@ public class MethodTester {
      * @param parameters The expected Parameters
      * @return the resolved Method
      * @see TestUtils#similarity(String, String)
-     * @see #countMatchingParameters(Method, String, ArrayList, boolean)
+     * @see #countMatchingParameters(Executable, String, ArrayList, boolean)
      */
-    public Method resolveMethod(Class<?> theClass, String methodName, double similarity, ArrayList<ParameterMatcher> parameters) {
-        return resolveMethod(theClass, methodName, similarity, parameters, false);
+    public Executable resolveExecutable(Class<?> theClass, String methodName, double similarity, ArrayList<ParameterMatcher> parameters) {
+        return resolveExecutable(theClass, methodName, similarity, parameters, false);
     }
 
     /**
@@ -930,19 +941,23 @@ public class MethodTester {
      * The Method is first searched by name using using
      * {@link TestUtils#similarity(String, String)}. If Multiple overloads are found
      * then the function with the most matching parameters according to
-     * {@link #countMatchingParameters(Method, String, ArrayList, boolean)} is
+     * {@link #countMatchingParameters(Executable, String, ArrayList, boolean)} is
      * chosen.
      *
      * @return the resolved Method
      * @see TestUtils#similarity(String, String)
-     * @see #countMatchingParameters(Method, String, ArrayList, boolean)
+     * @see #countMatchingParameters(Executable, String, ArrayList, boolean)
      */
     public Method resolveMethod() {
-        assertClassTesterNotNull();
-        if (!classResolved()) {
-            classTester.resolveClass();
-        }
-        return resolveMethod(classTester.theClass, methodIdentifier.identifierName, methodIdentifier.similarity, parameters, allowSuperClass);
+        var executable = resolve();
+        if (executable instanceof Method)
+            return (Method) executable;
+        return fail("executable is not a method");
+    }
+
+    public Executable resolve() {
+        getClassTester().assureResolved();
+        return resolveExecutable(classTester.theClass, methodIdentifier.identifierName, methodIdentifier.similarity, parameters, allowSuperClass);
     }
 
     /**
@@ -951,19 +966,13 @@ public class MethodTester {
      * @return the Method
      */
     public MethodTester assureResolved() {
-        if (!methodResolved()) {
-            resolveMethod();
+        if (!resolved()) {
+            resolve();
         }
         return this;
     }
 
-    /**
-     * Gets Method Documentation for JavaDoc
-     *
-     * @param d the Source Documentation
-     * @return the Method Documentation
-     */
-//    public MethodDocumentation getMethodDocumentation(SourceDocumentation d) {
+    //    public MethodDocumentation getMethodDocumentation(SourceDocumentation d) {
 //        try {
 //            classTester.assureClassResolved();
 //            var resolvedMethod = assureMethodResolved().getTheMethod();
@@ -982,16 +991,16 @@ public class MethodTester {
      * The Method is first searched by name using using
      * {@link TestUtils#similarity(String, String)}. If Multiple overloads are found
      * then the function with the most matching parameters according to
-     * {@link #countMatchingParameters(Method, String, ArrayList, boolean)} is
+     * {@link #countMatchingParameters(Executable, String, ArrayList, boolean)} is
      * chosen.
      *
      * @param similarity The minimum required similarity
      * @return the resolved Method
      * @see TestUtils#similarity(String, String)
-     * @see #countMatchingParameters(Method, String, ArrayList, boolean)
+     * @see #countMatchingParameters(Executable, String, ArrayList, boolean)
      */
-    public Method resolveMethod(double similarity) {
-        return resolveMethod(classTester.theClass, methodIdentifier.identifierName, similarity, parameters);
+    public Executable resolveExecutable(double similarity) {
+        return resolveExecutable(classTester.theClass, methodIdentifier.identifierName, similarity, parameters);
     }
 
     public void assertNoInvocation() {

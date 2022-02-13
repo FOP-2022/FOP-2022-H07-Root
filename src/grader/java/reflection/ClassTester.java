@@ -9,19 +9,13 @@ import spoon.Launcher;
 import spoon.support.compiler.VirtualFile;
 import tutor.Utils;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,6 +29,7 @@ import static org.mockito.Mockito.*;
  *
  * @author Ruben Deisenroth
  */
+@SuppressWarnings("UnusedReturnValue")
 public class ClassTester<T> {
     /**
      * The Class Identifier (Containing Name, Similarity)
@@ -373,14 +368,11 @@ public class ClassTester<T> {
                 c.setAccessible(true);
                 var params = c.getParameters();
 
-                var constructorArgs = Arrays.stream(params).map(x -> {
-                    return getDefaultValue(x.getType());
-                }).toArray();
+                var constructorArgs = Arrays.stream(params).map(x -> getDefaultValue(x.getType())).toArray();
                 instance = (T) c.newInstance(constructorArgs);
                 break;
             } catch (Exception e) {
                 e.printStackTrace();
-                continue;
             }
         }
         assertNotNull(instance, "Could not create Instance.");
@@ -453,9 +445,7 @@ public class ClassTester<T> {
      */
     public static <T> Enum<?> getEnumValue(Class<Enum<?>> enumClass, String expectedName, double similarity) {
         var enumConstants = enumClass.getEnumConstants();
-        var bestMatch = Arrays.stream(enumConstants).sorted((x, y) -> Double.valueOf(
-                TestUtils.similarity(expectedName, y.name())).compareTo(TestUtils.similarity(expectedName, x.name())))
-            .findFirst().orElse(null);
+        var bestMatch = Arrays.stream(enumConstants).min((x, y) -> Double.compare(TestUtils.similarity(expectedName, y.name()), TestUtils.similarity(expectedName, x.name()))).orElse(null);
         assertNotNull(bestMatch, "Enum-Wert" + expectedName + " existiert nicht.");
         var sim = TestUtils.similarity(expectedName, bestMatch.name());
         assertTrue(sim >= similarity,
@@ -645,10 +635,7 @@ public class ClassTester<T> {
         assertClassResolved();
         ArrayList<Field> fields = matcher.allowSuperClass ? getAllFields(theClass)
             : new ArrayList<>(Arrays.asList(theClass.getDeclaredFields()));
-        Field bestMatch = fields.stream()
-            .sorted((x, y) -> Double.valueOf(TestUtils.similarity(y.getName(), matcher.identifierName))
-                .compareTo(TestUtils.similarity(x.getName(), matcher.identifierName)))
-            .findFirst().orElse(null);
+        Field bestMatch = fields.stream().min((x, y) -> Double.compare(TestUtils.similarity(y.getName(), matcher.identifierName), TestUtils.similarity(x.getName(), matcher.identifierName))).orElse(null);
         if (bestMatch == null) {
             fail(String.format("attribute <%s> does not exist", matcher.identifierName));
         }
@@ -671,7 +658,7 @@ public class ClassTester<T> {
         var methodTester = new MethodTester(this, String.format("get%s%s",
             attribute.getName().substring(0, 1).toUpperCase(), attribute.getName().substring(1)), 0.8,
             Modifier.PUBLIC, attribute.getType(), new ArrayList<>(Arrays.asList(parameters)));
-        methodTester.resolveMethod();
+        methodTester.resolve();
         methodTester.assertAccessModifier();
         methodTester.assertParametersMatch();
         methodTester.assertReturnType();
@@ -730,16 +717,11 @@ public class ClassTester<T> {
         assertClassResolved();
         var interfaces = new ArrayList<>(List.of(theClass.getInterfaces()));
         if (implementsInterfaces == null || implementsInterfaces.isEmpty()) {
-            assertTrue(interfaces == null || interfaces.isEmpty(), "Es sollen keine Interfaces implementiert werden.");
+            assertTrue(interfaces.isEmpty(), "Es sollen keine Interfaces implementiert werden.");
         } else {
-            for (int i = 0; i < implementsInterfaces.size(); i++) {
-                var matcher = implementsInterfaces.get(i);
+            for (IdentifierMatcher matcher : implementsInterfaces) {
                 assertFalse(interfaces.isEmpty(), getInterfaceNotImplementedMessage(matcher.identifierName));
-                var bestMatch = interfaces.stream()
-                    .sorted((x, y) -> Double
-                        .valueOf(TestUtils.similarity(matcher.identifierName, y.getSimpleName()))
-                        .compareTo(TestUtils.similarity(matcher.identifierName, x.getSimpleName())))
-                    .findFirst().orElse(null);
+                var bestMatch = interfaces.stream().min((x, y) -> Double.compare(TestUtils.similarity(matcher.identifierName, y.getSimpleName()), TestUtils.similarity(matcher.identifierName, x.getSimpleName()))).orElse(null);
                 assertNotNull(bestMatch, getInterfaceNotImplementedMessage(matcher.identifierName));
                 var sim = TestUtils.similarity(bestMatch.getSimpleName(), matcher.identifierName);
                 assertTrue(sim >= matcher.similarity, getInterfaceNotImplementedMessage(matcher.identifierName)
@@ -1002,6 +984,7 @@ public class ClassTester<T> {
      * @param classInstance the new Class Instance
      */
     public void setClassInstance(Object classInstance) {
+        //noinspection unchecked
         this.classInstance = (T) classInstance;
     }
 
@@ -1079,10 +1062,7 @@ public class ClassTester<T> {
         // getClassNotFoundMessage(className));
         // }
         var classes = assertDoesNotThrow(() -> TestUtils.getClasses(packageName));
-        var bestMatch = Arrays.stream(classes)
-            .sorted((x, y) -> Double.valueOf(TestUtils.similarity(className, y.getSimpleName()))
-                .compareTo(TestUtils.similarity(className, x.getSimpleName())))
-            .findFirst().orElse(null);
+        var bestMatch = Arrays.stream(classes).min((x, y) -> Double.compare(TestUtils.similarity(className, y.getSimpleName()), TestUtils.similarity(className, x.getSimpleName()))).orElse(null);
         assertNotNull(bestMatch, getClassNotFoundMessage());
         var sim = TestUtils.similarity(bestMatch.getSimpleName(), className);
         if (sim < similarity) {
@@ -1233,19 +1213,12 @@ public class ClassTester<T> {
         assertClassResolved();
         Constructor<T>[] constructors = (Constructor<T>[]) assertDoesNotThrow(() -> theClass.getDeclaredConstructors());
         assertTrue(constructors.length > 0, "Keine Konstruktoren gefunden.");
-        Constructor<T> bestMatch = null;
+        Constructor<T> bestMatch;
         if (parameters != null && !parameters.isEmpty()) {
             // Find Best match according to parameter options
-            bestMatch = Arrays.stream(constructors)
-                .sorted((x, y) -> Integer
-                    .valueOf(MethodTester.countMatchingParameters(parameters,
-                        new ArrayList<>(Arrays.asList(x.getParameters())), true))
-                    .compareTo(MethodTester.countMatchingParameters(parameters,
-                        new ArrayList<>(Arrays.asList(x.getParameters())), true)))
-                .findFirst().orElse(null);
-        } else {
-            bestMatch = Arrays.stream(constructors).filter(x -> x.getParameterCount() == 0).findFirst().orElse(null);
-        }
+            bestMatch = Arrays.stream(constructors).min(Comparator.comparingInt(x -> MethodTester.countMatchingParameters(parameters,
+                new ArrayList<>(Arrays.asList(x.getParameters())), true))).orElse(null);
+        } else bestMatch = Arrays.stream(constructors).filter(x -> x.getParameterCount() == 0).findFirst().orElse(null);
         assertNotNull(bestMatch, "Der Passende Konstruktor wurde nicht gefunden");
         return bestMatch;
     }
@@ -1358,22 +1331,15 @@ public class ClassTester<T> {
         assertNotNull(field, "Fehlerhafter Test:Das Attribut konnte nicht gefunden werden.");
         var message = "Das Attribut " + field.getName() + " hat den falschen Wert."
             + (additionalMessage == null ? "" : "\n" + additionalMessage);
-        if (field.getType() instanceof Class) {
-            var actual = getFieldValue(field);
-            if (expected == null && actual != null || (expected != null && !expected.equals(actual))) {
-                fail(message + "Expected: [" +
-                    expected == null
-                    ? null
-                    : expected.getClass().getName() + "@" + Integer.toHexString(expected.hashCode())
-                    + "], but got: ["
-                    +
-                    (actual == null ? null
-                        : actual.getClass().getName() + "@"
-                        + Integer.toHexString(actual.hashCode()))
-                    + "]");
-            }
-        } else {
-            assertEquals(expected, getFieldValue(field), message);
+        var actual = getFieldValue(field);
+        if (expected == null && actual != null || (expected != null && !expected.equals(actual))) {
+            fail(expected.getClass().getName() + "@" + Integer.toHexString(expected.hashCode())
+                + "], but got: ["
+                +
+                (actual == null ? null
+                    : actual.getClass().getName() + "@"
+                    + Integer.toHexString(actual.hashCode()))
+                + "]");
         }
     }
 
