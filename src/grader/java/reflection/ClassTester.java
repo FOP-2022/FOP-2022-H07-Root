@@ -9,9 +9,15 @@ import spoon.Launcher;
 import spoon.support.compiler.VirtualFile;
 import tutor.Utils;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -593,11 +599,30 @@ public class ClassTester<T> {
                 }
                 spoon.addInputResource(new VirtualFile(Objects.requireNonNull(sourceFile).getContent(), sourceFileName));
             } else {
-                spoon.addInputResource("src/main/java/" + sourceFileName);
+                spoon.addInputResource("../../solution/src/main/java/" + sourceFileName);
             }
             spoon.buildModel();
         }
         return this;
+    }
+
+    public String getClassContent() {
+        assureSpoonLauncherModelsBuild();
+        var sourceFileName = getTheClass().getName().replace('.', '/') + ".java";
+        var cycle = TestCycleResolver.getTestCycle();
+        VirtualFile vf = null;
+        if (cycle != null) {
+            SourceFile sourceFile = cycle.getSubmission().getSourceFile(sourceFileName);
+            if (sourceFile == null)
+                fail(String.format("file %s does not exist", sourceFileName));
+            return Objects.requireNonNull(sourceFile).getContent();
+        } else {
+            try {
+                return String.join("", Files.readAllLines(Paths.get("../../solution/src/main/java/" + sourceFileName)));
+            } catch (IOException e) {
+                return fail(String.format("error reading file %s", sourceFileName));
+            }
+        }
     }
 
     /**
@@ -1399,6 +1424,7 @@ public class ClassTester<T> {
         Utils.TestCollection.test()
             .add(this::assertAccessModifier)
             .run();
+        // TODO add interface check
     }
 
 }
