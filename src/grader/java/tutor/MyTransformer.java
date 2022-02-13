@@ -93,7 +93,8 @@ public class MyTransformer implements ClassTransformer {
         public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
 
             boolean isStatic = Modifier.isStatic(access);
-            boolean forceStatic = isStatic && (name.equals("main") || name.equals("<clinit>"));
+            boolean isSynthetic = name.startsWith("lambda$");
+            boolean forceStatic = isStatic && (name.equals("main") || name.equals("<clinit>") || isSynthetic) ;
             access &= ~Modifier.PRIVATE;
             access &= ~Modifier.PROTECTED;
             access |= Modifier.PUBLIC;
