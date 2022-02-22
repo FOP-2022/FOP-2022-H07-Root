@@ -8,6 +8,7 @@ import java.util.List;
 
 import static h07.Global.SIMILARITY;
 import static java.lang.reflect.Modifier.PUBLIC;
+import static java.lang.reflect.Modifier.STATIC;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
@@ -19,6 +20,7 @@ public class Person_STUD implements Mocked {
     private static AttributeTester aStreet;
     private static AttributeTester aHouseNumber;
     private static AttributeTester aPostalCode;
+    private static MethodTester mConstructor;
     private static MethodTester mSetLastName;
     private static MethodTester mGetLastName;
     private static MethodTester mSetFirstName;
@@ -38,16 +40,29 @@ public class Person_STUD implements Mocked {
     }
 
     public Person_STUD() {
-        object = cPerson().getNewInstance();
+        object = cPerson().instantiate();
+    }
+
+    public Person_STUD(String lastName, String firstName, String street, int houseNumber, int postalCode) {
+        if (mConstructor().resolved())
+            object = mConstructor().invokeStatic(lastName, firstName, street, houseNumber, postalCode);
+        else {
+            object = cPerson().instantiate();
+            setLastName(lastName);
+            setFirstName(firstName);
+            setStreet(street);
+            setHouseNumber(houseNumber);
+            setPostalCode(postalCode);
+        }
     }
 
     public static ClassTester<?> cPerson() {
-        return cPerson = requireNonNullElseGet(cPerson, () -> new ClassTester<>(
+        return (cPerson = requireNonNullElseGet(cPerson, () -> new ClassTester<>(
             "h07.person",
             "Person",
             SIMILARITY,
             PUBLIC
-        ));
+        ))).assureResolved();
     }
 
     public static AttributeTester aLastName() {
@@ -59,7 +74,7 @@ public class Person_STUD implements Mocked {
                         "lastName",
                         SIMILARITY,
                         Modifier.PRIVATE,
-                        String.class)).assureExists());
+                        String.class)).assureResolved());
     }
 
     public static AttributeTester aFirstName() {
@@ -71,7 +86,7 @@ public class Person_STUD implements Mocked {
                         "firstName",
                         SIMILARITY,
                         Modifier.PRIVATE,
-                        String.class)).assureExists());
+                        String.class)).assureResolved());
     }
 
     public static AttributeTester aStreet() {
@@ -83,7 +98,7 @@ public class Person_STUD implements Mocked {
                         "street",
                         SIMILARITY,
                         Modifier.PRIVATE,
-                        String.class)).assureExists());
+                        String.class)).assureResolved());
     }
 
     public static AttributeTester aHouseNumber() {
@@ -95,7 +110,7 @@ public class Person_STUD implements Mocked {
                         "houseNumber",
                         SIMILARITY,
                         Modifier.PRIVATE,
-                        int.class)).assureExists());
+                        int.class)).assureResolved());
     }
 
     public static AttributeTester aPostalCode() {
@@ -107,7 +122,24 @@ public class Person_STUD implements Mocked {
                         "postalCode",
                         SIMILARITY,
                         Modifier.PRIVATE,
-                        int.class)).assureExists());
+                        int.class)).assureResolved());
+    }
+
+    public static MethodTester mConstructor() {
+        return mConstructor = requireNonNullElseGet(mConstructor, () -> new MethodTester(
+            cPerson(),
+            "h07.person.Person",
+            100,
+            PUBLIC | STATIC,
+            cPerson().getActualClass(),
+            List.of(
+                new ParameterMatcher(String.class),
+                new ParameterMatcher(String.class),
+                new ParameterMatcher(String.class),
+                new ParameterMatcher(int.class),
+                new ParameterMatcher(int.class)
+            )
+        ).assureResolved());
     }
 
     public static MethodTester mSetLastName() {

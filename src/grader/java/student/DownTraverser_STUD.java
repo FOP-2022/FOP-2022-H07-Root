@@ -21,7 +21,7 @@ public class DownTraverser_STUD extends Traverser_STUD {
     private final Object object;
 
     public DownTraverser_STUD() {
-        object = mock(cDownTraverser().getTheClass(), CALLS_REAL_METHODS);
+        object = mock(cDownTraverser().getActualClass(), CALLS_REAL_METHODS);
         cDownTraverser().setClassInstance(object);
     }
 

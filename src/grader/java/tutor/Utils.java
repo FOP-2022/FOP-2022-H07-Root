@@ -182,7 +182,7 @@ public interface Utils {
             return this;
         }
 
-        public TestCollection terminateOnException() {
+        public TestCollection terminateOnFailure() {
             entries.getLast().terminate = true;
             return this;
         }
@@ -225,7 +225,11 @@ public interface Utils {
                 }
             }
             if (count != 0 && mode != SILENT) {
-                fail(getEntriesToShow().map(Messages::ofEntryError).collect(Collectors.joining(", ")));
+                var firstEntry = getEntriesToShow().findFirst().orElseThrow();
+                Throwable cause = firstEntry.error; // TODO
+                while (cause.getCause() != null)
+                    cause = cause.getCause();
+                fail(getEntriesToShow().map(Messages::ofEntryError).collect(Collectors.joining(", ")), cause);
             }
             entries.clear();
 

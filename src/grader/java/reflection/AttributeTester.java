@@ -25,7 +25,7 @@ public class AttributeTester {
         return this;
     }
 
-    public AttributeTester assureExists() {
+    public AttributeTester assureResolved() {
         Objects.requireNonNull(classTester, "no class tester defined");
         Objects.requireNonNull(matcher, "no matcher defined");
         field = classTester.resolveAttribute(matcher);
@@ -34,13 +34,14 @@ public class AttributeTester {
 
     public AttributeTester assertModifiers() {
         if (matcher.modifier >= 0) {
-            assertModifier(matcher.modifier, field);
+            TestUtils.assertModifier(matcher.modifier, field);
         }
         return this;
     }
 
-    public AttributeTester assertDeclaration() {
+    public AttributeTester checkDeclaration() {
         test()
+            .add(this::assureResolved)
             .add(this::assertModifiers)
             .run(SHOW_ALL);
         return this;

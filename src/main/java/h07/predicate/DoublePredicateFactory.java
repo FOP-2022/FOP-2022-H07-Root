@@ -51,6 +51,7 @@ public class DoublePredicateFactory {
      * @return the Conjunction over predicates
      */
     public DoublePredicate buildConjunction(DoublePredicate[] predicates) {
+        System.out.println(">" + this);
         return buildConjunction(predicates[0], predicates, 1);
     }
 

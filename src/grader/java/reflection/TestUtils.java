@@ -49,7 +49,7 @@ public class TestUtils {
      * @param clazz    Klasse mit Modifier
      */
     public static void assertModifier(int expected, Class<?> clazz) {
-        assertModifier(expected, clazz.getModifiers(), "class < " + clazz.getName() + ">");
+        assertModifier(expected, clazz.getModifiers(), "class <" + clazz.getName() + ">");
     }
 
     /**

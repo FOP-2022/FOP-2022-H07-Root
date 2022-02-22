@@ -1,6 +1,7 @@
 package reflection;
 
 import net.bytebuddy.ByteBuddy;
+import org.junit.jupiter.api.Assertions;
 import org.mockito.MockedStatic;
 import org.mockito.MockingDetails;
 import org.sourcegrade.jagr.api.testing.SourceFile;
@@ -580,7 +581,7 @@ public class ClassTester<T> {
         var allTypes = spoon.getModel().getAllTypes();
         if (allTypes == null || allTypes.isEmpty()) {
             var cycle = TestCycleResolver.getTestCycle();
-            var sourceFileName = getTheClass().getName().replace('.', '/') + ".java";
+            var sourceFileName = getActualClass().getName().replace('.', '/') + ".java";
             VirtualFile vf = null;
             if (cycle != null) {
                 SourceFile sourceFile = cycle.getSubmission().getSourceFile(sourceFileName);
@@ -598,7 +599,7 @@ public class ClassTester<T> {
 
     public String getClassContent() {
         assureSpoonLauncherModelsBuild();
-        var sourceFileName = getTheClass().getName().replace('.', '/') + ".java";
+        var sourceFileName = getActualClass().getName().replace('.', '/') + ".java";
         var cycle = TestCycleResolver.getTestCycle();
         VirtualFile vf = null;
         if (cycle != null) {
@@ -622,7 +623,7 @@ public class ClassTester<T> {
      * recursively
      */
     public ArrayList<Field> getAllFields() {
-        return getAllFields(new ArrayList<>(), getTheClass());
+        return getAllFields(new ArrayList<>(), getActualClass());
     }
 
     /**
@@ -929,7 +930,7 @@ public class ClassTester<T> {
      *
      * @return the Class if Already resolved
      */
-    public Class<T> getTheClass() {
+    public Class<T> getActualClass() {
         return theClass;
     }
 
@@ -1061,7 +1062,7 @@ public class ClassTester<T> {
         // () -> Class.forName(String.format("%s.%s", packageName, className)),
         // getClassNotFoundMessage(className));
         // }
-        var classes = assertDoesNotThrow(() -> TestUtils.getClasses(packageName));
+        var classes = Assertions.assertDoesNotThrow(() -> TestUtils.getClasses(packageName));
         var bestMatch = Arrays.stream(classes).min((x, y) -> Double.compare(TestUtils.similarity(className, y.getSimpleName()), TestUtils.similarity(className, x.getSimpleName()))).orElse(null);
         assertNotNull(bestMatch, getClassNotFoundMessage());
         var sim = TestUtils.similarity(bestMatch.getSimpleName(), className);
@@ -1173,7 +1174,7 @@ public class ClassTester<T> {
      *
      * @return the instance
      */
-    public T getNewInstance() {
+    public T instantiate() {
         T instance = findInstance(theClass, classIdentifier.identifierName);
         resolveInstance();
         return instance;
@@ -1386,7 +1387,7 @@ public class ClassTester<T> {
         assertIsPlainClass(theClass, classIdentifier.identifierName);
     }
 
-    public void assertCorrectDeclaration() {
+    public void checkDeclaration() {
         Utils.TestCollection.test()
             .add(this::assertAccessModifier)
             .run();

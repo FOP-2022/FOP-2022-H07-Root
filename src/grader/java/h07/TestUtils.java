@@ -1,38 +1,33 @@
 package h07;
 
-import h07.person.Person;
-import h07.person.PersonFilter;
-import h07.person.PersonToIntFunction;
-import h07.person.Traits;
+import reflection.MethodTester;
+import reflection.ParameterMatcher;
+import student.PersonFilter;
+import student.PersonToIntFunction;
+import student.Person_STUD;
+import student.Traits;
+import tutor.Mocked;
 
-import java.lang.invoke.CallSite;
-import java.lang.invoke.LambdaMetafactory;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.util.Arrays.stream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-class TestUtils {
+public class TestUtils {
     static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
 
-    static Class<?> getPersonClass(String s) {
-        Class<?> personFilter = null;
-        try {
-            personFilter = Class.forName("h07.person." + s);
-        } catch (ClassNotFoundException e) {
-            fail("Die Klasse " + s + " existiert nicht");
-        }
-        return personFilter;
-    }
 
     static Object personGet(Class<?> clazz, Object person, String name) {
         try {
-            var getter = Arrays.stream(clazz.getMethods()).filter(me -> me.getName().toLowerCase()
+            var getter = stream(clazz.getMethods()).filter(me -> me.getName().toLowerCase()
                 .contains(name.toLowerCase()) && me.getName().contains("get")).findAny().orElseThrow(NoSuchMethodException::new);
             return getter.invoke(person);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -43,7 +38,7 @@ class TestUtils {
 
     static Object get(Class<?> clazz, Object traits, String name) {
         try {
-            var getter = Arrays.stream(clazz.getMethods()).filter(me -> me.getName().toLowerCase()
+            var getter = stream(clazz.getMethods()).filter(me -> me.getName().toLowerCase()
                 .contains(name.toLowerCase())).findAny().orElseThrow(NoSuchMethodException::new);
             return getter.invoke(traits);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -98,14 +93,7 @@ class TestUtils {
     }
 
     static Object makePerson(String lastName, String firstName, String street, int houseNumber, int postalCode) {
-        var person = getPersonClass("Person");
-        try {
-            return person.getConstructor(String.class, String.class, String.class, int.class, int.class)
-                .newInstance(lastName, firstName, street, houseNumber, postalCode);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            fail("Ein Person konnnte nicht erstellt werden", e);
-            return null;
-        }
+        return new Person_STUD(lastName, firstName, street, houseNumber, postalCode).getActualObject();
     }
 
     static Object people() {
@@ -121,7 +109,7 @@ class TestUtils {
             makePerson("c", "a", "a", 1, 64289),
             makePerson("c", "a", "a", 2, 3),
         };
-        var result = Array.newInstance(getPersonClass("Person"), init.length);
+        var result = Array.newInstance(Person_STUD.cPerson().getActualClass(), init.length);
         for (var i = 0; i < init.length; i++) {
             Array.set(result, i, init[i]);
         }
@@ -134,7 +122,7 @@ class TestUtils {
             makePerson("a", "a", "a", 2, 3),
             makePerson("c", "a", "a", 2, 3),
         };
-        var result = Array.newInstance(getPersonClass("Person"), init.length);
+        var result = Array.newInstance(Person_STUD.cPerson().getActualClass(), init.length);
         for (var i = 0; i < init.length; i++) {
             Array.set(result, i, init[i]);
         }
@@ -149,28 +137,21 @@ class TestUtils {
     }
 
     static void assertPersonEquals(Object p1, Object p2) {
-        var person = getPersonClass("Person");
-        if (p2 == null) {
-            fail("Mindestens eine resultierende Person ist null");
-        }
-        assertEquals(personGet(person, p1, "houseNumber"), personGet(person, p2, "houseNumber"));
-        assertEquals(personGet(person, p1, "postalCode"), personGet(person, p2, "postalCode"));
-        assertEquals(personGet(person, p1, "firstName"), personGet(person, p2, "firstName"));
-        assertEquals(personGet(person, p1, "lastName"), personGet(person, p2, "lastName"));
-        assertEquals(personGet(person, p1, "street"), personGet(person, p2, "street"));
+        var person1 = new Person_STUD(p1);
+        var person2 = new Person_STUD(p1);
+        assertEquals(person1.getHouseNumber(), person2.getHouseNumber());
+        assertEquals(person1.getPostalCode(), person2.getPostalCode());
+        assertEquals(person1.getFirstName(), person2.getFirstName());
+        assertEquals(person1.getLastName(), person2.getLastName());
+        assertEquals(person1.getStreet(), person2.getStreet());
     }
 
-    static Object getTraitsObject(boolean withCombine) {
+    static Traits.Mock getTraitsObject(boolean withCombine) {
         var personFilter = personFilter();
         var personToIntFunction = personToIntFunction();
         IntBinaryOperator op = (a, b) -> a + b + 1;
         IntBinaryOperator combine = (a, b) -> a * b / 7;
         int init = 357;
-        var traits = TestUtils.getPersonClass("Traits");
-        var consOpt = Arrays.stream(traits.getConstructors()).filter(c -> c.getParameterCount() >= (withCombine ? 5 : 4)).findAny();
-        if (consOpt.isEmpty()) {
-            fail("Traits hat keinen geeigneten Konstruktor zum Testen von" + (withCombine ? "MyFunctionWithAdjacent" : "MyFunctionWithFilterMapAndFold1"));
-        }
         return makeTraits(Map.of(
             PersonFilter.class, new ArrayList<>(List.of(personFilter)),
             IntBinaryOperator.class, new ArrayList<>(List.of(op, combine)),
@@ -179,53 +160,41 @@ class TestUtils {
         ));
     }
 
-    static PersonFilter personFilter() {
-        try {
-            final MethodHandles.Lookup lookup = MethodHandles.lookup();
-            MethodType methodType = MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"));
-            final CallSite site = LambdaMetafactory.metafactory(lookup,
-                "test",
-                MethodType.methodType(TestUtils.getPersonClass("PersonFilter")),
-                methodType,
-                lookup.findStatic(TestUtils.class, "postalCodeEquals3",
-                    MethodType.methodType(boolean.class, TestUtils.getPersonClass("Person"))),
-                methodType);
-            return (PersonFilter) site.getTarget().invokeExact();
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw new RuntimeException();
-        }
+    static PersonFilter.Mock personFilter() {
+        return new PersonFilter.Mock((Person_STUD s) -> s.getPostalCode() == 3);
+        // previous approach by Thomas
+//        try {
+//            final MethodHandles.Lookup lookup = MethodHandles.lookup();
+//            MethodType methodType = MethodType.methodType(boolean.class, Person_STUD.cPerson().getActualClass());
+//            final CallSite site = LambdaMetafactory.metafactory(lookup,
+//                "test",
+//                MethodType.methodType(PersonFilter.Student.cPersonFilter().getActualClass()),
+//                methodType,
+//                lookup.findStatic(TestUtils.class, "postalCodeEquals3",
+//                    MethodType.methodType(boolean.class, Person_STUD.cPerson().getActualClass())),
+//                methodType);
+//            return (PersonFilter.Mock) site.getTarget().invokeExact();
+//        } catch (Throwable t) {
+//            t.printStackTrace();
+//            throw new RuntimeException();
+//        }
     }
 
-    private static boolean postalCodeEquals3(Person p) {
+    private static boolean postalCodeEquals3(Person_STUD p) {
         return p.getPostalCode() == 3;
     }
 
-    static PersonToIntFunction personToIntFunction() {
-        try {
-            final MethodHandles.Lookup lookup = MethodHandles.lookup();
-            MethodType methodType = MethodType.methodType(int.class, TestUtils.getPersonClass("Person"));
-            final CallSite site = LambdaMetafactory.metafactory(lookup,
-                "apply",
-                MethodType.methodType(TestUtils.getPersonClass("PersonToIntFunction")),
-                methodType,
-                lookup.findStatic(TestUtils.class, "personIntProduct",
-                    MethodType.methodType(int.class, TestUtils.getPersonClass("Person"))),
-                methodType);
-            return (PersonToIntFunction) site.getTarget().invokeExact();
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw new RuntimeException();
-        }
+    static PersonToIntFunction.Mock personToIntFunction() {
+        return new PersonToIntFunction.Mock(s -> s.getPostalCode() * s.getHouseNumber());
     }
 
-    private static int personIntProduct(Person p) {
+    private static int personIntProduct(Person_STUD p) {
         return p.getPostalCode() * p.getHouseNumber();
     }
 
     static Method getHigherOrderMethod(Class<?> clazz, String name) {
         try {
-            return Arrays.stream(clazz.getMethods()).filter(s -> s.getName().toLowerCase().contains(name.toLowerCase()))
+            return stream(clazz.getMethods()).filter(s -> s.getName().toLowerCase().contains(name.toLowerCase()))
                 .findAny().orElseThrow(() -> new NoSuchMethodException("Keine Klassenmethode mit Namen: " + name));
         } catch (NoSuchMethodException e) {
             fail("Methode mit Namen " + name + " konnte in der Klasse " + clazz.getSimpleName() + " nicht gefunden werden.");
@@ -233,70 +202,43 @@ class TestUtils {
         }
     }
 
-    static Object invokeHigherOrderMethod(Method method, Traits traits, Object fct, Object... inputs) {
-        try {
-            Function<Parameter, Object> lookup = p -> {
-                if (p.getType().equals(Traits.class)) {
-                    return traits;
-                } else {
-                    var match = Arrays.stream(inputs).filter(o -> o.getClass().equals(p.getType()) ||
-                        (o.getClass().equals(Integer.class) && p.getType().equals(int.class))).findAny();
-                    return match.orElse(fct);
-                }
-            };
-            return method.invoke(null, Arrays.stream(method.getParameters()).map(lookup).toArray(Object[]::new));
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            fail("Methode " + method.toGenericString() + " konnte nicht erfolgreich ausgeführt werden.");
-            throw new RuntimeException(e);
-        }
-    }
+    static Object invokeHigherOrderMethod(MethodTester method, Traits traits, Object fct, Object... inputs) {
 
-    static Traits makeTraits(Map<Class<?>, List<?>> objects) {
-        try {
-            var traits = TestUtils.getPersonClass("Traits");
-            var consOpt = Arrays.stream(traits.getConstructors()).filter(c -> c.getParameterCount() >= objects.size()).findAny();
-            if (consOpt.isEmpty()) {
-                throw new NoSuchMethodException();
-            }
-            Function<Class<?>, Object> lookUpWithUsed = p -> {
-                if (objects.containsKey(p)) {
-                    var list = objects.get(p);
-                    if (!list.isEmpty()) {
-                        return list.remove(0);
-                    }
-                }
-                return null;
-            };
-            IntBinaryOperator acc = (IntBinaryOperator) lookUpWithUsed.apply(IntBinaryOperator.class);
-            Integer init = (Integer) lookUpWithUsed.apply(int.class);
-            int initInt = init == null ? 0 : init;
-            PersonToIntFunction personToIntFunction = (PersonToIntFunction) lookUpWithUsed.apply(PersonToIntFunction.class);
-            PersonFilter personFilter = (PersonFilter) lookUpWithUsed.apply(PersonFilter.class);
-            IntBinaryOperator combine = (IntBinaryOperator) lookUpWithUsed.apply(IntBinaryOperator.class);
-            var p = consOpt.get().getParameters();
-            Object[] arguments;
-            if (p.length == 5) {
-                arguments = new Object[]{
-                    p[0].getType().equals(IntBinaryOperator.class) ? acc : p[0].getType().equals(int.class) ? initInt : p[0].getType().equals(PersonToIntFunction.class) ? personToIntFunction : personFilter,
-                    p[1].getType().equals(IntBinaryOperator.class) ? acc : p[1].getType().equals(int.class) ? initInt : p[1].getType().equals(PersonToIntFunction.class) ? personToIntFunction : personFilter,
-                    p[2].getType().equals(IntBinaryOperator.class) ? acc : p[2].getType().equals(int.class) ? initInt : p[2].getType().equals(PersonToIntFunction.class) ? personToIntFunction : personFilter,
-                    p[3].getType().equals(IntBinaryOperator.class) ? acc : p[3].getType().equals(int.class) ? initInt : p[3].getType().equals(PersonToIntFunction.class) ? personToIntFunction : personFilter,
-                    p[4].getType().equals(IntBinaryOperator.class) ? combine : p[4].getType().equals(int.class) ? initInt : p[4].getType().equals(PersonToIntFunction.class) ? personToIntFunction : personFilter
-                };
+        Function<ParameterMatcher, Object> lookup = p -> {
+            if (p.parameterType.equals(Traits.Student.c().getActualClass())) {
+                return traits;
             } else {
-                arguments = new Object[]{
-                    p[0].getType().equals(IntBinaryOperator.class) ? acc : p[0].getType().equals(int.class) ? initInt : p[0].getType().equals(PersonToIntFunction.class) ? personToIntFunction : personFilter,
-                    p[1].getType().equals(IntBinaryOperator.class) ? acc : p[1].getType().equals(int.class) ? initInt : p[1].getType().equals(PersonToIntFunction.class) ? personToIntFunction : personFilter,
-                    p[2].getType().equals(IntBinaryOperator.class) ? acc : p[2].getType().equals(int.class) ? initInt : p[2].getType().equals(PersonToIntFunction.class) ? personToIntFunction : personFilter,
-                    p[3].getType().equals(IntBinaryOperator.class) ? acc : p[3].getType().equals(int.class) ? initInt : p[3].getType().equals(PersonToIntFunction.class) ? personToIntFunction : personFilter
-                };
+                var match = stream(inputs).map(Mocked::getActualObject).filter(o -> o.getClass().equals(p.parameterType) ||
+                    (o.getClass().equals(Integer.class) && p.parameterType.equals(int.class))).findAny();
+                return match.orElse(fct);
             }
-            return (Traits) consOpt.get().newInstance(arguments);
-
-
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            fail("Mit den Objekten " + objects.keySet() + " konnte keine Traits Klasse erstellt werden.", e);
-            throw new RuntimeException(e);
-        }
+        };
+        return method.invoke(method.getClassTester().instantiate(), method.getParameters().stream().map(lookup).toArray(Object[]::new));
     }
+
+    static Traits.Mock makeTraits(Map<Class<?>, List<?>> objects) {
+
+
+        Function<Class<?>, Object> lookUpWithUsed = p -> {
+            if (objects.containsKey(p)) {
+                var list = objects.get(p);
+                if (!list.isEmpty()) {
+                    return list.remove(0);
+                }
+            }
+            return null;
+        };
+        IntBinaryOperator acc = (IntBinaryOperator) lookUpWithUsed.apply(IntBinaryOperator.class);
+        Integer initPre = (Integer) lookUpWithUsed.apply(int.class);
+        int init = initPre == null ? 0 : initPre;
+        PersonToIntFunction.Mock fct = (PersonToIntFunction.Mock) lookUpWithUsed.apply(PersonToIntFunction.class);
+        PersonFilter.Mock pred = (PersonFilter.Mock) lookUpWithUsed.apply(PersonFilter.class);
+        IntBinaryOperator combine = (IntBinaryOperator) lookUpWithUsed.apply(IntBinaryOperator.class);
+        return new Traits.Mock(acc, init, fct, pred, combine);
+    }
+
+    public static Class<?> getArrayClass(Class<?> clazz, int dimensions) {
+        return Array.newInstance(Person_STUD.cPerson().getActualClass(), new int[dimensions]).getClass();
+    }
+
 }

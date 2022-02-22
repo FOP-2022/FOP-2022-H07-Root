@@ -39,7 +39,16 @@
         "student/ReturnData_STUD.java",
         "student/RandomTraverser.java",
         "student/Main_STUD.java",
-        "student/AbstractArrayTraverser.java"
+        "student/FunctionWithFilterMapAndFold.java",
+        "student/MyFunctionWithAdjacent.java",
+        "student/MyFunctionWithFilterMapAndFold1.java",
+        "student/MyFunctionWithFilterMapAndFold2.java",
+        "student/PersonFilter.java",
+        "student/PersonFunctionFactory.java",
+        "student/PersonToIntFunction.java",
+        "student/Traits.java",
+        "student/AbstractArrayTraverser.java",
+        "student/Person_STUD.java"
       ]
     },
     {

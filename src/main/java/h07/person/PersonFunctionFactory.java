@@ -11,7 +11,7 @@ public class PersonFunctionFactory {
      *
      * @return The value of {@code firstImplementationActive}
      */
-    public static boolean isFirstImplementationActive() {
+    public boolean isFirstImplementationActive() {
         return firstImplementationActive;
     }
 
@@ -20,7 +20,7 @@ public class PersonFunctionFactory {
      *
      * @param firstImplementationActive The firstImplementationActive to set
      */
-    public static void setFirstImplementationActive(boolean firstImplementationActive) {
+    public void setFirstImplementationActive(boolean firstImplementationActive) {
         PersonFunctionFactory.firstImplementationActive = firstImplementationActive;
     }
 
@@ -31,7 +31,7 @@ public class PersonFunctionFactory {
      * @param traits the traits to configure the {@link FunctionWithFilterMapAndFold} with
      * @return the function
      */
-    public static FunctionWithFilterMapAndFold createFunctionWithFilterMapAndFold(Traits traits) {
+    public FunctionWithFilterMapAndFold createFunctionWithFilterMapAndFold(Traits traits) {
         return firstImplementationActive
             ? new MyFunctionWithFilterMapAndFold1(traits)
             : new MyFunctionWithFilterMapAndFold2(traits);
@@ -43,7 +43,7 @@ public class PersonFunctionFactory {
      * @param name the name to compare to
      * @return the function
      */
-    public static FunctionWithFilterMapAndFold createStrangeFunction(String name) {
+    public FunctionWithFilterMapAndFold createStrangeFunction(String name) {
         Traits traits = new Traits(
             (a, b) -> a + b + 1,
             357,
@@ -51,7 +51,7 @@ public class PersonFunctionFactory {
             p -> p.getLastName().equals(name),
             null
         );
-        return PersonFunctionFactory.createFunctionWithFilterMapAndFold(traits);
+        return createFunctionWithFilterMapAndFold(traits);
     }
 
     /**
@@ -59,7 +59,7 @@ public class PersonFunctionFactory {
      *
      * @return the function as a {@link MyFunctionWithAdjacent}
      */
-    public static FunctionWithFilterMapAndFold distance() {
+    public FunctionWithFilterMapAndFold distance() {
         Traits traits = new Traits(
             Integer::sum,
             0,

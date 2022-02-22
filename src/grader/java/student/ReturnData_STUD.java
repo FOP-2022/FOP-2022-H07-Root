@@ -1,10 +1,10 @@
 package student;
 
-import org.jetbrains.annotations.NotNull;
 import reflection.AttributeMatcher;
 import reflection.AttributeTester;
 import reflection.ClassTester;
 import tutor.Mocked;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Modifier;
 import java.util.Objects;
@@ -24,12 +24,12 @@ public class ReturnData_STUD implements Mocked {
     }
 
     public ReturnData_STUD() {
-        this(cReturnData().getNewInstance());
+        this(cReturnData().instantiate());
     }
 
 
     public ReturnData_STUD(int result, int nextIndex) {
-        this(cReturnData().getNewInstance());
+        this(cReturnData().instantiate());
         setResult(result);
         setNextIndex(nextIndex);
     }
@@ -50,7 +50,7 @@ public class ReturnData_STUD implements Mocked {
                         "result",
                         SIMILARITY,
                         Modifier.PUBLIC,
-                        int.class)).assureExists());
+                        int.class)).assureResolved());
     }
 
     public static AttributeTester aNextIndex() {
@@ -62,7 +62,7 @@ public class ReturnData_STUD implements Mocked {
                     SIMILARITY,
                     Modifier.PUBLIC,
                     int.class)
-            ).assureExists());
+            ).assureResolved());
     }
 
     public int getResult() {

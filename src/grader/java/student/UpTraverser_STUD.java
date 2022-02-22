@@ -21,7 +21,7 @@ public class UpTraverser_STUD extends Traverser_STUD {
     private final Object object;
 
     public UpTraverser_STUD() {
-        object = mock(cUpTraverser().getTheClass(), CALLS_REAL_METHODS);
+        object = mock(cUpTraverser().getActualClass(), CALLS_REAL_METHODS);
         cUpTraverser().setClassInstance(object);
     }
 

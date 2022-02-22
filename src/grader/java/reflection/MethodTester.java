@@ -1,6 +1,7 @@
 package reflection;
 
 import org.mockito.invocation.Invocation;
+import org.sourcegrade.jagr.launcher.env.Jagr;
 import spoon.Launcher;
 import spoon.reflect.code.CtCodeElement;
 import spoon.reflect.code.CtInvocation;
@@ -12,14 +13,8 @@ import spoon.reflect.visitor.filter.TypeFilter;
 import tutor.Mocked;
 
 import javax.management.RuntimeErrorException;
-import java.lang.reflect.Executable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -110,7 +105,7 @@ public class MethodTester {
      * @param parameters              The expected parameters
      * @param looseReturnTypeChecking whether or not to allow Derived return Types
      */
-    public MethodTester(ClassTester<?> classTester, String methodName, double similarity, int accessModifier, Class<?> returnType, ArrayList<ParameterMatcher> parameters, boolean allowSuperClass, boolean looseReturnTypeChecking) {
+    public MethodTester(ClassTester<?> classTester, String methodName, double similarity, int accessModifier, Class<?> returnType, List<ParameterMatcher> parameters, boolean allowSuperClass, boolean looseReturnTypeChecking) {
         this(classTester, methodName, similarity, accessModifier, returnType, parameters, allowSuperClass);
         this.looseReturnTypeChecking = looseReturnTypeChecking;
     }
@@ -390,7 +385,7 @@ public class MethodTester {
         return false;
     }
 
-    public void assertCorrectDeclaration() {
+    public void checkDeclaration() {
         getClassTester().assureResolved();
         assureResolved();
         test()
@@ -652,6 +647,10 @@ public class MethodTester {
         assertMethodResolved();
     }
 
+    public <T> T invokeIns(Object... params) {
+        return invoke(getClassTester().instantiate(), params);
+    }
+
     /**
      * Invokes {@link #theExecutable} using {@link #classTester}
      *
@@ -674,17 +673,21 @@ public class MethodTester {
         assertDoesNotThrow(() -> theExecutable.setAccessible(true), "method could not be invoked");
         Object returnValue = null;
         try {
-            assertTrue(theExecutable instanceof Method);
-            var theMethod = (Method) this.theExecutable;
-            returnValue = theMethod.invoke(instance, params);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            if (theExecutable instanceof Method)
+                returnValue = ((Method) this.theExecutable).invoke(instance, params);
+            else if (theExecutable instanceof Constructor<?>) {
+                returnValue = ((Constructor<?>) this.theExecutable).newInstance(params);
+                getClassTester().setClassInstance(returnValue);
+            }
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
             if (e instanceof InvocationTargetException && ((InvocationTargetException) e).getTargetException() instanceof RuntimeException) {
                 throw (RuntimeException) ((InvocationTargetException) e).getTargetException();
             }
 //            Arrays.stream(e.getStackTrace()).forEach(x -> Global.LOGGER.log(Level.WARN, x));
-            fail("method could not be invoked" + e.getMessage(), e);
+            fail(instance + ": " + methodIdentifier.identifierName + "(" + Arrays.stream(params).map(Objects::toString).collect(Collectors.joining(",")) + ") could not be invoked: " + e.getMessage(), e);
 
         }
+
         //noinspection unchecked
         return (T) returnValue;
     }
@@ -1009,4 +1012,17 @@ public class MethodTester {
             fail(String.format("method <%s> contains recursive calls, but should not.", getMethodIdentifier().identifierName));
         }
     }
+
+    public MethodTester forClass(ClassTester<?> classTester) {
+        return new MethodTester(
+            classTester,
+            methodIdentifier.identifierName,
+            methodIdentifier.similarity,
+            accessModifier,
+            returnType,
+            parameters,
+            allowSuperClass,
+            looseReturnTypeChecking).assureResolved();
+    }
+
 }

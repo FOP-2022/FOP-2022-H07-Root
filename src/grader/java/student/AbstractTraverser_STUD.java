@@ -9,7 +9,7 @@ public abstract class AbstractTraverser_STUD extends Traverser_STUD {
     public final Object object;
 
     public AbstractTraverser_STUD() {
-        this.object = cTraverser().getNewInstance();
+        this.object = cTraverser().instantiate();
         when(mGetFirstIndex().invoke(object, (Object) any(double[].class))).then(a -> getFirstIndex(a.getArgument(0)));
         when(mGetNextIndex().assureResolved().invoke(object, anyInt())).then(a -> getNextIndex(a.getArgument(0)));
     }
