@@ -1,11 +1,5 @@
 package tutor;
 
-import org.opentest4j.AssertionFailedError;
-import spoon.reflect.code.CtCodeElement;
-import spoon.reflect.declaration.CtElement;
-import spoon.reflect.visitor.Filter;
-import tutor.Utils.TestCollection.Entry;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +10,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static tutor.Utils.TestCollection.Mode.SILENT;
+
+import org.opentest4j.AssertionFailedError;
+import spoon.reflect.code.CtCodeElement;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.visitor.Filter;
+import tutor.Utils.TestCollection.Entry;
 
 public interface Utils {
 
@@ -220,7 +220,7 @@ public interface Utils {
             }
             if (count != 0 && mode != SILENT) {
                 var firstEntry = getEntriesToShow().findFirst().orElseThrow();
-                Throwable cause = firstEntry.error; // TODO
+                Throwable cause = firstEntry.error;
                 while (cause.getCause() != null) {
                     cause = cause.getCause();
                 }

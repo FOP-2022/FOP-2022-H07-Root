@@ -1,18 +1,5 @@
 package h07;
 
-//import h07.person.Person;
-//import h07.person.PersonFilter;
-//import h07.person.PersonToIntFunction;
-//import h07.person.Traits;
-
-import reflection.MethodTester;
-import reflection.ParameterMatcher;
-import student.PersonFilter;
-import student.PersonToIntFunction;
-import student.Person_STUD;
-import student.Traits;
-import tutor.Mocked;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -28,6 +15,14 @@ import java.util.function.IntBinaryOperator;
 
 import static java.util.Arrays.stream;
 import static org.junit.jupiter.api.Assertions.*;
+
+import reflection.MethodTester;
+import reflection.ParameterMatcher;
+import student.PersonFilter;
+import student.PersonToIntFunction;
+import student.Person_STUD;
+import student.Traits;
+import tutor.Mocked;
 
 public class TestUtils {
     static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};

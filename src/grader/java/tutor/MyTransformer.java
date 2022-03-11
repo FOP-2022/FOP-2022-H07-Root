@@ -1,13 +1,5 @@
 package tutor;
 
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
-import org.sourcegrade.jagr.api.testing.ClassTransformer;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +28,14 @@ import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Type.getArgumentTypes;
 import static org.objectweb.asm.Type.getMethodDescriptor;
 import static tutor.MyTransformer.ByteUtils.createStaticMethod;
+
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.sourcegrade.jagr.api.testing.ClassTransformer;
 
 /**
  * The transformer class.
@@ -74,12 +74,10 @@ public class MyTransformer implements ClassTransformer {
                     visitor.visitVarInsn(Opcodes.ISTORE, start++);
                 } else if (type == Type.LONG_TYPE) {
                     visitor.visitVarInsn(Opcodes.LSTORE, start++);
-                    //start++;
                 } else if (type == Type.FLOAT_TYPE) {
                     visitor.visitVarInsn(Opcodes.FSTORE, start++);
                 } else if (type == Type.DOUBLE_TYPE) {
                     visitor.visitVarInsn(Opcodes.DSTORE, start++);
-                    //start++;
                 } else {
                     visitor.visitVarInsn(Opcodes.ASTORE, start++);
                 }
@@ -95,12 +93,10 @@ public class MyTransformer implements ClassTransformer {
                     visitor.visitVarInsn(Opcodes.ILOAD, start);
                 } else if (type == Type.LONG_TYPE) {
                     visitor.visitVarInsn(Opcodes.LLOAD, start);
-                    //start--;
                 } else if (type == Type.FLOAT_TYPE) {
                     visitor.visitVarInsn(Opcodes.FLOAD, start);
                 } else if (type == Type.DOUBLE_TYPE) {
                     visitor.visitVarInsn(Opcodes.DLOAD, start);
-                    //start--;
                 } else {
                     visitor.visitVarInsn(Opcodes.ALOAD, start);
                 }
@@ -133,8 +129,6 @@ public class MyTransformer implements ClassTransformer {
             mv.visitMethodInsn(INVOKESTATIC, m.getDeclaringClass().getCanonicalName().replaceAll("\\.", "/"), m.getName(), getMethodDescriptor(m), false);
             mv.visitTypeInsn(CHECKCAST, owner);
             var arguments = List.of(Type.getArgumentTypes(descriptor));
-//            mv.visitVarInsn(ASTORE, arguments.size());
-
             load(mv, List.of(Type.getArgumentTypes(descriptor)), 0, false);
             mv.visitMethodInsn(INVOKEVIRTUAL, owner, methodName.replaceAll("STATIC", ""), descriptor, false);
             createReturn(mv, descriptor);
@@ -243,17 +237,8 @@ public class MyTransformer implements ClassTransformer {
 
                 @Override
                 public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-
                     boolean sameClass = owner.contains(className);
-
                     boolean isExercise = owner.startsWith("h07") || owner.startsWith("tutor") || owner.startsWith("student") || owner.startsWith("reflection");
-//                    super.visitMethodInsn(opcode, owner, name, descriptor, isInterface); // tenp
-
-//                    if (opcode == INVOKEVIRTUAL && isExercise) {
-//                        Global.LOGGER.warn("-->" + name);
-//                        super.visitMethodInsn(INVOKESTATIC, owner, name + "STATIC", descriptor, isInterface);
-//                        return;
-//                    }
                     List<Type> types = stream(getArgumentTypes(descriptor)).collect(toList());
                     if (opcode == INVOKESTATIC && sameClass) {
                         int n = ByteUtils.store(this, types, maxVar);

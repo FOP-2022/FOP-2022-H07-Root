@@ -1,17 +1,5 @@
 package h07;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Answers;
-import org.mockito.Mockito;
-import org.sourcegrade.jagr.api.rubric.TestForSubmission;
-import reflection.ClassTester;
-import reflection.IdentifierMatcher;
-import reflection.MethodTester;
-import reflection.ParameterMatcher;
-import spoon.reflect.code.CtLambda;
-import spoon.reflect.reference.CtExecutableReference;
-
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.Arrays;
@@ -27,6 +15,18 @@ import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static tutor.Utils.TestCollection.test;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Answers;
+import org.mockito.Mockito;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import reflection.ClassTester;
+import reflection.IdentifierMatcher;
+import reflection.MethodTester;
+import reflection.ParameterMatcher;
+import spoon.reflect.code.CtLambda;
+import spoon.reflect.reference.CtExecutableReference;
 
 /**
  * The JUnit tests for H1.
@@ -609,7 +609,6 @@ public class TutorTest_H1 {
     }
 
     @Test
-    // @ExtendWith(TestCycleResolver.class)
     public void lambdaInCorrectForm() {
         var content = DPF_CLASS().getClassContent();
         var statements = Arrays.asList(content.split(";"));
@@ -657,7 +656,6 @@ public class TutorTest_H1 {
             .addReq(DPF_CHECKSUM()::resolve)
             .add(DPF_CHECKSUM()::assertAccessModifier)
             .add(DPF_CHECKSUM()::assertParametersMatch)
-//            .add(this::checksumMethods)
             .add(this::checksumShape)
             .add(() -> {
                 var instanz = mock(DPF_CLASS().resolveClass().getActualClass(), Answers.CALLS_REAL_METHODS);

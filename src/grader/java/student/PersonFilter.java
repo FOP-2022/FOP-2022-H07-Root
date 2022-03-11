@@ -1,10 +1,5 @@
 package student;
 
-import reflection.ClassTester;
-import reflection.MethodTester;
-import reflection.ParameterMatcher;
-import tutor.Mocked;
-
 import java.util.List;
 
 import static h07.Global.SIMILARITY;
@@ -16,6 +11,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static student.PersonFilter.Student.c;
 import static student.PersonFilter.Student.mTest;
+
+import reflection.ClassTester;
+import reflection.MethodTester;
+import reflection.ParameterMatcher;
+import tutor.Mocked;
 
 public interface PersonFilter {
 
@@ -59,11 +59,7 @@ public interface PersonFilter {
         public Mock(PersonFilter personFilter) {
             object = c().instantiate();
             c().setClassInstance(object);
-            //mTest().invokany(Person_STUD.cPerson().getActualClass()e(doAnswer(a -> personFilter.test(new Person_STUD(a.getArgument(0)))).when(object), any(Person_STUD.cPerson().getActualClass()));
-
             when(mTest().invoke(object, any(Person_STUD.cPerson().getActualClass()))).thenAnswer(a -> personFilter.test(new Person_STUD(a.getArgument(0))));
-
-            // doAnswer(a -> personFilter.test(new Person_STUD(a.getArgument(0)))).when(mTest().invoke(object, any(Person_STUD.cPerson().getActualClass())));
         }
 
         @Override

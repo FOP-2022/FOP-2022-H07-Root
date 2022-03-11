@@ -1,15 +1,5 @@
 package reflection;
 
-import net.bytebuddy.ByteBuddy;
-import org.junit.jupiter.api.Assertions;
-import org.mockito.MockedStatic;
-import org.mockito.MockingDetails;
-import org.sourcegrade.jagr.api.testing.SourceFile;
-import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
-import spoon.Launcher;
-import spoon.support.compiler.VirtualFile;
-import tutor.Utils;
-
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -31,6 +21,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.spy;
+
+import net.bytebuddy.ByteBuddy;
+import org.junit.jupiter.api.Assertions;
+import org.mockito.MockedStatic;
+import org.mockito.MockingDetails;
+import org.sourcegrade.jagr.api.testing.SourceFile;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
+import spoon.Launcher;
+import spoon.support.compiler.VirtualFile;
+import tutor.Utils;
 
 /**
  * A Class Tester
@@ -1066,11 +1066,6 @@ public class ClassTester<T> {
      */
     @SuppressWarnings("unchecked")
     public Class<T> findClass(String packageName, String className, double similarity) {
-        // if (similarity >= 1) {
-        // return theClass = (Class<T>) assertDoesNotThrow(
-        // () -> Class.forName(String.format("%s.%s", packageName, className)),
-        // getClassNotFoundMessage(className));
-        // }
         var classes = Assertions.assertDoesNotThrow(() -> TestUtils.getClasses(packageName));
         var bestMatch = Arrays.stream(classes).min((x, y) -> Double.compare(TestUtils.similarity(className, y.getSimpleName()), TestUtils.similarity(className, x.getSimpleName()))).orElse(null);
         assertNotNull(bestMatch, getClassNotFoundMessage());
@@ -1270,23 +1265,6 @@ public class ClassTester<T> {
         assertConstructorValid(constructor, accessModifier, new ArrayList<>(Arrays.asList(parameters)));
     }
 
-//    /**
-//     * Gets Method Documentation for JavaDoc
-//     *
-//     * @param d the Source Documentation
-//     * @return the Method Documentation
-//     */
-//    public MethodDocumentation getConstructorDocumentation(SourceDocumentation d, ParameterMatcher... parameters) {
-//        try {
-//            assureClassResolved();
-//            var constructor = resolveConstructor(parameters);
-//            return d.forTopLevelType(getTheClass().getName()).forConstructor(
-//                constructor.getParameterTypes());
-//        } catch (Throwable e) {
-//            return d.forTopLevelType("").forConstructor();
-//        }
-//    }
-
     public void when() {
 
     }
@@ -1400,6 +1378,5 @@ public class ClassTester<T> {
         Utils.TestCollection.test()
             .add(this::assertAccessModifier)
             .run();
-        // TODO add interface check
     }
 }

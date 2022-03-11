@@ -1,16 +1,6 @@
 package reflection;
 
-import org.mockito.invocation.Invocation;
-import spoon.Launcher;
-import spoon.reflect.code.CtCodeElement;
-import spoon.reflect.code.CtInvocation;
-import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtMethod;
-import spoon.reflect.declaration.CtType;
-import spoon.reflect.reference.CtExecutableReference;
-import spoon.reflect.visitor.filter.TypeFilter;
-import tutor.Mocked;
-
+import javax.management.RuntimeErrorException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
@@ -22,11 +12,21 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.management.RuntimeErrorException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static tutor.Utils.Messages.wasNotCalledRecursively;
 import static tutor.Utils.TestCollection.test;
+
+import org.mockito.invocation.Invocation;
+import spoon.Launcher;
+import spoon.reflect.code.CtCodeElement;
+import spoon.reflect.code.CtInvocation;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtType;
+import spoon.reflect.reference.CtExecutableReference;
+import spoon.reflect.visitor.filter.TypeFilter;
+import tutor.Mocked;
 
 /**
  * A Method Tester
@@ -254,7 +254,6 @@ public class MethodTester {
                 var matcher = expectedParameters.get(i);
                 assertTrue(i < actualParamters.size(), "Zu wenige Parameter.");
                 var param = actualParamters.get(i);
-                // TODO fix assertions for sub-types
                 assertSame(matcher.parameterType, param.getType(), "Falscher Parametertyp an Index " + i + ".");
                 if (!ignoreNames && param.isNamePresent() && matcher.identifierName != null && matcher.similarity > 0) {
                     assertTrue(TestUtils.similarity(matcher.identifierName, param.getName()) >= matcher.similarity, "Falscher Parametername. Erwartet: " + matcher.identifierName + ", Erhalten: " + param.getName());
@@ -313,7 +312,7 @@ public class MethodTester {
             try {
                 paramsString = Arrays.toString(array);
             } catch (Exception e) {
-                // Arrays.stream(array).map(x -> x.getClass().getName() + "@" + Integer.toHexString(x.hashCode())).collect(Collectors.joining(", ", "[", "]"));
+
             }
         }
         return paramsString;
@@ -687,8 +686,9 @@ public class MethodTester {
             if (e instanceof InvocationTargetException && ((InvocationTargetException) e).getTargetException() instanceof RuntimeException) {
                 throw (RuntimeException) ((InvocationTargetException) e).getTargetException();
             }
-//            Arrays.stream(e.getStackTrace()).forEach(x -> Global.LOGGER.log(Level.WARN, x));
-            fail(instance + ": " + methodIdentifier.identifierName + "(" + Arrays.stream(params).map(Objects::toString).collect(Collectors.joining(",")) + ") could not be invoked: " + e.getMessage(), e);
+            fail(instance + ": " + methodIdentifier.identifierName + "(" +
+                Arrays.stream(params).map(Objects::toString).collect(Collectors.joining(",")) + ") could not be invoked: " +
+                e.getMessage(), e);
         }
 
         //noinspection unchecked
@@ -709,11 +709,6 @@ public class MethodTester {
         classTester.assertSpied();
         return classTester.getMockingDetails().getInvocations().stream().filter(x -> x.getMethod().getName().equals(getTheExecutable().getName())).collect(Collectors.toList());
     }
-
-    // public boolean needsJavadoc() {
-    // assertMethodResolved();
-    // // theMethod.
-    // }
 
     public List<Invocation> getInvocations(Object instance) {
         return getInvocations().stream().filter(x -> x.getMock() == instance).collect(Collectors.toList());
@@ -869,9 +864,6 @@ public class MethodTester {
      */
     public void assertAccessModifier() {
 //        disabled for this submission
-//        if (accessModifier >= 0) {
-//            TestUtils.assertModifier(accessModifier, theMethod);
-//        }
     }
 
     /**
@@ -976,17 +968,6 @@ public class MethodTester {
         }
         return this;
     }
-
-    //    public MethodDocumentation getMethodDocumentation(SourceDocumentation d) {
-//        try {
-//            classTester.assureClassResolved();
-//            var resolvedMethod = assureMethodResolved().getTheMethod();
-//            return d.forTopLevelType(classTester.getTheClass().getName()).forMethod(
-//                resolvedMethod.getName(), resolvedMethod.getParameterTypes());
-//        } catch (Throwable e) {
-//            return d.forTopLevelType("").forMethod("");
-//        }
-//    }
 
     /**
      * Resolve the Method with tolerances

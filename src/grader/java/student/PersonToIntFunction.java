@@ -1,10 +1,5 @@
 package student;
 
-import reflection.ClassTester;
-import reflection.MethodTester;
-import reflection.ParameterMatcher;
-import tutor.Mocked;
-
 import java.util.List;
 
 import static h07.Global.SIMILARITY;
@@ -16,6 +11,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static student.PersonToIntFunction.Student.c;
 import static student.PersonToIntFunction.Student.mApply;
+
+import reflection.ClassTester;
+import reflection.MethodTester;
+import reflection.ParameterMatcher;
+import tutor.Mocked;
 
 public interface PersonToIntFunction {
 
@@ -58,7 +58,6 @@ public interface PersonToIntFunction {
 
         public Mock(PersonToIntFunction personToIntFunction) {
             object = c().instantiate();
-            //doAnswer(a -> personToIntFunction.apply(new Person_STUD(a.getArgument(0)))).when( mApply().invoke(object, any(Person_STUD.cPerson().getActualClass()));
             mApply().invoke(doAnswer(a -> personToIntFunction.apply(new Person_STUD(a.getArgument(0)))).when(object), any(Person_STUD.cPerson().getActualClass()));
         }
 

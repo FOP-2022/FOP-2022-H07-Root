@@ -1,11 +1,5 @@
 package student;
 
-import reflection.AttributeMatcher;
-import reflection.AttributeTester;
-import reflection.ClassTester;
-import reflection.MethodTester;
-import tutor.Mocked;
-
 import java.util.List;
 import java.util.function.IntBinaryOperator;
 
@@ -22,6 +16,12 @@ import static student.Traits.Student.mGetFct;
 import static student.Traits.Student.mGetInit;
 import static student.Traits.Student.mGetOp;
 import static student.Traits.Student.mGetPred;
+
+import reflection.AttributeMatcher;
+import reflection.AttributeTester;
+import reflection.ClassTester;
+import reflection.MethodTester;
+import tutor.Mocked;
 
 public interface Traits {
 
@@ -184,11 +184,7 @@ public interface Traits {
         }
 
         public Mock(IntBinaryOperator op, int init, PersonToIntFunction.Mock fct, PersonFilter.Mock pred, IntBinaryOperator combine) {
-            System.out.println("TEST");
             object = c().instantiate();
-
-//            mGetOp().invoke();
-            System.out.println(">" + object.getClass());
             mGetOp().invoke(doAnswer(a -> op).when(object));
             mGetInit().invoke(doAnswer(a -> init).when(object));
             mGetFct().invoke(doAnswer(a -> fct.getActualObject()).when(object));

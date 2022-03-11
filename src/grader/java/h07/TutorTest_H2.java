@@ -1,19 +1,5 @@
 package h07;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.sourcegrade.jagr.api.rubric.TestForSubmission;
-import student.FunctionWithFilterMapAndFold;
-import student.MyFunctionWithAdjacent;
-import student.MyFunctionWithFilterMapAndFold1;
-import student.MyFunctionWithFilterMapAndFold2;
-import student.PersonFilter;
-import student.PersonFunctionFactory;
-import student.PersonToIntFunction;
-import student.Person_STUD;
-import student.Traits;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +33,20 @@ import static student.Traits.Student.aOp;
 import static student.Traits.Student.aPred;
 import static tutor.Utils.TestCollection.test;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import student.FunctionWithFilterMapAndFold;
+import student.MyFunctionWithAdjacent;
+import student.MyFunctionWithFilterMapAndFold1;
+import student.MyFunctionWithFilterMapAndFold2;
+import student.PersonFilter;
+import student.PersonFunctionFactory;
+import student.PersonToIntFunction;
+import student.Person_STUD;
+import student.Traits;
+
 /**
  * The JUnit tests for H2.
  */
@@ -76,7 +76,6 @@ public class TutorTest_H2 {
 
     @Test
     public void personFilterExist() {
-        // TODO check annotation
         test()
             .addReq(PersonFilter.Student.c()::assureResolved)
             .addReq(mTest()::assureResolved)
@@ -86,7 +85,6 @@ public class TutorTest_H2 {
 
     @Test
     public void personToIntFunctionExist() {
-        // TODO check annotation
         test()
             .addReq(PersonToIntFunction.Student.c()::assureResolved)
             .addReq(mApply()::assureResolved)
@@ -103,7 +101,6 @@ public class TutorTest_H2 {
 
     @Test
     public void traitsCorrect() {
-        // TODO check superclass
         test()
             .addReq(Traits.Student.c()::assureResolved)
             .add(Traits.Student.c()::checkDeclaration)
@@ -321,7 +318,7 @@ public class TutorTest_H2 {
     public void distanceCorrect() {
         var fct = mDistance().invokeIns();
         var traitsObj = new Traits.Mock(aTraits().getValue(fct));
-        assertEquals(0, traitsObj.getInit(), "distance: Init sollte 0 sein"); // 357 or 0 ?
+        assertEquals(0, traitsObj.getInit(), "distance: Init sollte 0 sein");
         final var personFilter = traitsObj.getPred();
         final var intOperator = traitsObj.getOp();
         final var combine = traitsObj.getCombine();
