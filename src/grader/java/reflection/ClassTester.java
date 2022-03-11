@@ -542,7 +542,7 @@ public class ClassTester<T> {
      * @param interfaceName the InterfaceMatcher
      * @param similarity    the Maximum similarity allowed
      */
-    public void addImplementsInterface(String interfaceName, Double similarity) {
+    public void addImplementsInterface(String interfaceName, @SuppressWarnings("ConstantConditions") Double similarity) {
         addImplementsInterface(new IdentifierMatcher(interfaceName, similarity));
     }
 
@@ -580,6 +580,7 @@ public class ClassTester<T> {
         }
         var allTypes = spoon.getModel().getAllTypes();
         if (allTypes == null || allTypes.isEmpty()) {
+            //noinspection UnstableApiUsage
             var cycle = TestCycleResolver.getTestCycle();
             var sourceFileName = getActualClass().getName().replace('.', '/') + ".java";
             VirtualFile vf = null;
@@ -590,7 +591,7 @@ public class ClassTester<T> {
                 }
                 spoon.addInputResource(new VirtualFile(Objects.requireNonNull(sourceFile).getContent(), sourceFileName));
             } else {
-                spoon.addInputResource("../../solution/src/main/java/" + sourceFileName);
+                spoon.addInputResource("../../src/main/java/" + sourceFileName);
             }
             spoon.buildModel();
         }
@@ -600,6 +601,7 @@ public class ClassTester<T> {
     public String getClassContent() {
         assureSpoonLauncherModelsBuild();
         var sourceFileName = getActualClass().getName().replace('.', '/') + ".java";
+        //noinspection UnstableApiUsage
         var cycle = TestCycleResolver.getTestCycle();
         VirtualFile vf = null;
         if (cycle != null) {
@@ -609,7 +611,7 @@ public class ClassTester<T> {
             return Objects.requireNonNull(sourceFile).getContent();
         } else {
             try {
-                return String.join("", Files.readAllLines(Paths.get("../../solution/src/main/java/" + sourceFileName)));
+                return String.join("", Files.readAllLines(Paths.get("../../src/main/java/" + sourceFileName)));
             } catch (IOException e) {
                 return fail(String.format("error reading file %s", sourceFileName));
             }
@@ -1334,6 +1336,7 @@ public class ClassTester<T> {
             + (additionalMessage == null ? "" : "\n" + additionalMessage);
         var actual = getFieldValue(field);
         if (expected == null && actual != null || (expected != null && !expected.equals(actual))) {
+            //noinspection ConstantConditions
             fail(expected.getClass().getName() + "@" + Integer.toHexString(expected.hashCode())
                 + "], but got: ["
                 +
