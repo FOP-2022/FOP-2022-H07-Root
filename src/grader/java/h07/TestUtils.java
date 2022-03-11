@@ -1,5 +1,10 @@
 package h07;
 
+//import h07.person.Person;
+//import h07.person.PersonFilter;
+//import h07.person.PersonToIntFunction;
+//import h07.person.Traits;
+
 import reflection.MethodTester;
 import reflection.ParameterMatcher;
 import student.PersonFilter;
@@ -162,22 +167,6 @@ public class TestUtils {
 
     static PersonFilter.Mock personFilter() {
         return new PersonFilter.Mock((Person_STUD s) -> s.getPostalCode() == 3);
-        // previous approach by Thomas
-//        try {
-//            final MethodHandles.Lookup lookup = MethodHandles.lookup();
-//            MethodType methodType = MethodType.methodType(boolean.class, Person_STUD.cPerson().getActualClass());
-//            final CallSite site = LambdaMetafactory.metafactory(lookup,
-//                "test",
-//                MethodType.methodType(PersonFilter.Student.cPersonFilter().getActualClass()),
-//                methodType,
-//                lookup.findStatic(TestUtils.class, "postalCodeEquals3",
-//                    MethodType.methodType(boolean.class, Person_STUD.cPerson().getActualClass())),
-//                methodType);
-//            return (PersonFilter.Mock) site.getTarget().invokeExact();
-//        } catch (Throwable t) {
-//            t.printStackTrace();
-//            throw new RuntimeException();
-//        }
     }
 
     private static boolean postalCodeEquals3(Person_STUD p) {

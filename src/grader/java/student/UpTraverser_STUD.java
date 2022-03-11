@@ -57,6 +57,7 @@ public class UpTraverser_STUD extends Traverser_STUD {
 
     @Override
     public int getFirstIndex(double[] array) {
+        //noinspection RedundantCast
         return mGetFirstIndexS().invoke(object, (Object) array);
     }
 

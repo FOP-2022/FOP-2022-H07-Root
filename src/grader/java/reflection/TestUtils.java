@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,8 +37,7 @@ public class TestUtils {
         if (expected < 0) {
             return;
         }
-        assertEquals(expected, actual, String.format("incorrect modifiers for %s", name,
-            Modifier.toString(expected), Modifier.toString(actual)));
+        assertEquals(expected, actual, String.format("incorrect modifiers for %s", name));
     }
 
     /**
@@ -156,18 +154,19 @@ public class TestUtils {
      *
      * @param packageName The base package
      * @return The classes
-     * @throws ClassNotFoundException if the Classes were defined Faulty
      * @throws IOException            if an IO Exception occurs
      */
-    public static Class<?>[] getClasses(String packageName) throws ClassNotFoundException, IOException {
-        var cycle = TestCycleResolver.getTestCycle();
+    public static Class<?>[] getClasses(String packageName) throws IOException {
+        @SuppressWarnings("UnstableApiUsage") var cycle = TestCycleResolver.getTestCycle();
         if (cycle != null) {
             // Autograder Run
+            //noinspection UnstableApiUsage
             return cycle.getSubmission().getClassNames().stream()
                 .map(x -> assertDoesNotThrow(() -> cycle.getClassLoader().loadClass(x))).toArray(Class<?>[]::new);
         } else {
             // Regular Junit Run
             final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            //noinspection UnstableApiUsage,Convert2MethodRef
             return ClassPath.from(loader).getTopLevelClasses(packageName).stream().map(x -> x.load())
                 .toArray(Class<?>[]::new);
         }
@@ -181,6 +180,7 @@ public class TestUtils {
      * does not return {@code null}
      */
     public static boolean isAutograderRun() {
+        //noinspection UnstableApiUsage
         return TestCycleResolver.getTestCycle() != null;
     }
 }

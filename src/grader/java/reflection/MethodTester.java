@@ -1,7 +1,6 @@
 package reflection;
 
 import org.mockito.invocation.Invocation;
-import org.sourcegrade.jagr.launcher.env.Jagr;
 import spoon.Launcher;
 import spoon.reflect.code.CtCodeElement;
 import spoon.reflect.code.CtInvocation;

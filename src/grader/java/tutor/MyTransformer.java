@@ -1,7 +1,9 @@
 package tutor;
 
+import h07.Global;
 import org.objectweb.asm.*;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
+import org.sourcegrade.jagr.launcher.env.Jagr;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,9 +26,11 @@ import static tutor.MyTransformer.ByteUtils.createStaticMethod;
 public class MyTransformer implements ClassTransformer {
 
     public static <T> T createMock() {
-        String className = Thread.currentThread().getStackTrace()[2].getClassName();
         //noinspection unchecked
-        return (T) assertDoesNotThrow(() -> mock(Class.forName(className), CALLS_REAL_METHODS));
+
+        String n = Thread.currentThread().getStackTrace()[2].getClassName();
+
+        return (T) assertDoesNotThrow(() -> mock(Class.forName(n), CALLS_REAL_METHODS));
     }
 
     @Override
@@ -55,10 +59,12 @@ public class MyTransformer implements ClassTransformer {
                     visitor.visitVarInsn(Opcodes.ISTORE, start++);
                 } else if (type == Type.LONG_TYPE) {
                     visitor.visitVarInsn(Opcodes.LSTORE, start++);
+                    //start++;
                 } else if (type == Type.FLOAT_TYPE) {
                     visitor.visitVarInsn(Opcodes.FSTORE, start++);
                 } else if (type == Type.DOUBLE_TYPE) {
                     visitor.visitVarInsn(Opcodes.DSTORE, start++);
+                    //start++;
                 } else {
                     visitor.visitVarInsn(Opcodes.ASTORE, start++);
                 }
@@ -74,10 +80,12 @@ public class MyTransformer implements ClassTransformer {
                     visitor.visitVarInsn(Opcodes.ILOAD, start);
                 } else if (type == Type.LONG_TYPE) {
                     visitor.visitVarInsn(Opcodes.LLOAD, start);
+                    //start--;
                 } else if (type == Type.FLOAT_TYPE) {
                     visitor.visitVarInsn(Opcodes.FLOAD, start);
                 } else if (type == Type.DOUBLE_TYPE) {
                     visitor.visitVarInsn(Opcodes.DLOAD, start);
+                    //start--;
                 } else {
                     visitor.visitVarInsn(Opcodes.ALOAD, start);
                 }
@@ -103,6 +111,7 @@ public class MyTransformer implements ClassTransformer {
             } else {
                 mv.visitInsn(ARETURN);
             }
+
         }
 
         static void createStaticMethod(MethodVisitor mv, String owner, String className, String methodName, String descriptor) {
@@ -111,11 +120,16 @@ public class MyTransformer implements ClassTransformer {
             mv.visitMethodInsn(INVOKESTATIC, m.getDeclaringClass().getCanonicalName().replaceAll("\\.", "/"), m.getName(), getMethodDescriptor(m), false);
             mv.visitTypeInsn(CHECKCAST, owner);
             var arguments = List.of(Type.getArgumentTypes(descriptor));
+//            mv.visitVarInsn(ASTORE, arguments.size());
+
+
             load(mv, List.of(Type.getArgumentTypes(descriptor)), 0, false);
             mv.visitMethodInsn(INVOKEVIRTUAL, owner, methodName.replaceAll("STATIC", ""), descriptor, false);
             createReturn(mv, descriptor);
+
             mv.visitMaxs(0, 0);
         }
+
     }
 
     static class MethodTransformer extends ClassVisitor {
@@ -129,10 +143,13 @@ public class MyTransformer implements ClassTransformer {
         public MethodTransformer(ClassWriter writer) {
             super(ASM9, writer);
             this.writer = writer;
+
         }
 
         @Override
-        public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+        public void visit(int version, int access, String name, String signature, String superName,
+                          String[] interfaces) {
+
             this.owner = name;
             this.className = name.substring(name.lastIndexOf("/") + 1);
             access &= ~PRIVATE;
@@ -143,6 +160,7 @@ public class MyTransformer implements ClassTransformer {
 
         @Override
         public void visitInnerClass(String name, String outerName, String innerName, int access) {
+
             access &= ~PRIVATE;
             access &= ~PROTECTED;
             access |= PUBLIC;
@@ -151,6 +169,7 @@ public class MyTransformer implements ClassTransformer {
 
         @Override
         public void visitOuterClass(String owner, String name, String descriptor) {
+
             super.visitOuterClass(owner, name, descriptor);
             this.owner = owner;
             this.className = name;
@@ -174,6 +193,7 @@ public class MyTransformer implements ClassTransformer {
                 return super.visitMethod(access, name, descriptor, signature, exceptions);
             if (!isStaticMethod) {
                 var visitor = new MethodVisitor(ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+
                         @Override
                         public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
                             boolean isStatic = opcode == INVOKESTATIC;
@@ -184,8 +204,9 @@ public class MyTransformer implements ClassTransformer {
                             }
                             super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
                         }
+
                     };
-                visitor.visitMaxs(0, 0);
+
                 return visitor;
             }
 
@@ -212,8 +233,17 @@ public class MyTransformer implements ClassTransformer {
 
                 @Override
                 public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+
                     boolean sameClass = owner.contains(className);
+
                     boolean isExercise = owner.startsWith("h07") || owner.startsWith("tutor") || owner.startsWith("student") || owner.startsWith("reflection");
+//                    super.visitMethodInsn(opcode, owner, name, descriptor, isInterface); // tenp
+
+//                    if (opcode == INVOKEVIRTUAL && isExercise) {
+//                        Global.LOGGER.warn("-->" + name);
+//                        super.visitMethodInsn(INVOKESTATIC, owner, name + "STATIC", descriptor, isInterface);
+//                        return;
+//                    }
                     List<Type> types = stream(getArgumentTypes(descriptor)).collect(toList());
                     if (opcode == INVOKESTATIC && sameClass) {
                         int n = ByteUtils.store(this, types, maxVar);
@@ -223,12 +253,14 @@ public class MyTransformer implements ClassTransformer {
                     } else if (opcode == INVOKESTATIC && isExercise) {
                         super.visitMethodInsn(opcode, owner, name + "STATIC", descriptor, isInterface);
                     } else {
+
                         super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
                     }
                 }
             };
             objectCaller.visitMaxs(0, 0);
             return objectCaller;
+
         }
     }
 }

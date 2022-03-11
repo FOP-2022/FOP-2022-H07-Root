@@ -30,7 +30,7 @@ public interface Utils {
         }
     }
 
-    public interface Test {
+    interface Test {
 
         static void a() {
             b();
@@ -50,7 +50,7 @@ public interface Utils {
         }
 
         static String isAnInvalid(Object x, Object y) {
-            return String.format("%s is an invalid %s");
+            return String.format("%s is an invalid %s", x, y);
         }
 
         static String incorrect(String name) {
@@ -293,6 +293,7 @@ public interface Utils {
         }
 
         public <T> T get() {
+            //noinspection unchecked
             return (T) state;
         }
 

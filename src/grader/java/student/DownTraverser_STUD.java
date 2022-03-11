@@ -57,7 +57,7 @@ public class DownTraverser_STUD extends Traverser_STUD {
 
     @Override
     public int getFirstIndex(double[] array) {
-        return mGetFirstIndexS().invoke(object, (Object) array);
+        return mGetFirstIndexS().invoke(object, array);
     }
 
     @Override
