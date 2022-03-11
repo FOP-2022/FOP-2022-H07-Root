@@ -9,9 +9,9 @@ import java.util.function.IntBinaryOperator;
 
 import static h07.Global.SIMILARITY;
 import static h07.TestUtils.getArrayClass;
-import static student.Person_STUD.cPerson;
-import static java.lang.reflect.Modifier.*;
+import static java.lang.reflect.Modifier.PUBLIC;
 import static java.util.Objects.requireNonNullElseGet;
+import static student.Person_STUD.cPerson;
 
 public interface MyFunctionWithFilterMapAndFold1 {
 
@@ -25,6 +25,7 @@ public interface MyFunctionWithFilterMapAndFold1 {
         private static MethodTester mMyFunctionWithFilterMapAndFold1;
 
         public static ClassTester<?> c() {
+            //noinspection unchecked,rawtypes
             return (c = requireNonNullElseGet(c, () -> new ClassTester(
                 "h07.person",
                 "MyFunctionWithFilterMapAndFold1",

@@ -40,7 +40,6 @@ public interface FunctionWithFilterMapAndFold {
         }
 
 
-
         public static MethodTester mApply() {
             return (mApply = requireNonNullElseGet(mApply, () -> new MethodTester(
                 c(),

@@ -8,9 +8,9 @@ import java.util.List;
 
 import static h07.Global.SIMILARITY;
 import static h07.TestUtils.getArrayClass;
-import static student.Person_STUD.cPerson;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.util.Objects.requireNonNullElseGet;
+import static student.Person_STUD.cPerson;
 
 public interface MyFunctionWithFilterMapAndFold2 {
 
@@ -21,6 +21,7 @@ public interface MyFunctionWithFilterMapAndFold2 {
         private static MethodTester mMyFunctionWithFilterMapAndFold2;
 
         public static ClassTester<?> c() {
+            //noinspection unchecked,rawtypes
             return (c = requireNonNullElseGet(c, () -> new ClassTester(
                 "h07.person",
                 "MyFunctionWithFilterMapAndFold2",

@@ -1,9 +1,7 @@
 package tutor;
 
-import h07.Global;
 import org.objectweb.asm.*;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
-import org.sourcegrade.jagr.launcher.env.Jagr;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,10 +24,8 @@ import static tutor.MyTransformer.ByteUtils.createStaticMethod;
 public class MyTransformer implements ClassTransformer {
 
     public static <T> T createMock() {
-        //noinspection unchecked
-
         String n = Thread.currentThread().getStackTrace()[2].getClassName();
-
+        //noinspection unchecked
         return (T) assertDoesNotThrow(() -> mock(Class.forName(n), CALLS_REAL_METHODS));
     }
 
@@ -192,20 +188,21 @@ public class MyTransformer implements ClassTransformer {
                 // method is not static or is forced to be static
                 return super.visitMethod(access, name, descriptor, signature, exceptions);
             if (!isStaticMethod) {
+                //noinspection UnnecessaryLocalVariable
                 var visitor = new MethodVisitor(ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
 
-                        @Override
-                        public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                            boolean isStatic = opcode == INVOKESTATIC;
-                            boolean isExercise = owner.startsWith("h07");
-                            if (isStatic && isExercise) {
-                                super.visitMethodInsn(opcode, owner, name + "STATIC", descriptor, isInterface);
-                                return;
-                            }
-                            super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+                    @Override
+                    public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+                        boolean isStatic = opcode == INVOKESTATIC;
+                        boolean isExercise = owner.startsWith("h07");
+                        if (isStatic && isExercise) {
+                            super.visitMethodInsn(opcode, owner, name + "STATIC", descriptor, isInterface);
+                            return;
                         }
+                        super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+                    }
 
-                    };
+                };
 
                 return visitor;
             }

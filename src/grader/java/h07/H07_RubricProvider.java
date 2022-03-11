@@ -1,11 +1,6 @@
 package h07;
 
-import org.sourcegrade.jagr.api.rubric.Criterion;
-import org.sourcegrade.jagr.api.rubric.Grader;
-import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
-import org.sourcegrade.jagr.api.rubric.Rubric;
-import org.sourcegrade.jagr.api.rubric.RubricForSubmission;
-import org.sourcegrade.jagr.api.rubric.RubricProvider;
+import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 
 import static org.sourcegrade.jagr.api.rubric.JUnitTestRef.ofMethod;
@@ -436,17 +431,16 @@ public class H07_RubricProvider implements RubricProvider {
             H2_3
         )
         .build();
-
     public static final Criterion JAVADOC = Criterion.builder()
         .shortDescription("Alle selbstgeschriebenen Methoden wurden korrekt mit JavaDoc dokumentiert")
         .maxPoints(0)
         .minPoints(-4)
         .build();
-
     public static final Rubric RUBRIC = Rubric.builder()
         .title("h07")
         .addChildCriteria(H1, H2, JAVADOC)
         .build();
+
 
     @Override
     public Rubric getRubric() {

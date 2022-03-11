@@ -5,7 +5,6 @@ import org.sourcegrade.jagr.launcher.env.Jagr;
 import tutor.MyTransformer;
 import tutor.Utils.State;
 
-
 import java.util.Random;
 
 public interface Global {

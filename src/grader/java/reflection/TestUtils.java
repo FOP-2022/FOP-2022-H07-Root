@@ -118,7 +118,6 @@ public class TestUtils {
      * @param s2 string 2
      * @return the calculated similarity (a number within 0 and 1) between two
      * strings.
-     * @see http://rosettacode.org/wiki/Levenshtein_distance#Java
      */
     public static int editDistance(String s1, String s2) {
         s1 = s1.toLowerCase();
@@ -154,7 +153,7 @@ public class TestUtils {
      *
      * @param packageName The base package
      * @return The classes
-     * @throws IOException            if an IO Exception occurs
+     * @throws IOException if an IO Exception occurs
      */
     public static Class<?>[] getClasses(String packageName) throws IOException {
         @SuppressWarnings("UnstableApiUsage") var cycle = TestCycleResolver.getTestCycle();
@@ -173,10 +172,10 @@ public class TestUtils {
     }
 
     /**
-     * Returns {@code true} if {@link A#getTestCycle()}
+     * Returns ?
      * does not return {@code null}
      *
-     * @return {@code true} if {@link A#getTestCycle()}
+     * @return ?
      * does not return {@code null}
      */
     public static boolean isAutograderRun() {

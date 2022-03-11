@@ -19,6 +19,8 @@ import static student.PersonFilter.Student.mTest;
 
 public interface PersonFilter {
 
+    boolean test(Person_STUD person);
+
     class Student {
 
         private static ClassTester<?> cPersonFilter;
@@ -45,7 +47,7 @@ public interface PersonFilter {
         }
     }
 
-    class Mock implements PersonFilter, Mocked{
+    class Mock implements PersonFilter, Mocked {
 
         private final Object object;
 
@@ -75,7 +77,5 @@ public interface PersonFilter {
             return object;
         }
     }
-
-    boolean test(Person_STUD person);
 
 }

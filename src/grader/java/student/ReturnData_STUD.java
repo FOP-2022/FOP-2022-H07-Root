@@ -1,10 +1,10 @@
 package student;
 
+import org.jetbrains.annotations.NotNull;
 import reflection.AttributeMatcher;
 import reflection.AttributeTester;
 import reflection.ClassTester;
 import tutor.Mocked;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Modifier;
 import java.util.Objects;

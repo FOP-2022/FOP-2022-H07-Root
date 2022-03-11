@@ -181,7 +181,7 @@ public interface Traits {
             object = c().instantiate();
 
 //            mGetOp().invoke();
-            System.out.println(">"+object.getClass());
+            System.out.println(">" + object.getClass());
             mGetOp().invoke(doAnswer(a -> op).when(object));
             mGetInit().invoke(doAnswer(a -> init).when(object));
             mGetFct().invoke(doAnswer(a -> fct.getActualObject()).when(object));

@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.function.IntBinaryOperator;
 
 import static h07.TestUtils.personFilter;
-import static student.MyFunctionWithFilterMapAndFold1.Student.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static student.FunctionWithFilterMapAndFold.Student.aTraits;
+import static student.MyFunctionWithFilterMapAndFold1.Student.*;
 import static student.PersonFilter.Student.mTest;
 import static student.PersonFunctionFactory.Student.*;
 import static student.PersonToIntFunction.Student.mApply;
@@ -26,6 +26,7 @@ import static tutor.Utils.TestCollection.test;
 /**
  * The JUnit tests for H2.
  */
+@SuppressWarnings("NewClassNamingConvention")
 @TestForSubmission("h07")
 public class TutorTest_H2 {
 
@@ -168,7 +169,7 @@ public class TutorTest_H2 {
             .add(() -> {
                 var apply = mApply();
                 var traitsObj = TestUtils.getTraitsObject(false);
-                var uut =MyFunctionWithFilterMapAndFold1.Student.mMyFunctionWithFilterMapAndFold1().invokeStatic(traitsObj);
+                var uut = MyFunctionWithFilterMapAndFold1.Student.mMyFunctionWithFilterMapAndFold1().invokeStatic(traitsObj);
                 var actual = MyFunctionWithFilterMapAndFold1.Student.mApply().invoke(uut, TestUtils.filtered());
                 assertEquals(381, actual);
             })
@@ -246,7 +247,7 @@ public class TutorTest_H2 {
         var person2 = TestUtils.makePerson("muffin", "alex", "baker street", 56, 120);
         assertTrue((Boolean) PersonFilter.Student.mTest().invoke(personFilter.getActualObject(), person1),
             "Pred sollte  p -> p.lastName.equals(<parameter>)  entsprechen");
-        assertFalse((Boolean)PersonFilter.Student.mTest().invoke(personFilter.getActualObject(), person2),
+        assertFalse((Boolean) PersonFilter.Student.mTest().invoke(personFilter.getActualObject(), person2),
             "Pred sollte  p -> p.lastName.equals(<parameter>)  entsprechen");
         assertEquals(234,
             (int) PersonToIntFunction.Student.mApply().invoke(personToIntFunction.getActualObject(), person1),

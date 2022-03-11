@@ -19,6 +19,8 @@ import static student.PersonToIntFunction.Student.mApply;
 
 public interface PersonToIntFunction {
 
+    int apply(Person_STUD person);
+
     class Student {
 
         private static ClassTester<?> cPersonToIntFunction;
@@ -45,7 +47,7 @@ public interface PersonToIntFunction {
         }
     }
 
-    class Mock implements PersonToIntFunction, Mocked{
+    class Mock implements PersonToIntFunction, Mocked {
 
         private final Object object;
 
@@ -70,7 +72,5 @@ public interface PersonToIntFunction {
             return object;
         }
     }
-
-    int apply(Person_STUD person);
 
 }
