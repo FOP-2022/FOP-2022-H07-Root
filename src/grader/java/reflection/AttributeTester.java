@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 import static java.lang.reflect.Modifier.isStatic;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.*;
 import static tutor.Utils.TestCollection.Mode.SHOW_ALL;
 import static tutor.Utils.TestCollection.test;
 

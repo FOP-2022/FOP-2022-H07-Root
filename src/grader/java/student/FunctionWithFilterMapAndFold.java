@@ -1,12 +1,19 @@
 package student;
 
-import reflection.*;
+import reflection.AttributeMatcher;
+import reflection.AttributeTester;
+import reflection.ClassTester;
+import reflection.MethodTester;
+import reflection.ParameterMatcher;
 
 import java.lang.reflect.Array;
 import java.util.List;
 
 import static h07.Global.SIMILARITY;
-import static java.lang.reflect.Modifier.*;
+import static java.lang.reflect.Modifier.ABSTRACT;
+import static java.lang.reflect.Modifier.FINAL;
+import static java.lang.reflect.Modifier.PROTECTED;
+import static java.lang.reflect.Modifier.PUBLIC;
 import static java.util.Objects.requireNonNullElseGet;
 import static student.Person_STUD.cPerson;
 
@@ -39,7 +46,6 @@ public interface FunctionWithFilterMapAndFold {
                             int.class))).assureResolved();
         }
 
-
         public static MethodTester mApply() {
             return (mApply = requireNonNullElseGet(mApply, () -> new MethodTester(
                 c(),
@@ -50,7 +56,5 @@ public interface FunctionWithFilterMapAndFold {
                 List.of(new ParameterMatcher(Array.newInstance(cPerson().getActualClass(), 0).getClass()))
             ))).assureResolved();
         }
-
     }
-
 }

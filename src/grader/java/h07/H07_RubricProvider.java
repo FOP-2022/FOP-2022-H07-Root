@@ -1,6 +1,11 @@
 package h07;
 
-import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.rubric.Criterion;
+import org.sourcegrade.jagr.api.rubric.Grader;
+import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
+import org.sourcegrade.jagr.api.rubric.Rubric;
+import org.sourcegrade.jagr.api.rubric.RubricForSubmission;
+import org.sourcegrade.jagr.api.rubric.RubricProvider;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 
 import static org.sourcegrade.jagr.api.rubric.JUnitTestRef.ofMethod;
@@ -440,7 +445,6 @@ public class H07_RubricProvider implements RubricProvider {
         .title("h07")
         .addChildCriteria(H1, H2, JAVADOC)
         .build();
-
 
     @Override
     public Rubric getRubric() {

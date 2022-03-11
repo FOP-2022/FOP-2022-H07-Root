@@ -98,7 +98,5 @@ public interface MyFunctionWithFilterMapAndFold1 {
                     new ParameterMatcher(getArrayClass(cPerson().getActualClass(), 1)))
             ).assureResolved());
         }
-
     }
-
 }

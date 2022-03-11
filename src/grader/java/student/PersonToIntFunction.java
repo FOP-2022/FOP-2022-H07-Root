@@ -72,5 +72,4 @@ public interface PersonToIntFunction {
             return object;
         }
     }
-
 }

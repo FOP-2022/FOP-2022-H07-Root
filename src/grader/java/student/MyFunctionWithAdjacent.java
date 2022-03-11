@@ -14,7 +14,6 @@ public interface MyFunctionWithAdjacent extends FunctionWithFilterMapAndFold {
 
     class Student {
 
-
         private static ClassTester<?> c;
         private static MethodTester mConstructor;
 
@@ -39,8 +38,5 @@ public interface MyFunctionWithAdjacent extends FunctionWithFilterMapAndFold {
                 List.of(new ParameterMatcher(Traits.Student.c().getActualClass()))
             ))).assureResolved();
         }
-
     }
-
-
 }

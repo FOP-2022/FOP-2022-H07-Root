@@ -1,7 +1,6 @@
 package reflection;
 
 import com.google.common.reflect.ClassPath;
-import org.checkerframework.checker.units.qual.A;
 import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
 
 import java.io.IOException;
@@ -9,8 +8,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test Utilities by Ruben
@@ -108,7 +106,6 @@ public class TestUtils {
          * levenshteinDistance.apply(longer, shorter)) / (double) longerLength;
          */
         return (longerLength - editDistance(longer, shorter)) / (double) longerLength;
-
     }
 
     /**

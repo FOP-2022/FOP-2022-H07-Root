@@ -22,7 +22,10 @@ import java.util.function.DoublePredicate;
 import static h07.Global.SIMILARITY;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 import static tutor.Utils.TestCollection.test;
 
 /**
@@ -387,7 +390,6 @@ public class TutorTest_H1 {
                     ((DoublePredicate) timePred2).test(1);
                 }, "Die Verknüpfungsreihenfolge entspricht nicht den Anforderungen." +
                     " Erkennbar an zu langer Ausführungszeit. Prädikate: {d -> true, d -> [langsames Prädikat]}, Forward: true");
-
             })
             .run();
     }
@@ -430,7 +432,6 @@ public class TutorTest_H1 {
             var arg = (DoublePredicate[]) a.getArgument(0);
             return DoublePredicateFactorySolution.buildConjunction(arg);
         }).when(instanz), (Object) any(DoublePredicate[].class));
-
 
         DPF_DISJUNCTION().invoke(doAnswer(a -> {
             var arg1 = (DoublePredicate[]) a.getArgument(0);
@@ -491,7 +492,6 @@ public class TutorTest_H1 {
                     " Prädikate: {{d -> true, d -> [langsames Prädikat]}, {d -> [langsames Prädikat], d -> true}}");
                 assertTrue(((DoublePredicate) pred).test(2.0));
             }).run();
-
     }
 
     @Test
@@ -606,7 +606,6 @@ public class TutorTest_H1 {
                     "-93.5 sollte getDefaultComplexPredicate nicht erfüllen da u.A."
                         + " keines der Predicates von Predicate-Teil 3 zutrifft");
             }).run();
-
     }
 
     @Test

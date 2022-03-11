@@ -17,18 +17,20 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 
 import static java.util.Arrays.stream;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestUtils {
     static int[] mapped = {9, 6, 2, 2, 2, 4, 4, 64289, 64289, 6};
-
 
     static Object personGet(Class<?> clazz, Object person, String name) {
         try {
@@ -207,7 +209,6 @@ public class TestUtils {
 
     static Traits.Mock makeTraits(Map<Class<?>, List<?>> objects) {
 
-
         Function<Class<?>, Object> lookUpWithUsed = p -> {
             if (objects.containsKey(p)) {
                 var list = objects.get(p);
@@ -229,5 +230,4 @@ public class TestUtils {
     public static Class<?> getArrayClass(Class<?> clazz, int dimensions) {
         return Array.newInstance(Person_STUD.cPerson().getActualClass(), new int[dimensions]).getClass();
     }
-
 }

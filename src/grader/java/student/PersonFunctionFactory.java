@@ -1,11 +1,17 @@
 package student;
 
-import reflection.*;
+import reflection.AttributeMatcher;
+import reflection.AttributeTester;
+import reflection.ClassTester;
+import reflection.MethodTester;
+import reflection.ParameterMatcher;
 
 import java.util.List;
 
 import static h07.Global.SIMILARITY;
-import static java.lang.reflect.Modifier.*;
+import static java.lang.reflect.Modifier.PRIVATE;
+import static java.lang.reflect.Modifier.PUBLIC;
+import static java.lang.reflect.Modifier.STATIC;
 import static java.util.Objects.requireNonNullElseGet;
 
 public interface PersonFunctionFactory {
@@ -96,7 +102,5 @@ public interface PersonFunctionFactory {
                 List.of(new ParameterMatcher(Traits.Student.c().getActualClass()))
             ))).assureResolved();
         }
-
     }
-
 }

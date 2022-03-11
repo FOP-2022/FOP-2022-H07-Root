@@ -16,14 +16,21 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Answers.CALLS_REAL_METHODS;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.mockingDetails;
+import static org.mockito.Mockito.spy;
 
 /**
  * A Class Tester
@@ -75,7 +82,7 @@ public class ClassTester<T> {
      */
     public ClassTester(String packageName, String className, double similarity, int accessModifier,
                        Class<? super T> superClass, List<IdentifierMatcher> implementsInterfaces, T classInstance) {
-        this.classIdentifier = new IdentifierMatcher(className, packageName, similarity);
+        classIdentifier = new IdentifierMatcher(className, packageName, similarity);
         this.accessModifier = accessModifier;
         this.superClass = superClass;
         this.implementsInterfaces = new ArrayList<>(implementsInterfaces);
@@ -919,7 +926,6 @@ public class ClassTester<T> {
                     assertSame(null, theClass.getSuperclass());
                 } else {
                     assertSame(Object.class, theClass.getSuperclass());
-
                 }
             }
         } else {
@@ -1322,7 +1328,6 @@ public class ClassTester<T> {
         return assertDoesNotThrow(() -> field.get(getClassInstance()));
     }
 
-
     /**
      * Asserts that a given field has a certain value
      *
@@ -1396,5 +1401,4 @@ public class ClassTester<T> {
             .run();
         // TODO add interface check
     }
-
 }

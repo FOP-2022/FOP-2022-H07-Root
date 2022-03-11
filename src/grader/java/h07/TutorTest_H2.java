@@ -4,7 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
-import student.*;
+import student.FunctionWithFilterMapAndFold;
+import student.MyFunctionWithAdjacent;
+import student.MyFunctionWithFilterMapAndFold1;
+import student.MyFunctionWithFilterMapAndFold2;
+import student.PersonFilter;
+import student.PersonFunctionFactory;
+import student.PersonToIntFunction;
+import student.Person_STUD;
+import student.Traits;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,12 +23,28 @@ import java.util.function.IntBinaryOperator;
 import static h07.TestUtils.personFilter;
 import static org.junit.jupiter.api.Assertions.*;
 import static student.FunctionWithFilterMapAndFold.Student.aTraits;
-import static student.MyFunctionWithFilterMapAndFold1.Student.*;
+import static student.MyFunctionWithFilterMapAndFold1.Student.mFilter;
+import static student.MyFunctionWithFilterMapAndFold1.Student.mFoldl;
+import static student.MyFunctionWithFilterMapAndFold1.Student.mMap;
 import static student.PersonFilter.Student.mTest;
-import static student.PersonFunctionFactory.Student.*;
+import static student.PersonFunctionFactory.Student.aFirstImplementationActive;
+import static student.PersonFunctionFactory.Student.mCreateFunctionWithFilterMapAndFold;
+import static student.PersonFunctionFactory.Student.mCreateStrangeFunction;
+import static student.PersonFunctionFactory.Student.mDistance;
+import static student.PersonFunctionFactory.Student.mIsFirstImplementationActive;
+import static student.PersonFunctionFactory.Student.mSetFirstImplementationActive;
 import static student.PersonToIntFunction.Student.mApply;
-import static student.Person_STUD.*;
-import static student.Traits.Student.*;
+import static student.Person_STUD.aFirstName;
+import static student.Person_STUD.aHouseNumber;
+import static student.Person_STUD.aLastName;
+import static student.Person_STUD.aPostalCode;
+import static student.Person_STUD.aStreet;
+import static student.Person_STUD.cPerson;
+import static student.Person_STUD.mConstructor;
+import static student.Traits.Student.aFct;
+import static student.Traits.Student.aInit;
+import static student.Traits.Student.aOp;
+import static student.Traits.Student.aPred;
 import static tutor.Utils.TestCollection.test;
 
 /**
@@ -278,7 +302,6 @@ public class TutorTest_H2 {
     @Test
     public void myFunctionWithAdjacentCorrect() {
 
-
         test()
             .add(FunctionWithFilterMapAndFold.Student.c()::assureResolved)
             .terminateOnFailure()
@@ -292,7 +315,6 @@ public class TutorTest_H2 {
         var uut = MyFunctionWithAdjacent.Student.mConstructor().invokeStatic(traitsObj.getActualObject());
         var actual = (Integer) mApply.invoke(uut, TestUtils.people());
         assertEquals(371, actual);
-
     }
 
     @Test

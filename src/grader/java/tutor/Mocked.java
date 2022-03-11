@@ -9,5 +9,4 @@ public interface Mocked {
     }
 
     Object getActualObject();
-
 }

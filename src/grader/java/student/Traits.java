@@ -10,11 +10,18 @@ import java.util.List;
 import java.util.function.IntBinaryOperator;
 
 import static h07.Global.SIMILARITY;
-import static java.lang.reflect.Modifier.*;
+import static java.lang.reflect.Modifier.FINAL;
+import static java.lang.reflect.Modifier.PRIVATE;
+import static java.lang.reflect.Modifier.PUBLIC;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 import static org.mockito.Mockito.doAnswer;
-import static student.Traits.Student.*;
+import static student.Traits.Student.c;
+import static student.Traits.Student.mGetCombine;
+import static student.Traits.Student.mGetFct;
+import static student.Traits.Student.mGetInit;
+import static student.Traits.Student.mGetOp;
+import static student.Traits.Student.mGetPred;
 
 public interface Traits {
 
@@ -190,7 +197,6 @@ public interface Traits {
                 mGetCombine().invoke(doAnswer(a -> combine).when(object));
         }
 
-
         @Override
         public IntBinaryOperator getOp() {
             return mGetOp().invoke(object);
@@ -221,5 +227,4 @@ public interface Traits {
             return object;
         }
     }
-
 }

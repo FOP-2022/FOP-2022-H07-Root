@@ -1,6 +1,5 @@
 package student;
 
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,9 +12,8 @@ public abstract class AbstractArrayTraverser extends AbstractTraverser_STUD {
 
     public final double[] array;
 
-
     public AbstractArrayTraverser(int arraySize) {
-        this.array = IntStream.range(0, arraySize).mapToDouble(i -> i).toArray();
+        array = IntStream.range(0, arraySize).mapToDouble(i -> i).toArray();
         when(mGetNextIndex().invoke(object, anyInt()))
             .then(a -> {
                 IntStream.range(0, arraySize).forEach(i -> array[i] += arraySize);

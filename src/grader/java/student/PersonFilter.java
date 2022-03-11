@@ -61,7 +61,6 @@ public interface PersonFilter {
             c().setClassInstance(object);
             //mTest().invokany(Person_STUD.cPerson().getActualClass()e(doAnswer(a -> personFilter.test(new Person_STUD(a.getArgument(0)))).when(object), any(Person_STUD.cPerson().getActualClass()));
 
-
             when(mTest().invoke(object, any(Person_STUD.cPerson().getActualClass()))).thenAnswer(a -> personFilter.test(new Person_STUD(a.getArgument(0))));
 
             // doAnswer(a -> personFilter.test(new Person_STUD(a.getArgument(0)))).when(mTest().invoke(object, any(Person_STUD.cPerson().getActualClass())));
@@ -77,5 +76,4 @@ public interface PersonFilter {
             return object;
         }
     }
-
 }

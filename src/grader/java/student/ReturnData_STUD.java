@@ -27,7 +27,6 @@ public class ReturnData_STUD implements Mocked {
         this(cReturnData().instantiate());
     }
 
-
     public ReturnData_STUD(int result, int nextIndex) {
         this(cReturnData().instantiate());
         setResult(result);

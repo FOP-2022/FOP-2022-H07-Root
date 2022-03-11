@@ -1,6 +1,10 @@
 package student;
 
-import reflection.*;
+import reflection.AttributeMatcher;
+import reflection.AttributeTester;
+import reflection.ClassTester;
+import reflection.MethodTester;
+import reflection.ParameterMatcher;
 import tutor.Mocked;
 
 import java.lang.reflect.Modifier;
@@ -229,7 +233,6 @@ public class Person_STUD implements Mocked {
             List.of()
         ).assureResolved());
     }
-
 
     public static MethodTester mSetPostalCode() {
         return mSetPostalCode = requireNonNullElseGet(mSetPostalCode, () -> new MethodTester(

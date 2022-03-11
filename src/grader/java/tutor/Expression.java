@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static tutor.Utils.Messages.invalidIndex;
 
 public class Expression extends AbstractExpression {

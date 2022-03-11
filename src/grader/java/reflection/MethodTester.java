@@ -12,8 +12,16 @@ import spoon.reflect.visitor.filter.TypeFilter;
 import tutor.Mocked;
 
 import javax.management.RuntimeErrorException;
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,7 +79,7 @@ public class MethodTester {
      */
     public MethodTester(ClassTester<?> classTester, String methodName, double similarity, int accessModifier, Class<?> returnType, List<ParameterMatcher> parameters, boolean allowSuperClass) {
         this.classTester = classTester;
-        this.methodIdentifier = new IdentifierMatcher(methodName, similarity);
+        methodIdentifier = new IdentifierMatcher(methodName, similarity);
         this.accessModifier = accessModifier;
         this.returnType = returnType;
         this.parameters = new ArrayList<>(parameters);
@@ -90,7 +98,6 @@ public class MethodTester {
      */
     public MethodTester(ClassTester<?> classTester, String methodName, double similarity, int accessModifier, Class<?> returnType, List<ParameterMatcher> parameters) {
         this(classTester, methodName, similarity, accessModifier, returnType, parameters, false);
-
     }
 
     /**
@@ -231,7 +238,6 @@ public class MethodTester {
         return countMatchingParameters(parameters, new ArrayList<>(List.of(m.getParameters())), ignoreNames);
     }
 
-
     /**
      * assert that the Method Parameters match
      *
@@ -289,7 +295,6 @@ public class MethodTester {
      */
     public static void assertMethodNotNull(Executable m, String name) {
         assertNotNull(m, getMethodNotFoundMessage(name));
-
     }
 
     /**
@@ -468,7 +473,7 @@ public class MethodTester {
     public void assertReturnType() {
         if (!(theExecutable instanceof Method))
             return;
-        var theMethod = (Method) this.theExecutable;
+        var theMethod = (Method) theExecutable;
         if (returnType == null) {
             throw new RuntimeErrorException(new Error(), "Faulty Test: Cannot assert return type null");
         }
@@ -673,9 +678,9 @@ public class MethodTester {
         Object returnValue = null;
         try {
             if (theExecutable instanceof Method)
-                returnValue = ((Method) this.theExecutable).invoke(instance, params);
+                returnValue = ((Method) theExecutable).invoke(instance, params);
             else if (theExecutable instanceof Constructor<?>) {
-                returnValue = ((Constructor<?>) this.theExecutable).newInstance(params);
+                returnValue = ((Constructor<?>) theExecutable).newInstance(params);
                 getClassTester().setClassInstance(returnValue);
             }
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
@@ -684,7 +689,6 @@ public class MethodTester {
             }
 //            Arrays.stream(e.getStackTrace()).forEach(x -> Global.LOGGER.log(Level.WARN, x));
             fail(instance + ": " + methodIdentifier.identifierName + "(" + Arrays.stream(params).map(Objects::toString).collect(Collectors.joining(",")) + ") could not be invoked: " + e.getMessage(), e);
-
         }
 
         //noinspection unchecked
@@ -831,7 +835,6 @@ public class MethodTester {
             fail(String.format("method <%s> is recursive", getMethodIdentifier().identifierName));
         }
     }
-
 
     /**
      * Asserts the Return Value of an invokation with the given parameters
@@ -1023,5 +1026,4 @@ public class MethodTester {
             allowSuperClass,
             looseReturnTypeChecking).assureResolved();
     }
-
 }

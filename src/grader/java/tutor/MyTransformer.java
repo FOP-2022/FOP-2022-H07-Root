@@ -1,19 +1,38 @@
 package tutor;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.sourcegrade.jagr.api.testing.ClassTransformer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.lang.reflect.Modifier.*;
+import static java.lang.reflect.Modifier.PRIVATE;
+import static java.lang.reflect.Modifier.PROTECTED;
+import static java.lang.reflect.Modifier.PUBLIC;
+import static java.lang.reflect.Modifier.STATIC;
+import static java.lang.reflect.Modifier.isInterface;
+import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.ASM9;
+import static org.objectweb.asm.Opcodes.CHECKCAST;
+import static org.objectweb.asm.Opcodes.DRETURN;
+import static org.objectweb.asm.Opcodes.FRETURN;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.IRETURN;
+import static org.objectweb.asm.Opcodes.LRETURN;
+import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Type.getArgumentTypes;
 import static org.objectweb.asm.Type.getMethodDescriptor;
 import static tutor.MyTransformer.ByteUtils.createStaticMethod;
@@ -86,7 +105,6 @@ public class MyTransformer implements ClassTransformer {
                     visitor.visitVarInsn(Opcodes.ALOAD, start);
                 }
                 start = start + (down ? -1 : 1);
-
             }
             return start + (down ? +1 : -1);
         }
@@ -107,7 +125,6 @@ public class MyTransformer implements ClassTransformer {
             } else {
                 mv.visitInsn(ARETURN);
             }
-
         }
 
         static void createStaticMethod(MethodVisitor mv, String owner, String className, String methodName, String descriptor) {
@@ -118,14 +135,12 @@ public class MyTransformer implements ClassTransformer {
             var arguments = List.of(Type.getArgumentTypes(descriptor));
 //            mv.visitVarInsn(ASTORE, arguments.size());
 
-
             load(mv, List.of(Type.getArgumentTypes(descriptor)), 0, false);
             mv.visitMethodInsn(INVOKEVIRTUAL, owner, methodName.replaceAll("STATIC", ""), descriptor, false);
             createReturn(mv, descriptor);
 
             mv.visitMaxs(0, 0);
         }
-
     }
 
     static class MethodTransformer extends ClassVisitor {
@@ -139,15 +154,14 @@ public class MyTransformer implements ClassTransformer {
         public MethodTransformer(ClassWriter writer) {
             super(ASM9, writer);
             this.writer = writer;
-
         }
 
         @Override
         public void visit(int version, int access, String name, String signature, String superName,
                           String[] interfaces) {
 
-            this.owner = name;
-            this.className = name.substring(name.lastIndexOf("/") + 1);
+            owner = name;
+            className = name.substring(name.lastIndexOf("/") + 1);
             access &= ~PRIVATE;
             access &= ~PROTECTED;
             access |= PUBLIC;
@@ -168,7 +182,7 @@ public class MyTransformer implements ClassTransformer {
 
             super.visitOuterClass(owner, name, descriptor);
             this.owner = owner;
-            this.className = name;
+            className = name;
         }
 
         @Override
@@ -201,7 +215,6 @@ public class MyTransformer implements ClassTransformer {
                         }
                         super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
                     }
-
                 };
 
                 return visitor;
@@ -257,7 +270,6 @@ public class MyTransformer implements ClassTransformer {
             };
             objectCaller.visitMaxs(0, 0);
             return objectCaller;
-
         }
     }
 }

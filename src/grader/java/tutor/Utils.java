@@ -14,9 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static tutor.Utils.TestCollection.Mode.SILENT;
-
 
 public interface Utils {
 
@@ -39,7 +38,6 @@ public interface Utils {
         static void b() {
 
         }
-
     }
 
     interface Messages {
@@ -122,7 +120,6 @@ public interface Utils {
                 builder.append('(');
                 builder.append(Arrays.stream(entry.parameters).map(Objects::toString).collect(Collectors.joining(",")));
                 builder.append(')');
-
             }
             if (entry.hasError()) {
                 if (builder.length() != 0) {
@@ -132,16 +129,13 @@ public interface Utils {
             }
             return builder.toString();
         }
-
     }
-
 
     interface SpoonPredicate {
 
         static <T extends CtElement> Filter<T> isCodeElement() {
             return o -> o instanceof CtCodeElement;
         }
-
     }
 
     class TestCollection {

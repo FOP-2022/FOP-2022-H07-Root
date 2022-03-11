@@ -1,6 +1,5 @@
 package student;
 
-
 import reflection.ClassTester;
 import reflection.MethodTester;
 import reflection.ParameterMatcher;
@@ -10,7 +9,9 @@ import java.util.List;
 import java.util.Objects;
 
 import static h07.Global.SIMILARITY;
-import static java.lang.reflect.Modifier.*;
+import static java.lang.reflect.Modifier.ABSTRACT;
+import static java.lang.reflect.Modifier.INTERFACE;
+import static java.lang.reflect.Modifier.PUBLIC;
 import static java.util.Objects.requireNonNullElseGet;
 
 public abstract class Traverser_STUD implements Mocked {

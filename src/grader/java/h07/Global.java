@@ -15,5 +15,4 @@ public interface Global {
     Logger LOGGER = Jagr.Default.getInjector().getInstance(org.slf4j.Logger.class);
     MyTransformer TRANSFORMER = new MyTransformer();
     State MODE = new State();
-
 }
