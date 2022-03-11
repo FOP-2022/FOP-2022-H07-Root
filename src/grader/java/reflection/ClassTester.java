@@ -613,9 +613,10 @@ public class ClassTester<T> {
         VirtualFile vf = null;
         if (cycle != null) {
             SourceFile sourceFile = cycle.getSubmission().getSourceFile(sourceFileName);
-            if (sourceFile == null)
-                fail(String.format("file %s does not exist", sourceFileName));
-            return Objects.requireNonNull(sourceFile).getContent();
+            if (sourceFile == null) {
+                return fail(String.format("file %s does not exist", sourceFileName));
+            }
+            return sourceFile.getContent();
         } else {
             try {
                 return String.join("", Files.readAllLines(Paths.get("../../src/main/java/" + sourceFileName)));

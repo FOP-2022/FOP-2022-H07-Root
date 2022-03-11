@@ -221,8 +221,9 @@ public interface Utils {
             if (count != 0 && mode != SILENT) {
                 var firstEntry = getEntriesToShow().findFirst().orElseThrow();
                 Throwable cause = firstEntry.error; // TODO
-                while (cause.getCause() != null)
+                while (cause.getCause() != null) {
                     cause = cause.getCause();
+                }
                 fail(getEntriesToShow().map(Messages::ofEntryError).collect(Collectors.joining(", ")), cause);
             }
             entries.clear();

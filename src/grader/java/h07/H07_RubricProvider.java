@@ -122,7 +122,8 @@ public class H07_RubricProvider implements RubricProvider {
         ).build();
 
     public static final Criterion getDefaultComplexPredicateStructure = Criterion.builder()
-        .shortDescription("Die Methode getDefaultComplexPredicate verwendet die geforderte Struktur mit Lambdas und EpsEnvPredicates")
+        .shortDescription(
+            "Die Methode getDefaultComplexPredicate verwendet die geforderte Struktur mit Lambdas und EpsEnvPredicates")
         .grader(Grader.testAwareBuilder()
             .requirePass(ofMethod(() ->
                 TutorTest_H1.class.getMethod("lambdaInCorrectForm")))

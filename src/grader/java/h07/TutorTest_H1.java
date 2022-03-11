@@ -379,8 +379,8 @@ public class TutorTest_H1 {
                 }
                 assertTimeoutPreemptively(Duration.ofMillis(10), () -> {
                     ((DoublePredicate) timePred).test(1);
-                }, "Die Verknüpfungsreihenfolge entspricht nicht den Anforderungen." +
-                    " Erkennbar an zu langer Ausführungszeit. Prädikate: {d -> [langsames Prädikat], d -> true}, Forward: false");
+                }, "Die Verknüpfungsreihenfolge entspricht nicht den Anforderungen. Erkennbar an zu langer Ausführungszeit."
+                    + " Prädikate: {d -> [langsames Prädikat], d -> true}, Forward: false");
                 DoublePredicate[] timeout2 = new DoublePredicate[]{d -> true, waiting};
                 var timePred2 = DPF_DISJUNCTION().invoke(instance, timeout2, true);
                 if (timePred2 == null) {
@@ -388,8 +388,8 @@ public class TutorTest_H1 {
                 }
                 assertTimeoutPreemptively(Duration.ofMillis(10), () -> {
                     ((DoublePredicate) timePred2).test(1);
-                }, "Die Verknüpfungsreihenfolge entspricht nicht den Anforderungen." +
-                    " Erkennbar an zu langer Ausführungszeit. Prädikate: {d -> true, d -> [langsames Prädikat]}, Forward: true");
+                }, "Die Verknüpfungsreihenfolge entspricht nicht den Anforderungen. Erkennbar an zu langer Ausführungszeit. " +
+                    " Prädikate: {d -> true, d -> [langsames Prädikat]}, Forward: true");
             })
             .run();
     }
@@ -700,7 +700,6 @@ public class TutorTest_H1 {
             .addReq(DPF_CHECKSUM()::resolve)
             .add(DPF_CHECKSUM()::assertAccessModifier)
             .add(DPF_CHECKSUM()::assertParametersMatch)
-//            .add(this::checksumMethods)
             .add(this::checksumShape)
             .add(() -> {
                 var instanz = mock(DPF_CLASS().resolveClass().getActualClass(), Answers.CALLS_REAL_METHODS);

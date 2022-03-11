@@ -11,7 +11,6 @@ import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.visitor.filter.TypeFilter;
 import tutor.Mocked;
 
-import javax.management.RuntimeErrorException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.management.RuntimeErrorException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static tutor.Utils.Messages.wasNotCalledRecursively;

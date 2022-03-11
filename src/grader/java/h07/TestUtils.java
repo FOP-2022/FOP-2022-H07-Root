@@ -199,8 +199,8 @@ public class TestUtils {
             if (p.parameterType.equals(Traits.Student.c().getActualClass())) {
                 return traits;
             } else {
-                var match = stream(inputs).map(Mocked::getActualObject).filter(o -> o.getClass().equals(p.parameterType) ||
-                    (o.getClass().equals(Integer.class) && p.parameterType.equals(int.class))).findAny();
+                var match = stream(inputs).map(Mocked::getActualObject).filter(o -> o.getClass().equals(p.parameterType)
+                    || (o.getClass().equals(Integer.class) && p.parameterType.equals(int.class))).findAny();
                 return match.orElse(fct);
             }
         };
