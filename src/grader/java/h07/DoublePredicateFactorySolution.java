@@ -1,19 +1,15 @@
-package h07.predicate;
+package h07;
 
 import java.util.function.DoublePredicate;
 
-/**
- * A utility class with static methods to create a {@link DoublePredicate}.
- */
-public class DoublePredicateFactory {
-
+public class DoublePredicateFactorySolution {
     /**
      * Combines the predicates by OR over each subarray and by AND over the resulting one.
      *
      * @param predicates the predicates as a not null and non-empty array
      * @return a predicate containing the aforementioned Conjunction over Disjunctions
      */
-    public DoublePredicate buildComplexPredicate(DoublePredicate[][] predicates) {
+    public static DoublePredicate buildComplexPredicate(DoublePredicate[][] predicates) {
         DoublePredicate[] disjunctions = new DoublePredicate[predicates.length];
         for (int i = 0; i < predicates.length; i++) {
             disjunctions[i] = buildDisjunction(predicates[i], i % 2 == 0);
@@ -28,7 +24,7 @@ public class DoublePredicateFactory {
      * @param forward    if false combines them in opposite iteration direction
      * @return the Disjunction over predicates
      */
-    public DoublePredicate buildDisjunction(DoublePredicate[] predicates, boolean forward) {
+    public static DoublePredicate buildDisjunction(DoublePredicate[] predicates, boolean forward) {
         DoublePredicate result;
         if (forward) {
             result = predicates[0];
@@ -50,8 +46,7 @@ public class DoublePredicateFactory {
      * @param predicates the predicates to combine
      * @return the Conjunction over predicates
      */
-    public DoublePredicate buildConjunction(DoublePredicate[] predicates) {
-        System.out.println(">" + this);
+    public static DoublePredicate buildConjunction(DoublePredicate[] predicates) {
         return buildConjunction(predicates[0], predicates, 1);
     }
 
@@ -63,37 +58,11 @@ public class DoublePredicateFactory {
      * @param i          recursive counter
      * @return one predicate after the last index was processed
      */
-    public DoublePredicate buildConjunction(DoublePredicate acc, DoublePredicate[] predicates, int i) {
+    public static DoublePredicate buildConjunction(DoublePredicate acc, DoublePredicate[] predicates, int i) {
         if (i >= predicates.length) {
             return acc;
         }
         return buildConjunction(acc.and(predicates[i]), predicates, i + 1);
-    }
-
-    /**
-     * This predicate requires the double to be:
-     * d >= -20 * Math.PI && d <= 10 * Math.E OR Math.sin(d) > Math.cos(d) OR d < Math.pow(Math.log(d), 3)
-     * AND
-     * not too far from n + 0.5 for some n, that is a natural number in [0, 999]
-     *
-     * @return the predicate
-     */
-    public DoublePredicate getDefaultComplexPredicate() {
-        DoublePredicate[][] predicates = new DoublePredicate[3][];
-        final var largeArraySize = 1000;
-        predicates[0] = new EpsilonEnvironmentPred[largeArraySize];
-        predicates[1] = new DoublePredicate[largeArraySize];
-        for (int i = 0; i < largeArraySize; i++) {
-            predicates[0][i] = new EpsilonEnvironmentPred(i + 0.5, i / 50000.0);
-            int backwardsI = i + 1;
-            predicates[1][largeArraySize - backwardsI] = d -> Math.abs(1000 - backwardsI + 0.5 - d) < backwardsI / 50000.0;
-        }
-        predicates[2] = new DoublePredicate[]{
-            d -> d >= -20 * Math.PI && d <= 10 * Math.E,
-            d -> Math.sin(d) > Math.cos(d),
-            d -> d < Math.pow(Math.log(d), 3),
-        };
-        return buildComplexPredicate(predicates);
     }
 
     /**
@@ -104,7 +73,7 @@ public class DoublePredicateFactory {
      * @param divisor       the divisor to divide the sum of decimalPlaces by
      * @return the predicate described above
      */
-    public DoublePredicate getChecksumPredicate(int decimalPlaces, int divisor) {
+    public static DoublePredicate getChecksumPredicate(int decimalPlaces, int divisor) {
         return (double value) -> {
             var asString = "" + value;
             var checksum = 0;
