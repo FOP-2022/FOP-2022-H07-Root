@@ -64,7 +64,7 @@ tasks {
         }
         workingDir = runDir
         testClassesDirs = grader.output.classesDirs
-        classpath = grader.runtimeClasspath
+        classpath = grader.compileClasspath + grader.runtimeClasspath
         useJUnitPlatform()
     }
     named("check") {
