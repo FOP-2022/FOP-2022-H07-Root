@@ -6,7 +6,7 @@ plugins {
     id("org.sourcegrade.submitter") version "0.4.0"
 }
 
-version = "0.1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
