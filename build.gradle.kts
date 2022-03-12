@@ -23,8 +23,8 @@ submit {
 
 val grader: SourceSet by sourceSets.creating {
     val test = sourceSets.test.get()
-    compileClasspath += test.compileClasspath
-    runtimeClasspath += output + compileClasspath + test.runtimeClasspath
+    compileClasspath += test.output + test.compileClasspath
+    runtimeClasspath += output + test.runtimeClasspath
 }
 
 dependencies {
