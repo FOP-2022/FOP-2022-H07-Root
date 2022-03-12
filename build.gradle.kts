@@ -29,7 +29,9 @@ val grader: SourceSet by sourceSets.creating {
 
 dependencies {
     implementation("org.jetbrains:annotations:23.0.0")
-    "graderCompileOnly"("org.sourcegrade:jagr-launcher:0.4.0-SNAPSHOT")
+    "graderCompileOnly"("org.sourcegrade:jagr-launcher:0.4.0") {
+        exclude("org.jetbrains", "annotations")
+    }
     "graderImplementation"("fr.inria.gforge.spoon:spoon-core:10.0.0")
     "graderImplementation"("org.sourcegrade:docwatcher-api:0.1")
     "graderImplementation"("org.mockito:mockito-core:4.3.1")
